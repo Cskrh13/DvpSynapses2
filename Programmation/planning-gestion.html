@@ -593,18 +593,64 @@ table.affg .affg-aesh-toggle.masque{display:none;}
 
 <script src="../fata-morgana/synapses-crypto.js"></script>
 <script src="../fata-morgana/synapses-coffre.js"></script>
-<script src="planning-core.js"></script>
+<!-- Synapses 2.0 : la page s'appuie sur model/ et core/ (l'ancien moteur V1 n'est plus chargé).
+     Ordre = ordre de dépendance : modèle -> adaptateurs -> utilitaires -> managers. -->
+<script src="../model/entite.js"></script>
+<script src="../model/classe.js"></script>
+<script src="../model/dispositif.js"></script>
+<script src="../model/ecole.js"></script>
+<script src="../model/espace.js"></script>
+<script src="../model/creneau.js"></script>
+<script src="../model/personnel.js"></script>
+<script src="../model/objectif.js"></script>
+<script src="../model/sequence.js"></script>
+<script src="../model/seance.js"></script>
+<script src="../model/occurrence.js"></script>
+<script src="../core/adapters/storage-adapter.js"></script>
+<script src="../core/adapters/local-adapter.js"></script>
+<script src="../core/adapters/coffre-adapter.js"></script>
+<script src="../core/adapters/journal-adapter.js"></script>
+<script src="../core/referentiel-horaire.js"></script>
+<script src="../core/calendrier-scolaire.js"></script>
+<script src="../core/data-manager.js"></script>
+<script src="../core/cahier-journal-manager.js"></script>
+<script src="../core/affectation-seance-manager.js"></script>
+<script src="../core/config-planning-manager.js"></script>
+<script src="../core/grille-manager.js"></script>
+<script src="../core/planning-paquet-manager.js"></script>
 <script>
 /* =========================================================
    SYNAPSES — DEPENDENCY LOADER / ROBUST STARTUP
-   Les onglets et le coffre dépendent de PlanningCore + Coffre.
+   Les onglets et le coffre dépendent de model/ + core/ + Coffre.
    Si GitHub Pages a servi une version sans l'un de ces scripts, on les
    recharge depuis le même dossier avant d'initialiser l'application.
    Cela évite qu'une seule dépendance manquante bloque TOUS les onglets.
    ========================================================= */
 (function(){
   const deps = [
-    { test: () => !!window.PlanningCore, src: "planning-core.js" },
+    { test: () => !!(window.SynapsesModel && SynapsesModel.Entite), src: "../model/entite.js" },
+    { test: () => !!(window.SynapsesModel && SynapsesModel.Classe), src: "../model/classe.js" },
+    { test: () => !!(window.SynapsesModel && SynapsesModel.Dispositif), src: "../model/dispositif.js" },
+    { test: () => !!(window.SynapsesModel && SynapsesModel.Ecole), src: "../model/ecole.js" },
+    { test: () => !!(window.SynapsesModel && SynapsesModel.Espace), src: "../model/espace.js" },
+    { test: () => !!(window.SynapsesModel && SynapsesModel.Creneau), src: "../model/creneau.js" },
+    { test: () => !!(window.SynapsesModel && SynapsesModel.Personnel), src: "../model/personnel.js" },
+    { test: () => !!(window.SynapsesModel && SynapsesModel.Objectif), src: "../model/objectif.js" },
+    { test: () => !!(window.SynapsesModel && SynapsesModel.Sequence), src: "../model/sequence.js" },
+    { test: () => !!(window.SynapsesModel && SynapsesModel.Seance), src: "../model/seance.js" },
+    { test: () => !!(window.SynapsesModel && SynapsesModel.Occurrence), src: "../model/occurrence.js" },
+    { test: () => !!(window.SynapsesCore && SynapsesCore.StorageAdapter), src: "../core/adapters/storage-adapter.js" },
+    { test: () => !!(window.SynapsesCore && SynapsesCore.LocalAdapter), src: "../core/adapters/local-adapter.js" },
+    { test: () => !!(window.SynapsesCore && SynapsesCore.CoffreAdapter), src: "../core/adapters/coffre-adapter.js" },
+    { test: () => !!(window.SynapsesCore && SynapsesCore.JournalAdapter), src: "../core/adapters/journal-adapter.js" },
+    { test: () => !!(window.SynapsesCore && SynapsesCore.ReferentielHoraire), src: "../core/referentiel-horaire.js" },
+    { test: () => !!(window.SynapsesCore && SynapsesCore.CalendrierScolaire), src: "../core/calendrier-scolaire.js" },
+    { test: () => !!(window.SynapsesCore && SynapsesCore.DataManager), src: "../core/data-manager.js" },
+    { test: () => !!(window.SynapsesCore && SynapsesCore.CahierJournalManager), src: "../core/cahier-journal-manager.js" },
+    { test: () => !!(window.SynapsesCore && SynapsesCore.AffectationSeanceManager), src: "../core/affectation-seance-manager.js" },
+    { test: () => !!(window.SynapsesCore && SynapsesCore.ConfigPlanningManager), src: "../core/config-planning-manager.js" },
+    { test: () => !!(window.SynapsesCore && SynapsesCore.GrilleManager), src: "../core/grille-manager.js" },
+    { test: () => !!(window.SynapsesCore && SynapsesCore.PlanningPaquetManager), src: "../core/planning-paquet-manager.js" },
     { test: () => !!window.SynapsesCrypto, src: "../fata-morgana/synapses-crypto.js" },
     { test: () => !!window.SynapsesCoffre, src: "../fata-morgana/synapses-coffre.js" }
   ];
@@ -620,7 +666,7 @@ table.affg .affg-aesh-toggle.masque{display:none;}
   (async()=>{
     try{
       for(const d of deps){ if(!d.test()) await load(d.src); }
-      if(!window.PlanningCore) throw new Error("PlanningCore indisponible");
+      if(!(window.SynapsesCore && SynapsesCore.PlanningPaquetManager)) throw new Error("Le cœur Synapses (core/) est indisponible");
       // Appel direct : évite une course lorsque toutes les dépendances sont déjà chargées.
       // Dans l'ancienne version, dispatchEvent() pouvait se produire avant que
       // le listener placé plus bas ne soit enregistré, ce qui laissait la page
@@ -630,7 +676,7 @@ table.affg .affg-aesh-toggle.masque{display:none;}
       console.error("Démarrage du planning impossible :",e);
       const box=document.createElement("div");
       box.style.cssText="margin:20px;padding:16px;border:2px solid #B5502E;border-radius:8px;background:#fff;color:#20242E;font-family:system-ui,sans-serif";
-      box.innerHTML="<strong>Le planning n'a pas pu charger tous ses fichiers JavaScript.</strong><br>Rechargez la page. Si le problème persiste, vérifiez que <code>planning-core.js</code> et le dossier <code>fata-morgana</code> sont bien présents dans le dépôt.";
+      box.innerHTML="<strong>Le planning n'a pas pu charger tous ses fichiers JavaScript.</strong><br>Rechargez la page. Si le problème persiste, vérifiez que les dossiers <code>core</code>, <code>model</code> et <code>fata-morgana</code> sont bien présents dans le dépôt.";
       document.body.prepend(box);
     }
   })();
@@ -654,25 +700,39 @@ const SYNAPSES_BUILD = {
 };
 
 "use strict";
-const PC = window.PlanningCore;
+const {
+  DataManager, CalendrierScolaire: CS, ReferentielHoraire: RH, CahierJournalManager: CJ,
+  ConfigPlanningManager, GrilleManager, PlanningPaquetManager,
+  AffectationSeanceManager, JournalAdapter
+} = window.SynapsesCore;
+// Un seul LocalAdapter partagé : mêmes clés localStorage que les autres pages.
+const dataManager = new DataManager();
+const configMgr = new ConfigPlanningManager({ localAdapter: dataManager.local });
+const grilleMgr = new GrilleManager({ localAdapter: dataManager.local });
+const affectationsMgr = new AffectationSeanceManager({ localAdapter: dataManager.local });
+const journalAdapter = new JournalAdapter(dataManager.local);
+const paquetMgr = new PlanningPaquetManager({
+  localAdapter: dataManager.local, configManager: configMgr, grilleManager: grilleMgr,
+  affectationManager: affectationsMgr, journalAdapter: journalAdapter
+});
 const $ = id => document.getElementById(id);
 function toast(msg){ const t=$("toast"); t.textContent=msg; t.classList.add("show"); setTimeout(()=>t.classList.remove("show"),2200); }
 
-let config = PC.chargerConfig();
+let config = configMgr.charger();
 config.dispositifGroupes = config.dispositifGroupes || {};
 let dispositifJourCourant = null;
 let dispositifIdCourant = null;
-let grilles = PC.chargerGrilles();
+let grilles = grilleMgr.charger();
 // Restaure immédiatement les anciennes grilles indexées par niveau (CP,
 // CE1, …) vers les nouveaux identifiants de classes. Cette étape est
 // indispensable lors du premier chargement après la migration du modèle.
-if (typeof PC.migrerStockageClasses === "function") {
-  PC.migrerStockageClasses(config, grilles);
+if (typeof configMgr.migrerStockageClasses === "function") {
+  configMgr.migrerStockageClasses(config, grilles);
 }
 // Persiste la configuration migrée afin qu'un prochain chargement n'ait pas
 // à recréer des identifiants de classes différents.
 if (Array.isArray(config.classes) && config.classes.length && Array.isArray(config.niveauxActifs)) {
-  PC.sauverConfig(config);
+  configMgr.sauver(config);
 }
 let banque = {}; // rempli au chargement
 let grilleClasseCourant = null;
@@ -882,7 +942,7 @@ function renderVacances(){
   body.querySelectorAll("button[data-i]").forEach(b=>{
     b.addEventListener("click", ()=>{
       config.vacances.splice(+b.dataset.i,1);
-      PC.sauverConfig(config);
+      configMgr.sauver(config);
       renderVacances();
       renderSummary();
     });
@@ -893,7 +953,7 @@ $("btn-add-vac").addEventListener("click", ()=>{
   if(!debut || !fin){ toast("Indiquez une date de début et de fin."); return; }
   config.vacances = config.vacances || [];
   config.vacances.push({ libelle: $("vac-libelle").value.trim(), debut, fin });
-  PC.sauverConfig(config);
+  configMgr.sauver(config);
   $("vac-libelle").value=""; $("vac-debut").value=""; $("vac-fin").value="";
   renderVacances();
   renderSummary();
@@ -902,7 +962,7 @@ $("btn-add-vac").addEventListener("click", ()=>{
 $("btn-save-config").addEventListener("click", ()=>{
   config.rentree = $("cfg-rentree").value;
   config.semaines = parseInt($("cfg-semaines").value,10) || 36;
-  PC.sauverConfig(config);
+  configMgr.sauver(config);
   toast(config.rentree ? "Configuration enregistrée." : "Configuration enregistrée (pensez à indiquer la date de rentrée).");
   renderSummary();
 });
@@ -911,7 +971,7 @@ $("btn-save-config").addEventListener("click", ()=>{
 function renderJoursTravailles(){
   const wrap = $("jours-travailles");
   wrap.innerHTML = "";
-  PC.JOURS.forEach(j=>{
+  CS.JOURS.forEach(j=>{
     const b = document.createElement("button");
     const actif = (config.joursTravailles||[]).includes(j.n);
     b.textContent = j.nom; b.className = actif ? "active" : "";
@@ -919,7 +979,7 @@ function renderJoursTravailles(){
       config.joursTravailles = config.joursTravailles || [];
       const idx = config.joursTravailles.indexOf(j.n);
       if(idx>=0) config.joursTravailles.splice(idx,1); else config.joursTravailles.push(j.n);
-      PC.sauverConfig(config);
+      configMgr.sauver(config);
       renderJoursTravailles();
     });
     wrap.appendChild(b);
@@ -950,7 +1010,7 @@ function renderListeHoraires(cle, wrapId){
     `;
     card.querySelector("[data-i]").addEventListener("click", ()=>{
       config[cle].splice(i,1);
-      PC.sauverConfig(config);
+      configMgr.sauver(config);
       renderListeHoraires(cle, wrapId);
     });
     card.querySelectorAll("[data-toggle-classe]").forEach(b=>{
@@ -958,7 +1018,7 @@ function renderListeHoraires(cle, wrapId){
         h.classes = h.classes || [];
         const idx = h.classes.indexOf(b.dataset.toggleClasse);
         if(idx>=0) h.classes.splice(idx,1); else h.classes.push(b.dataset.toggleClasse);
-        PC.sauverConfig(config);
+        configMgr.sauver(config);
         renderListeHoraires(cle, wrapId);
       });
     });
@@ -974,7 +1034,7 @@ $("btn-add-recre").addEventListener("click", ()=>{
   if(!debut || !fin){ toast("Indiquez une heure de début et de fin."); return; }
   config.recreations = config.recreations || [];
   config.recreations.push({ label: $("recre-libelle").value.trim() || "Récréation", debut, fin, classes: [] });
-  PC.sauverConfig(config);
+  configMgr.sauver(config);
   $("recre-libelle").value=""; $("recre-debut").value=""; $("recre-fin").value="";
   renderRecreations();
 });
@@ -983,7 +1043,7 @@ $("btn-add-pause").addEventListener("click", ()=>{
   if(!debut || !fin){ toast("Indiquez une heure de début et de fin."); return; }
   config.pauses = config.pauses || [];
   config.pauses.push({ label: $("pause-libelle").value.trim() || "Pause méridienne", debut, fin, classes: [] });
-  PC.sauverConfig(config);
+  configMgr.sauver(config);
   $("pause-libelle").value=""; $("pause-debut").value=""; $("pause-fin").value="";
   renderPauses();
 });
@@ -991,9 +1051,9 @@ $("btn-add-pause").addEventListener("click", ()=>{
 $("btn-appliquer-fixes").addEventListener("click", ()=>{
   if(!config.classes.length){ toast("Créez au moins une classe avant d'appliquer."); return; }
   if(!(config.joursTravailles||[]).length){ toast("Cochez au moins un jour travaillé."); return; }
-  PC.sauverConfig(config);
-  const statsFixes = PC.appliquerCreneauxFixes(config, grilles, config.classes.map(c=>c.id));
-  PC.sauverGrilles(grilles);
+  configMgr.sauver(config);
+  const statsFixes = grilleMgr.appliquerCreneauxFixes(config, grilles, config.classes.map(c=>c.id));
+  grilleMgr.sauver(grilles);
   const nbFixes = statsFixes?.total ?? config.classes.reduce((n, cl) => n + (grilles[cl.id] || []).filter(c => c.id?.startsWith("fixe_" + cl.id + "_")).length, 0);
   $("fixes-status").textContent = nbFixes + " créneau(x) fixe(s) présent(s) dans les grilles — appliqué le " + new Date().toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"}) + ".";
   toast(nbFixes + " créneau(x) fixe(s) appliqué(s) aux classes.");
@@ -1005,7 +1065,7 @@ $("btn-appliquer-fixes").addEventListener("click", ()=>{
 let elevesParClasse = {}; // ÉPHÉMÈRE : jamais persisté, vidé à la fermeture du coffre
 
 function renderClasseNiveauSelect(sel){
-  sel.innerHTML = PC.NIVEAUX_DISPONIBLES.map(n=>`<option value="${n}">${n}</option>`).join("");
+  sel.innerHTML = ConfigPlanningManager.NIVEAUX_DISPONIBLES.map(n=>`<option value="${n}">${n}</option>`).join("");
 }
 renderClasseNiveauSelect($("classe-niveau"));
 
@@ -1027,14 +1087,14 @@ function renderDispositifs(){
     `;
     div.querySelector("[data-enseignant-dispositif]").addEventListener("change", ev=>{
       d.enseignant = ev.target.value.trim();
-      PC.sauverConfig(config);
+      configMgr.sauver(config);
     });
     div.querySelector("[data-del-dispositif]").addEventListener("click", ()=>{
       if(!confirm(`Supprimer le dispositif « ${d.nom} » ? Sa grille horaire sera perdue.`)) return;
       config.dispositifs = (config.dispositifs||[]).filter(x=>x.id!==d.id);
       (config.classes||[]).forEach(cl=>cl.dispositifs=(cl.dispositifs||[]).filter(id=>id!==d.id));
       delete grilles[d.id];
-      PC.sauverConfig(config); PC.sauverGrilles(grilles);
+      configMgr.sauver(config); grilleMgr.sauver(grilles);
       renderDispositifs(); renderClasses(); renderGrilleTabs(); renderSummary();
     });
     wrap.appendChild(div);
@@ -1052,8 +1112,8 @@ $("btn-add-dispositif").addEventListener("click", ()=>{
     toast("Un dispositif portant ce nom existe déjà."); return;
   }
   const couleurs = ["#6B4E8E","#3F8C4B","#B5871E"];
-  config.dispositifs.push({id:PC.uid("disp"),nom,type,enseignant,couleur:couleurs[config.dispositifs.length%couleurs.length]});
-  PC.sauverConfig(config);
+  config.dispositifs.push({id:CJ.uidParDefaut("disp"),nom,type,enseignant,couleur:couleurs[config.dispositifs.length%couleurs.length]});
+  configMgr.sauver(config);
   $("dispositif-nom").value=""; $("dispositif-enseignant").value="";
   renderDispositifs(); renderClasses(); renderGrilleTabs(); renderSummary();
   toast("Dispositif créé.");
@@ -1084,16 +1144,16 @@ function renderClasses(){
     `;
     div.querySelector("[data-dispositifs]").addEventListener("change", ev=>{
       cl.dispositifs = Array.from(ev.target.selectedOptions).map(o=>o.value);
-      PC.sauverConfig(config);
+      configMgr.sauver(config);
       renderClasses();
     });
     div.querySelector("[data-enseignant-classe]").addEventListener("change", ev=>{
       cl.enseignant = ev.target.value.trim();
-      PC.sauverConfig(config);
+      configMgr.sauver(config);
     });
     div.querySelector("[data-del-classe]").addEventListener("click", ()=>{
       if(!confirm(`Supprimer la classe « ${cl.nom} » ? Sa grille horaire sera perdue.`)) return;
-      PC.supprimerClasse(config, cl.id, grilles, PC.chargerAffectations());
+      configMgr.supprimerClasse(config, cl.id, grilles, affectationsMgr.charger());
       if(coffre && coffre.ouvert){
         let touche=false;
         (coffre.donnees.eleves||[]).forEach(e=>{
@@ -1105,7 +1165,7 @@ function renderClasses(){
         if(touche) marquerCoffreModifie();
       }
       delete elevesParClasse[cl.id];
-      PC.sauverConfig(config); PC.sauverGrilles(grilles);
+      configMgr.sauver(config); grilleMgr.sauver(grilles);
       renderClasses(); renderDispositifs(); renderRecreations(); renderPauses(); renderGrilleTabs(); renderSummary(); renderClasseElevesSelect();
       if(typeof renderAffectationTab === "function") renderAffectationTab();
     });
@@ -1116,9 +1176,9 @@ function renderClasses(){
 $("btn-add-classe").addEventListener("click", ()=>{
   const nom = $("classe-nom").value.trim();
   if(!nom){ toast("Indiquez un nom de classe."); return; }
-  const cl = PC.creerClasse(config, nom, $("classe-niveau").value);
+  const cl = configMgr.creerClasse(config, nom, $("classe-niveau").value);
   cl.enseignant = $("classe-enseignant").value.trim();
-  PC.sauverConfig(config);
+  configMgr.sauver(config);
   $("classe-nom").value = ""; $("classe-enseignant").value = "";
   renderClasses(); renderDispositifs(); renderRecreations(); renderPauses(); renderGrilleTabs(); renderSummary(); renderClasseElevesSelect();
   if(typeof renderAffectationTab === "function") renderAffectationTab();
@@ -1205,7 +1265,7 @@ function marquerGrilleEnregistree(){
   if(st){ st.textContent = "Planning enregistré."; st.classList.remove("warn"); }
 }
 $("btn-save-grille").addEventListener("click", ()=>{
-  PC.sauverGrilles(grilles);
+  grilleMgr.sauver(grilles);
   marquerGrilleEnregistree();
   toast("Planning enregistré.");
 });
@@ -1244,7 +1304,7 @@ function renderGrilleTabs(){
 }
 
 function domainesDisponibles(classeId){
-  const cl = PC.classeById(config, classeId);
+  const cl = configMgr.classeById(config, classeId);
   const parNiveau = (cl && banque[cl.niveau]) || {};
   return Object.entries(parNiveau).map(([cle,b])=>({cle,label:b.label,count:b.items.length}));
 }
@@ -1259,7 +1319,7 @@ function renderGrilleBody(){
   const estDispositif = estDispositifId(grilleClasseCourant);
   const domaines = estDispositif ? [] : domainesDisponibles(grilleClasseCourant);
 
-  PC.JOURS.forEach(j=>{
+  CS.JOURS.forEach(j=>{
     const bloc = document.createElement("div");
     bloc.className = "jour-block";
     const creneauxJour = grilles[grilleClasseCourant].filter(c=>c.jour===j.n);
@@ -1271,29 +1331,29 @@ function renderGrilleBody(){
       wrap.appendChild(bloc);
       return;
     }
-    const tries = creneauxJour.sort((a,b)=>PC.heureVersMin(a.debut)-PC.heureVersMin(b.debut)||PC.heureVersMin(a.fin)-PC.heureVersMin(b.fin));
+    const tries = creneauxJour.sort((a,b)=>RH.heureVersMin(a.debut)-RH.heureVersMin(b.debut)||RH.heureVersMin(a.fin)-RH.heureVersMin(b.fin));
     const conflits = new Set();
     const lignesParId = new Map();
     let finMaxPrecedent = null; // fin la plus tardive vue jusqu'ici, pour détecter un chevauchement même si un créneau plus court est imbriqué dans un plus long
     tries.forEach((c,i)=>{
-      const debutMin = PC.heureVersMin(c.debut), finMin = PC.heureVersMin(c.fin);
+      const debutMin = RH.heureVersMin(c.debut), finMin = RH.heureVersMin(c.fin);
       if(i>0){
         const prec = tries[i-1];
-        const chevauche = debutMin < (finMaxPrecedent!=null ? finMaxPrecedent : PC.heureVersMin(prec.fin));
+        const chevauche = debutMin < (finMaxPrecedent!=null ? finMaxPrecedent : RH.heureVersMin(prec.fin));
         if(chevauche){
           conflits.add(prec.id); conflits.add(c.id);
           if(lignesParId.has(prec.id)) lignesParId.get(prec.id).classList.add("en-conflit");
           const alerte = document.createElement("div");
           alerte.className = "grille-alerte chevauchement";
-          alerte.textContent = `⚠️ Chevauchement : « ${PC.libelleCreneau(prec)||"créneau"} » (${prec.debut}–${prec.fin}) et « ${PC.libelleCreneau(c)||"créneau"} » (${c.debut}–${c.fin}) se recouvrent.`;
+          alerte.textContent = `⚠️ Chevauchement : « ${GrilleManager.libelleCreneau(prec)||"créneau"} » (${prec.debut}–${prec.fin}) et « ${GrilleManager.libelleCreneau(c)||"créneau"} » (${c.debut}–${c.fin}) se recouvrent.`;
           list.appendChild(alerte);
-        } else if(debutMin > PC.heureVersMin(prec.fin)){
-          const dureeMin = debutMin - PC.heureVersMin(prec.fin);
+        } else if(debutMin > RH.heureVersMin(prec.fin)){
+          const dureeMin = debutMin - RH.heureVersMin(prec.fin);
           const h = Math.floor(dureeMin/60), m = dureeMin%60;
           const dureeTxt = (h?`${h} h `:"")+(m||!h?`${m} min`:"");
           const alerte = document.createElement("div");
           alerte.className = "grille-alerte trou";
-          alerte.textContent = `⏳ Trou de ${dureeTxt.trim()} entre « ${PC.libelleCreneau(prec)||"créneau"} » (fin ${prec.fin}) et « ${PC.libelleCreneau(c)||"créneau"} » (début ${c.debut}).`;
+          alerte.textContent = `⏳ Trou de ${dureeTxt.trim()} entre « ${GrilleManager.libelleCreneau(prec)||"créneau"} » (fin ${prec.fin}) et « ${GrilleManager.libelleCreneau(c)||"créneau"} » (début ${c.debut}).`;
           list.appendChild(alerte);
         }
       }
@@ -1307,7 +1367,7 @@ function renderGrilleBody(){
 
   wrap.querySelectorAll("button[data-add]").forEach(b=>{
     b.addEventListener("click", ()=>{
-      const nouveau = {id:PC.uid("cr"),jour:+b.dataset.add,debut:"09:00",fin:"09:30",type:"seance",domaineCle:(domaines[0]?domaines[0].cle:""),titre:"",libelle:""};
+      const nouveau = {id:CJ.uidParDefaut("cr"),jour:+b.dataset.add,debut:"09:00",fin:"09:30",type:"seance",domaineCle:(domaines[0]?domaines[0].cle:""),titre:"",libelle:""};
       grilles[grilleClasseCourant].push(nouveau);
       marquerGrilleModifiee();
       renderGrilleBody();
@@ -1319,7 +1379,7 @@ function renderGrilleBody(){
 function renderCreneauRow(c, domaines, estDispositif, enConflit){
   const row = document.createElement("div");
   row.className = "creneau-row" + (enConflit ? " en-conflit" : "");
-  const typeOpts = Object.entries(PC.TYPES_CRENEAU).map(([k,v])=>`<option value="${k}" ${c.type===k?"selected":""}>${v.label}</option>`).join("");
+  const typeOpts = Object.entries(CJ.TYPES_CRENEAU).map(([k,v])=>`<option value="${k}" ${c.type===k?"selected":""}>${v.label}</option>`).join("");
   const nom = c.type==="seance" ? (c.titre||"") : (c.libelle||"");
   row.innerHTML = `
     <input type="time" value="${c.debut}" data-f="debut" aria-label="Heure de début">
@@ -1374,7 +1434,7 @@ $("btn-reset-grille").addEventListener("click", ()=>{
   );
   if(!confirme) return;
   grilles[grilleClasseCourant] = [];
-  if(!estDispositifId(grilleClasseCourant)) PC.appliquerCreneauxFixes(config, grilles, [grilleClasseCourant]);
+  if(!estDispositifId(grilleClasseCourant)) grilleMgr.appliquerCreneauxFixes(config, grilles, [grilleClasseCourant]);
   marquerGrilleModifiee();
   renderGrilleBody();
   toast(`Emploi du temps de « ${nom} » réinitialisé — pensez à l'enregistrer.`);
@@ -1398,7 +1458,7 @@ function libelleCreneauExport(c, domaines){
     return titre ? `${domLabel} — ${titre}` : domLabel;
   }
   const libelle = (c.libelle && c.libelle.trim()) ? c.libelle.trim() : null;
-  const typeLabel = (PC.TYPES_CRENEAU[c.type] || {}).label || c.type;
+  const typeLabel = (CJ.TYPES_CRENEAU[c.type] || {}).label || c.type;
   return libelle || typeLabel;
 }
 
@@ -1410,8 +1470,8 @@ function construireLignesGrillePourExport(classeId){
   const joursActifs = (config.joursTravailles && config.joursTravailles.length) ? config.joursTravailles.map(Number) : [1,2,3,4,5];
   const grille = grilles[classeId] || [];
   const lignes = [];
-  PC.JOURS.filter(j=>joursActifs.includes(j.n)).forEach(j=>{
-    const creneaux = grille.filter(c=>c.jour===j.n).sort((a,b)=>PC.heureVersMin(a.debut)-PC.heureVersMin(b.debut));
+  CS.JOURS.filter(j=>joursActifs.includes(j.n)).forEach(j=>{
+    const creneaux = grille.filter(c=>c.jour===j.n).sort((a,b)=>RH.heureVersMin(a.debut)-RH.heureVersMin(b.debut));
     if(!creneaux.length){ lignes.push([j.nom, "—", "Aucun créneau"]); return; }
     creneaux.forEach(c=> lignes.push([j.nom, `${c.debut}–${c.fin}`, libelleCreneauExport(c, domaines)]));
   });
@@ -1570,11 +1630,11 @@ $("btn-ia-copier").addEventListener("click", async ()=>{
   }
 });
 
-// Nom de jour (français, insensible aux accents/majuscules) -> numéro PC.JOURS
+// Nom de jour (français, insensible aux accents/majuscules) -> numéro CS.JOURS
 function jourVersNumero(nomJour){
   if(!nomJour) return null;
   const norm = String(nomJour).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim();
-  const trouve = PC.JOURS.find(j=>{
+  const trouve = CS.JOURS.find(j=>{
     const jn = j.nom.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
     return jn === norm || jn.startsWith(norm) || norm.startsWith(jn);
   });
@@ -1672,12 +1732,12 @@ $("btn-ia-remplir").addEventListener("click", ()=>{
       existant.fin = fin;
       existant.type = type;
       if(type==="seance"){ existant.domaineCle = domaineCle; existant.titre = nom; }
-      else { existant.libelle = nom || PC.TYPES_CRENEAU[type].label; }
+      else { existant.libelle = nom || CJ.TYPES_CRENEAU[type].label; }
       mis_a_jour++;
     } else {
-      const nouveau = { id: PC.uid("cr"), jour: jourN, debut, fin, type, domaineCle:"" };
+      const nouveau = { id: CJ.uidParDefaut("cr"), jour: jourN, debut, fin, type, domaineCle:"" };
       if(type==="seance"){ nouveau.domaineCle = domaineCle; nouveau.titre = nom; }
-      else { nouveau.libelle = nom || PC.TYPES_CRENEAU[type].label; }
+      else { nouveau.libelle = nom || CJ.TYPES_CRENEAU[type].label; }
       grilles[grilleClasseCourant].push(nouveau);
       ajoutes++;
     }
@@ -1698,7 +1758,7 @@ function coffreEleveById(id){
 }
 function enregistrerElevesClasse(classeId, etat, aeshEtat){
   if(!coffre || !coffre.ouvert) throw new Error("Ouvrez le coffre avant d'enregistrer.");
-  const cl = PC.classeById(config, classeId);
+  const cl = configMgr.classeById(config, classeId);
   const roster = elevesParClasse[classeId] || [];
   if(!cl) throw new Error("Classe introuvable.");
   if(!roster.length) throw new Error("Aucun élève chargé dans cette classe.");
@@ -1736,7 +1796,7 @@ function enregistrerElevesClasse(classeId, etat, aeshEtat){
       // de c.titre pour un créneau de type "seance", de c.libelle sinon
       // (récréation, pause, autre) — jamais du domaineCle, qui reste une
       // clé technique interne non affichée telle quelle.
-      const nomActivite = PC.libelleCreneau(c);
+      const nomActivite = GrilleManager.libelleCreneau(c);
       // L'élève reste en classe : l'AESH peut néanmoins être affectée à
       // ses côtés sur ce créneau précis (au lieu de rester au dispositif
       // ou avec un autre groupe). Ce choix ne déplace jamais l'élève.
@@ -1816,7 +1876,7 @@ function construireOccupationAeshPersistante(excludeClasseId){
     (coffre.listerEleves ? coffre.listerEleves() : []).forEach(e=>{
       (Array.isArray(e.planning)?e.planning:[]).forEach(p=>{
         if(p.typeLieu==="classe" && p.aesh===true && p.classeId!==excludeClasseId && p.debut && p.fin){
-          occ.push({jourMin:Number(p.jour), debutMin:PC.heureVersMin(p.debut), finMin:PC.heureVersMin(p.fin)});
+          occ.push({jourMin:Number(p.jour), debutMin:RH.heureVersMin(p.debut), finMin:RH.heureVersMin(p.fin)});
         }
       });
     });
@@ -1829,7 +1889,7 @@ function construireOccupationAeshPersistante(excludeClasseId){
     const dispId=cle.slice(0,idx1), jourStr=cle.slice(idx1+2,idx2), creneauId=cle.slice(idx2+2);
     const c=(grilles[dispId]||[]).find(x=>x.id===creneauId);
     if(!c) return;
-    occ.push({jourMin:Number(jourStr), debutMin:PC.heureVersMin(c.debut), finMin:PC.heureVersMin(c.fin)});
+    occ.push({jourMin:Number(jourStr), debutMin:RH.heureVersMin(c.debut), finMin:RH.heureVersMin(c.fin)});
   });
   return occ;
 }
@@ -1851,7 +1911,7 @@ function renderAffgGrille(){
 
   // Lecture seule : les créneaux de la classe servent uniquement de référence.
   const creneaux=(grilles[classeId]||[]).slice().sort(
-    (a,b)=>PC.heureVersMin(a.debut)-PC.heureVersMin(b.debut)||PC.heureVersMin(a.fin)-PC.heureVersMin(b.fin)
+    (a,b)=>RH.heureVersMin(a.debut)-RH.heureVersMin(b.debut)||RH.heureVersMin(a.fin)-RH.heureVersMin(b.fin)
   );
   if(!creneaux.length){wrap.innerHTML='<div class="empty-hint">Aucun créneau dans la grille horaire type de cette classe.</div>';return;}
 
@@ -1870,10 +1930,10 @@ function renderAffgGrille(){
       let occupeeAilleurs=false;
       if(!dejaAffectee){
         occupeeAilleurs = aeshOccupationExterne.some(o=>
-          o.jourMin===b.jourMin && PC.chevaucheMin(o.debutMin,o.finMin,b.debutMin,b.finMin)
+          o.jourMin===b.jourMin && RH.chevaucheMin(o.debutMin,o.finMin,b.debutMin,b.finMin)
         ) || aeshBoutons.some(autre=>
           autre.cle!==b.cle && affgAeshEtatEnCours[autre.cle]===true &&
-          autre.jourMin===b.jourMin && PC.chevaucheMin(autre.debutMin,autre.finMin,b.debutMin,b.finMin)
+          autre.jourMin===b.jourMin && RH.chevaucheMin(autre.debutMin,autre.finMin,b.debutMin,b.finMin)
         );
       }
       const disponible=dejaAffectee||!occupeeAilleurs;
@@ -1899,7 +1959,7 @@ function renderAffgGrille(){
     if(!map.get(cle).parJour[c.jour]) map.get(cle).parJour[c.jour]=[];
     map.get(cle).parJour[c.jour].push(c);
   });
-  horaires.sort((a,b)=>PC.heureVersMin(a.debut)-PC.heureVersMin(b.debut));
+  horaires.sort((a,b)=>RH.heureVersMin(a.debut)-RH.heureVersMin(b.debut));
 
   // Pour chaque élève, on lit UNIQUEMENT son planning individuel.
   const presenceParEleve={};
@@ -1918,25 +1978,25 @@ function renderAffgGrille(){
 
   const table=document.createElement("table");table.className="affg";
   const thead=document.createElement("thead"),hr=document.createElement("tr");
-  hr.innerHTML='<th class="affg-horaire-head">Horaire</th>'+PC.JOURS.map(j=>`<th>${escapeHTMLTexte(j.nom)}</th>`).join("");
+  hr.innerHTML='<th class="affg-horaire-head">Horaire</th>'+CS.JOURS.map(j=>`<th>${escapeHTMLTexte(j.nom)}</th>`).join("");
   thead.appendChild(hr);table.appendChild(thead);
 
   horaires.forEach(h=>{
     const tr=document.createElement("tr");
     const th=document.createElement("th");th.className="affg-horaire-head";
-    const finsTriees=[...h.fins].sort((a,b)=>PC.heureVersMin(a)-PC.heureVersMin(b));
+    const finsTriees=[...h.fins].sort((a,b)=>RH.heureVersMin(a)-RH.heureVersMin(b));
     const finLabel=finsTriees.length===1?finsTriees[0]:finsTriees[0]+"…";
     th.innerHTML=`<span class="affg-horaire">${escapeHTMLTexte(h.debut)}–${escapeHTMLTexte(finLabel)}</span>`;
     tr.appendChild(th);
 
-    PC.JOURS.forEach(j=>{
+    CS.JOURS.forEach(j=>{
       const td=document.createElement("td");td.className="affg-creneau-cell";
       const liste=h.parJour[j.n]||[];
 
       if(!liste.length){td.innerHTML='<div class="affg-vide">—</div>';tr.appendChild(td);return;}
 
       liste.forEach(c=>{
-        const nom=PC.libelleCreneau(c);
+        const nom=GrilleManager.libelleCreneau(c);
         if(nom){
           const lib=document.createElement("div");lib.className="affg-creneau-libelle";lib.textContent=nom;td.appendChild(lib);
         }
@@ -2026,8 +2086,8 @@ function renderAffgGrille(){
             aeshBoutons.push({
               cle, btn:btnAesh, line,
               jourMin:Number(j.n),
-              debutMin:PC.heureVersMin(c.debut),
-              finMin:PC.heureVersMin(c.fin)
+              debutMin:RH.heureVersMin(c.debut),
+              finMin:RH.heureVersMin(c.fin)
             });
           } else {
             btnAesh.classList.add("masque");
@@ -2101,11 +2161,11 @@ function classeReferenceParmiGend(e, classesEligibles){
 // de référence qui chevauche ce créneau du dispositif ?
 function eleveEnClasseSurCreneauGend(e, classeRefId, c){
   const planning = Array.isArray(e.planning) ? e.planning : [];
-  const dMin = PC.heureVersMin(c.debut), fMin = PC.heureVersMin(c.fin);
+  const dMin = RH.heureVersMin(c.debut), fMin = RH.heureVersMin(c.fin);
   return planning.some(p =>
     p.classeId===classeRefId &&
     Number(p.jour)===Number(c.jour) &&
-    PC.chevaucheMin(PC.heureVersMin(p.debut), PC.heureVersMin(p.fin), dMin, fMin)
+    RH.chevaucheMin(RH.heureVersMin(p.debut), RH.heureVersMin(p.fin), dMin, fMin)
   );
 }
 // Créneau(x) de la grille de la classe de référence qui chevauchent ce
@@ -2113,7 +2173,7 @@ function eleveEnClasseSurCreneauGend(e, classeRefId, c){
 function creneauxClasseChevauchantGend(classeId, c){
   return (grilles[classeId]||[]).filter(cc=>
     Number(cc.jour)===Number(c.jour) &&
-    PC.chevaucheMin(PC.heureVersMin(cc.debut), PC.heureVersMin(cc.fin), PC.heureVersMin(c.debut), PC.heureVersMin(c.fin))
+    RH.chevaucheMin(RH.heureVersMin(cc.debut), RH.heureVersMin(cc.fin), RH.heureVersMin(c.debut), RH.heureVersMin(c.fin))
   );
 }
 
@@ -2177,29 +2237,29 @@ function renderGenDispositifGrille(){
     if(!map.get(cle).parJour[c.jour]) map.get(cle).parJour[c.jour]=[];
     map.get(cle).parJour[c.jour].push(c);
   });
-  horaires.sort((a,b)=>PC.heureVersMin(a.debut)-PC.heureVersMin(b.debut));
+  horaires.sort((a,b)=>RH.heureVersMin(a.debut)-RH.heureVersMin(b.debut));
 
   const table=document.createElement("table");table.className="affg";
   const thead=document.createElement("thead"),hr=document.createElement("tr");
-  hr.innerHTML='<th class="affg-horaire-head">Horaire</th>'+PC.JOURS.map(j=>`<th>${escapeHTMLTexte(j.nom)}</th>`).join("");
+  hr.innerHTML='<th class="affg-horaire-head">Horaire</th>'+CS.JOURS.map(j=>`<th>${escapeHTMLTexte(j.nom)}</th>`).join("");
   thead.appendChild(hr);table.appendChild(thead);
 
   horaires.forEach(h=>{
     const tr=document.createElement("tr");
     const th=document.createElement("th");th.className="affg-horaire-head";
-    const finsTriees=[...h.fins].sort((a,b)=>PC.heureVersMin(a)-PC.heureVersMin(b));
+    const finsTriees=[...h.fins].sort((a,b)=>RH.heureVersMin(a)-RH.heureVersMin(b));
     const finLabel=finsTriees.length===1?finsTriees[0]:finsTriees[0]+"…";
     th.innerHTML=`<span class="affg-horaire">${escapeHTMLTexte(h.debut)}–${escapeHTMLTexte(finLabel)}</span>`;
     tr.appendChild(th);
 
-    PC.JOURS.forEach(j=>{
+    CS.JOURS.forEach(j=>{
       const td=document.createElement("td");td.className="affg-creneau-cell";
       const liste=h.parJour[j.n]||[];
 
       if(!liste.length){td.innerHTML='<div class="affg-vide">—</div>';tr.appendChild(td);return;}
 
       liste.forEach(c=>{
-        const nomCreneau=PC.libelleCreneau(c);
+        const nomCreneau=GrilleManager.libelleCreneau(c);
         if(nomCreneau){
           const lib=document.createElement("div");lib.className="affg-creneau-libelle";lib.textContent=nomCreneau;td.appendChild(lib);
         }
@@ -2341,7 +2401,7 @@ function synchroniserAffectationsUlis(dispId){
         const enClasse=e.planning.some(p=>
           p.classeId===cl.id &&
           Number(p.jour)===Number(c.jour) &&
-          PC.chevaucheMin(PC.heureVersMin(p.debut),PC.heureVersMin(p.fin),PC.heureVersMin(c.debut),PC.heureVersMin(c.fin))
+          RH.chevaucheMin(RH.heureVersMin(p.debut),RH.heureVersMin(p.fin),RH.heureVersMin(c.debut),RH.heureVersMin(c.fin))
         );
 
         const existante=e.planning.some(p=>p.classeId===dispId && p.creneauId===c.id);
@@ -2355,7 +2415,7 @@ function synchroniserAffectationsUlis(dispId){
         }
 
         if(!existante){
-          const nomActivite=PC.libelleCreneau(c);
+          const nomActivite=GrilleManager.libelleCreneau(c);
           // L'élève peut avoir été placé dans le groupe AESH de la
           // répartition du dispositif (bouton « AESH », cf.
           // sauvegarderGroupesDisp) : cette affectation nominative doit se
@@ -2445,13 +2505,13 @@ $("btn-enregistrer-gend").addEventListener("click", ()=>{
       e.planning = e.planning.filter(p=>{
         if(p.classeId!==cl.id) return true;
         if(Number(p.jour)!==Number(c.jour)) return true;
-        const chevauche=PC.chevaucheMin(
-          PC.heureVersMin(p.debut), PC.heureVersMin(p.fin),
-          PC.heureVersMin(c.debut), PC.heureVersMin(c.fin)
+        const chevauche=RH.chevaucheMin(
+          RH.heureVersMin(p.debut), RH.heureVersMin(p.fin),
+          RH.heureVersMin(c.debut), RH.heureVersMin(c.fin)
         );
         return !chevauche;
       });
-      const nomActivite = PC.libelleCreneau(c);
+      const nomActivite = GrilleManager.libelleCreneau(c);
       // Même règle que dans synchroniserAffectationsUlis : si l'élève est
       // dans le groupe AESH de la répartition du dispositif pour ce
       // créneau précis, l'affectation nominative doit le porter, sinon la
@@ -2487,7 +2547,7 @@ $("btn-enregistrer-gend").addEventListener("click", ()=>{
           ? coffre.priseEnChargeExterieureSurCreneau(idEleve, cc.jour, cc.debut, cc.fin)
           : null;
         if(pecClasse) return;
-        const nomActiviteCc = PC.libelleCreneau(cc);
+        const nomActiviteCc = GrilleManager.libelleCreneau(cc);
         coffre.affecterCreneau(idEleve, {
           classeId: cl.id,
           classeNom: cl.nom,
@@ -2516,7 +2576,7 @@ $("btn-enregistrer-gend").addEventListener("click", ()=>{
 
 /* ---------------- Import / export de la configuration ---------------- */
 $("btn-export-config").addEventListener("click", ()=>{
-  PC.exporterConfigJSON(config);
+  configMgr.exporterJSON(config);
   toast("Configuration exportée.");
 });
 $("btn-import-config-browse").addEventListener("click", ()=> $("import-config-file").click());
@@ -2524,11 +2584,11 @@ $("import-config-file").addEventListener("change", async ()=>{
   const f = $("import-config-file").files[0];
   if(!f) return;
   try{
-    const payload = await PC.lireFichierJSON(f);
-    PC.importerConfigJSON(config, payload);
-    PC.sauverConfig(config);
-    config = PC.chargerConfig();
-    grilles = PC.chargerGrilles();
+    const payload = await PlanningPaquetManager.lireFichierJSON(f);
+    configMgr.importerJSON(config, payload);
+    configMgr.sauver(config);
+    config = configMgr.charger();
+    grilles = grilleMgr.charger();
     $("import-config-status").textContent = "Configuration importée (" + f.name + ").";
     renderTout();
     if(coffre && coffre.ouvert) chargerTousLesEleves(true);
@@ -2544,12 +2604,12 @@ $("import-config-file").addEventListener("change", async ()=>{
 /* ---------------- Dispositif : répartition par jour et groupes ---------------- */
 function joursActifsDispositif(){
   const actifs = (config.joursTravailles||[]).map(Number);
-  return PC.JOURS.filter(j=>actifs.includes(Number(j.n)));
+  return CS.JOURS.filter(j=>actifs.includes(Number(j.n)));
 }
 function normaliserJourDisp(v){
   if(v==null) return null;
   const t=normaliserTexte(v);
-  const j=PC.JOURS.find(x=>normaliserTexte(x.nom)===t || normaliserTexte(x.nom).startsWith(t) || t.startsWith(normaliserTexte(x.nom)));
+  const j=CS.JOURS.find(x=>normaliserTexte(x.nom)===t || normaliserTexte(x.nom).startsWith(t) || t.startsWith(normaliserTexte(x.nom)));
   return j ? j.n : (Number.isFinite(Number(v)) ? Number(v) : null);
 }
 function elevesSurDispositif(dispId, jour=null, creneauId=null){
@@ -2583,7 +2643,7 @@ function anonElevesDisp(dispId, jour=null){
 }
 function creneauxDispJour(dispId, jour){
   return (grilles[dispId]||[]).filter(c=>Number(c.jour)===Number(jour) && c.type!=="recreation" && c.type!=="pause")
-    .sort((a,b)=>PC.heureVersMin(a.debut)-PC.heureVersMin(b.debut));
+    .sort((a,b)=>RH.heureVersMin(a.debut)-RH.heureVersMin(b.debut));
 }
 function cleGroupeDisp(dispId, jour, creneauId){ return `${dispId}::${jour}::${creneauId}`; }
 function groupesParDefautDisp(dispId, jour, c){
@@ -2657,7 +2717,7 @@ function renderDispositif(){
     const slot=document.createElement("div"); slot.className="disp-slot";
     const roster=elevesSurDispositif(id,dispositifJourCourant,c.id);
     const groupes=groupesExistantsDisp(id,dispositifJourCourant,c);
-    slot.innerHTML=`<div class="disp-slot-head"><span class="horaire">${escapeHTMLTexte(c.debut)}–${escapeHTMLTexte(c.fin)}</span><span>${escapeHTMLTexte(PC.libelleCreneau(c)||"Créneau")}</span><span class="hint">${roster.length} élève(s)</span></div><div class="disp-groups"></div><div style="padding:0 10px 10px;"><span class="hint">Seuls les élèves affectés à ce créneau du dispositif sont proposés.</span></div>`;
+    slot.innerHTML=`<div class="disp-slot-head"><span class="horaire">${escapeHTMLTexte(c.debut)}–${escapeHTMLTexte(c.fin)}</span><span>${escapeHTMLTexte(GrilleManager.libelleCreneau(c)||"Créneau")}</span><span class="hint">${roster.length} élève(s)</span></div><div class="disp-groups"></div><div style="padding:0 10px 10px;"><span class="hint">Seuls les élèves affectés à ce créneau du dispositif sont proposés.</span></div>`;
     const gs=slot.querySelector(".disp-groups");
     [["enseignant","Enseignant"],["aesh","AESH"],["autonomie","Autonomie"]].forEach(([key,label])=>{
       const box=document.createElement("div"); box.className="disp-group";
@@ -2765,7 +2825,7 @@ function construirePlanningAdulte(role){
     });
   }
 
-  lignes.sort((a,b)=> Number(a.jourN)-Number(b.jourN) || PC.heureVersMin(a.debut)-PC.heureVersMin(b.debut));
+  lignes.sort((a,b)=> Number(a.jourN)-Number(b.jourN) || RH.heureVersMin(a.debut)-RH.heureVersMin(b.debut));
   return lignes;
 }
 
@@ -2794,7 +2854,7 @@ function renderPlanningAdulteComplet(role, containerId){
   // Un évènement par (créneau × élève), pour construire une colonne par élève
   const evenements=[];
   lignes.forEach(l=>{
-    const debutMin=PC.heureVersMin(l.debut), finMin=PC.heureVersMin(l.fin);
+    const debutMin=RH.heureVersMin(l.debut), finMin=RH.heureVersMin(l.fin);
     if(!(finMin>debutMin)) return; // créneau invalide, on l'ignore par sécurité
     l.eleves.forEach(nom=> evenements.push({ nom, debutMin, finMin, debut:l.debut, fin:l.fin, lieu:l.lieu }));
   });
@@ -2903,7 +2963,7 @@ function imprimerPlanningAdulte(role){
     const grp=parJour.get(j.n);
     const evs=[];
     (grp?grp.lignes:[]).forEach(l=>{
-      const debutMin=PC.heureVersMin(l.debut), finMin=PC.heureVersMin(l.fin);
+      const debutMin=RH.heureVersMin(l.debut), finMin=RH.heureVersMin(l.fin);
       if(!(finMin>debutMin)) return;
       l.eleves.forEach(nom=>evs.push({nom,debutMin,finMin,debut:l.debut,fin:l.fin,lieu:l.lieu}));
       minBrut=Math.min(minBrut,debutMin); maxBrut=Math.max(maxBrut,finMin);
@@ -3006,7 +3066,7 @@ function sauvegarderGroupesDisp(dispId,jour,c,g,toastOui=true){
     });
   });
   config.dispositifGroupes[cleGroupeDisp(dispId,jour,c.id)]=nettoye;
-  PC.sauverConfig(config);
+  configMgr.sauver(config);
 
   // Répercute immédiatement la présence (ou non) de l'AESH sur l'affectation
   // nominative déjà enregistrée dans le coffre pour ce créneau précis, si
@@ -3049,12 +3109,12 @@ function genererPromptDispositif(){
   const rosterJour=anonElevesDisp(id,jour);
   const payload=creneaux.map(c=>{
     const idsSlot=new Set(elevesSurDispositif(id,jour,c.id).map(e=>e.identifiantSynapses));
-    return {jour:PC.JOURS.find(j=>j.n===jour)?.nom,debut:c.debut,fin:c.fin,nom:PC.libelleCreneau(c)||"Créneau",eleves:rosterJour.filter(x=>idsSlot.has(x.id)).map(x=>x.anon)};
+    return {jour:CS.JOURS.find(j=>j.n===jour)?.nom,debut:c.debut,fin:c.fin,nom:GrilleManager.libelleCreneau(c)||"Créneau",eleves:rosterJour.filter(x=>idsSlot.has(x.id)).map(x=>x.anon)};
   });
   return `Tu es un enseignant spécialisé chargé de constituer des groupes de besoins sur un dispositif scolaire.
 
 Dispositif : ${d.nom} (${d.type||"dispositif"})
-Jour : ${PC.JOURS.find(j=>j.n===jour)?.nom}
+Jour : ${CS.JOURS.find(j=>j.n===jour)?.nom}
 
 Les élèves sont anonymisés. Tu dois créer, uniquement si cela est pertinent, jusqu'à trois groupes par créneau : "enseignant", "aesh", "autonomie". Ne cherche jamais à identifier les élèves. Utilise leurs objectifs, capacités, difficultés, besoins et adaptations pour proposer des groupes pédagogiquement cohérents.
 
@@ -3117,7 +3177,7 @@ $("btn-disp-enregistrer")?.addEventListener("click",()=>{
       g[k]=(Array.isArray(g[k])?g[k]:[]).filter(e=>rosterIds.has(e) && !deja.has(e) && (deja.add(e),true));
     });
   });
-  PC.sauverConfig(config);
+  configMgr.sauver(config);
   renderDispositifTout();
   refreshDispositifIa();
   const st=$("disp-save-status"); if(st) st.textContent="Répartition enregistrée dans le planning.";
@@ -3162,22 +3222,22 @@ $("btn-planning-crypto-confirmer").addEventListener("click", async ()=>{
   if(!mdp){ $("planning-crypto-erreur").textContent = "Saisissez le mot de passe."; $("planning-crypto-erreur").style.display=""; return; }
   try{
     if(mode === "export"){
-      const journal = PC.chargerJournal();
-      const affectationsActuelles = PC.chargerAffectations();
-      await PC.telechargerPlanningJSON(config, grilles, affectationsActuelles, journal, mdp);
+      const journal = journalAdapter.charger();
+      const affectationsActuelles = affectationsMgr.charger();
+      await paquetMgr.telecharger(config, grilles, affectationsActuelles, journal, mdp);
       fermerModalCryptoPlanning();
       toast("Planning .synapses chiffré exporté.");
     }else if(mode === "import"){
       const f = $("import-json-file").files[0];
       if(!f) throw new Error("Choisissez d'abord un fichier de planning.");
-      const enveloppe = await PC.lireFichierJSON(f);
+      const enveloppe = await PlanningPaquetManager.lireFichierJSON(f);
       if(!enveloppe || enveloppe.format !== "synapses-planning-secure"){
         throw new Error("Ce fichier n'est pas un planning .synapses protégé. Les anciens exports JSON en clair ne sont plus acceptés.");
       }
-      const paquet = await PC.dechiffrerPlanningJSON(enveloppe, mdp);
-      const applique = PC.appliquerPaquetPlanning(paquet);
-      config = PC.chargerConfig();
-      grilles = PC.chargerGrilles();
+      const paquet = await paquetMgr.dechiffrer(enveloppe, mdp);
+      const applique = paquetMgr.appliquer(paquet);
+      config = configMgr.charger();
+      grilles = grilleMgr.charger();
       $("import-json-status").textContent = "Importé (" + f.name + ") : " + applique.join(", ") + ".";
       fermerModalCryptoPlanning();
       renderTout();
@@ -3194,7 +3254,7 @@ $("import-json-file").addEventListener("change", async ()=>{
   const f = $("import-json-file").files[0];
   if(!f) return;
   try{
-    const enveloppe = await PC.lireFichierJSON(f);
+    const enveloppe = await PlanningPaquetManager.lireFichierJSON(f);
     if(!enveloppe || enveloppe.format !== "synapses-planning-secure"){
       throw new Error("Ce fichier n'est pas un planning .synapses protégé. Les anciens exports JSON en clair ne sont plus acceptés.");
     }
