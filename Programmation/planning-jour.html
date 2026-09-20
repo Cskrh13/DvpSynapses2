@@ -1,0 +1,2378 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<!-- SYNAPSES-AUTHOR: Cskrh13 / Vincent | © 2026 -->
+<meta name="author" content="Cskrh13 / Vincent">
+<meta name="copyright" content="© 2026 Cskrh13 / Vincent — Synapses">
+<meta name="application-name" content="Synapses">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cahier journal — Synapses</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#1E2A4A; --navy-deep:#141d33; --bg:#F6F5F1; --panel:#FFFFFF; --panel-raised:#FAF9F5;
+  --line:#DEDBD2; --ink:#20242E; --ink-soft:#5B5F6B; --accent-sky:#2E5EAA; --ring:#2E5EAA;
+  --danger:#B5502E; --ok:#2A7F72; --gold:#B5871E; --radius:10px; --radius-sm:6px;
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Inter',system-ui,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased;}
+h1,h2,h3,h4{font-family:'Fraunces',serif;font-weight:600;margin:0;letter-spacing:-0.01em;}
+button{cursor:pointer;font-family:inherit;}
+a{color:inherit;}
+:focus-visible{outline:3px solid var(--ring);outline-offset:2px;}
+code{font-family:"IBM Plex Mono",monospace;font-size:.9em;}
+.eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent-sky);font-weight:500;}
+
+header.site-header{background:var(--navy);color:#fff;padding:14px 24px;border-bottom:3px solid var(--accent-sky);position:sticky;top:0;z-index:20;}
+.header-top{max-width:1400px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:#fff;}
+.brand-mark{width:40px;height:40px;border-radius:8px;background:linear-gradient(160deg,var(--accent-sky),#5486d6);display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-weight:700;font-size:18px;color:#fff;flex-shrink:0;}
+.brand-text{display:flex;flex-direction:column;line-height:1.15;}
+.brand-text .top{font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:#B9C6E5;font-family:'IBM Plex Mono',monospace;}
+.brand-text .bottom{font-family:'Fraunces',serif;font-weight:600;font-size:17px;}
+nav.main-nav{display:flex;gap:6px;flex-wrap:wrap;row-gap:6px;align-items:center;}
+nav.main-nav a{color:#D9E0F2;text-decoration:none;font-size:14px;font-weight:500;padding:8px 12px;border-radius:6px;transition:background .15s;white-space:nowrap;}
+nav.main-nav a:hover{background:rgba(255,255,255,.09);color:#fff;}
+nav.main-nav a.nav-programmation{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.25);margin-left:4px;color:#fff;}
+nav.main-nav a.nav-programmation:hover{background:rgba(255,255,255,.18);}
+nav.main-nav a.nav-programmation.active{background:var(--accent-sky);border-color:var(--accent-sky);}
+.nav-index-link{margin-right:auto;font-weight:700;}
+
+.coffre-widget{display:flex;align-items:center;gap:8px;padding:4px 4px 4px 12px;border:1px solid rgba(255,255,255,.3);border-radius:20px;}
+.coffre-widget .badge-coffre{font-family:'IBM Plex Mono',monospace;font-size:11px;color:#fff;white-space:nowrap;}
+.coffre-widget .badge-coffre.ouvert{color:#BFE3DA;}
+.btn{font-family:'Inter',sans-serif;font-size:13px;font-weight:600;border:1px solid var(--line);background:var(--panel);color:var(--ink);padding:8px 14px;border-radius:8px;transition:background .15s;white-space:nowrap;}
+.btn:hover{background:var(--panel-raised);}
+.btn.primary{background:var(--accent-sky);border-color:var(--accent-sky);color:#fff;}
+.btn.primary:hover{background:#3f6fc0;}
+.btn.small{padding:5px 10px;font-size:12px;}
+.btn.danger{color:#B5502E;border-color:#E3C9BE;}
+.btn.danger:hover{background:#FBEEE9;}
+.btn.on-header{border-color:rgba(255,255,255,.3);background:transparent;color:#fff;}
+.btn.on-header:hover{background:rgba(255,255,255,.1);}
+
+main{max-width:1400px;margin:0 auto;padding:24px 24px 90px;}
+
+/* -------- Bandeau d'aide guidée -------- */
+.onboarding{background:#EFF4FB;border:1px solid #C9D8F0;border-radius:var(--radius);padding:16px 20px;margin-bottom:18px;}
+.onboarding h3{font-size:14.5px;margin-bottom:8px;}
+.onboarding ol{margin:0 0 8px;padding-left:20px;font-size:13.5px;color:var(--ink-soft);}
+.onboarding ol li{margin-bottom:4px;}
+.onboarding .close-onboarding{float:right;background:none;border:none;color:var(--accent-sky);font-size:12.5px;font-weight:600;}
+
+/* -------- Barre de navigation jour -------- */
+.day-toolbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px;}
+.day-nav{display:flex;align-items:center;gap:8px;}
+.day-nav button{border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:7px 12px;font-weight:700;}
+.day-nav input[type=date]{border:1px solid var(--line);border-radius:8px;padding:7px 10px;font-family:'IBM Plex Mono',monospace;font-size:13px;}
+.day-title{font-size:20px;text-transform:capitalize;}
+.day-actions{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap;}
+
+/* -------- Onglets du cahier journal -------- */
+.journal-tabs{display:flex;gap:6px;margin:0 0 14px;border-bottom:1px solid var(--line);}
+.journal-tabs button{border:1px solid var(--line);border-bottom:none;background:var(--panel-raised);color:var(--ink-soft);padding:8px 14px;border-radius:8px 8px 0 0;font-weight:700;font-size:12.5px;}
+.journal-tabs button.active{background:var(--panel);color:var(--ink);border-color:var(--accent-sky);}
+.journal-tab-panel{display:none;}
+.journal-tab-panel.active{display:block;}
+.classe-filter-bar{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 16px;}
+.classe-filter-bar button{border:1px solid var(--line);background:var(--panel-raised);color:var(--ink-soft);padding:7px 15px;border-radius:20px;font-weight:700;font-size:12.5px;}
+.classe-filter-bar button.active{background:var(--navy);color:#fff;border-color:var(--navy);}
+.classe-filter-bar button .n{font-weight:500;opacity:.8;margin-left:4px;}
+.ia-panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:18px;}
+.ia-panel-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:14px;}
+.ia-panel h2{font-size:18px;margin-bottom:5px;}
+.ia-panel p{margin:0;color:var(--ink-soft);font-size:13px;max-width:820px;}
+.ia-actions{display:flex;gap:7px;flex-wrap:wrap;flex-shrink:0;}
+.prompt-ia{width:100%;min-height:440px;resize:vertical;border:1px solid var(--line);border-radius:8px;padding:12px;font-family:"IBM Plex Mono",monospace;font-size:12px;line-height:1.55;background:#fff;color:var(--ink);}
+@media(max-width:700px){.ia-panel-head{flex-direction:column;}.ia-actions{width:100%;}}
+
+/* -------- État vide / guidage -------- */
+.empty-journal{background:var(--panel);border:1px dashed var(--line);border-radius:var(--radius);padding:36px 28px;text-align:center;color:var(--ink-soft);}
+.empty-journal h3{color:var(--ink);margin-bottom:8px;}
+.empty-journal p{max-width:520px;margin:0 auto 16px;font-size:13.5px;}
+
+/* -------- Portail d'import (page vide tant qu'aucun planning n'est chargé) -------- */
+#import-gate{max-width:640px;margin:40px auto;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:36px 32px;text-align:center;}
+#import-gate h2{font-size:20px;margin-bottom:10px;}
+#import-gate p{color:var(--ink-soft);font-size:13.5px;line-height:1.6;max-width:480px;margin:0 auto 22px;}
+#import-gate .gate-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+#import-gate .gate-note{margin-top:20px;font-size:12px;color:var(--ink-soft);}
+
+/* -------- Tableau cahier journal -------- */
+
+.journal-table{width:100%;border-collapse:collapse;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;}
+.journal-table > tbody > tr > td{border-top:1px solid var(--line);vertical-align:top;padding:0;}
+
+.bloc-row-head{display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--panel-raised);}
+.bloc-row-head input.bloc-label{font-family:'Fraunces',serif;font-weight:600;font-size:14px;border:1px solid transparent;background:transparent;border-radius:6px;padding:3px 6px;width:140px;}
+.bloc-row-head input.bloc-label:hover,.bloc-row-head input.bloc-label:focus{border-color:var(--line);background:#fff;}
+.bloc-row-head input.bloc-heure{font-family:'IBM Plex Mono',monospace;font-size:12.5px;border:1px solid var(--line);border-radius:6px;padding:3px 6px;width:64px;background:#fff;}
+.bloc-row-head .sep{color:var(--ink-soft);}
+.bloc-row-head .spacer{flex:1;}
+
+.bloc-groupes{
+  display:flex;
+  gap:10px;
+  padding:10px 12px 14px;
+  flex-wrap:wrap;
+  width:100%;
+  max-width:100%;
+  box-sizing:border-box;
+}
+
+.groupe-card{
+  flex:1 1 220px;
+  min-width:0;
+  max-width:100%;
+  background:var(--panel-raised);
+  border:1px solid var(--line);
+  border-radius:8px;
+  padding:10px 12px;
+  box-sizing:border-box;
+}
+
+/* -------- Nouvelle présentation des briques -------- */
+.journal-lanes{
+  display:flex;
+  flex-direction:column;
+  width:100%;
+  max-width:100%;
+  box-sizing:border-box;
+}
+
+.journal-lane{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));
+  gap:10px;
+  width:100%;
+  max-width:100%;
+  padding:10px 12px;
+  box-sizing:border-box;
+  align-items:start;
+}
+
+.journal-block{
+  min-width:0;
+  max-width:100%;
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:9px;
+  overflow:hidden;
+  box-sizing:border-box;
+}
+
+.journal-block-head{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  flex-wrap:wrap;
+  padding:7px 9px;
+  background:var(--panel-raised);
+  border-bottom:1px solid var(--line);
+}
+
+.journal-block-head input.bloc-label{
+  font-family:'Fraunces',serif;
+  font-weight:600;
+  font-size:13px;
+  border:1px solid transparent;
+  background:transparent;
+  border-radius:6px;
+  padding:3px 5px;
+  width:105px;
+  min-width:80px;
+}
+
+.journal-block-head input.bloc-label:hover,
+.journal-block-head input.bloc-label:focus{
+  border-color:var(--line);
+  background:#fff;
+}
+
+.journal-block-head input.bloc-heure{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12px;
+  font-weight:600;
+  line-height:1.2;
+  border:1px solid var(--line);
+  border-radius:6px;
+  padding:4px 6px;
+  width:82px;
+  min-width:82px;
+  height:30px;
+  box-sizing:border-box;
+  background:#fff;
+  color:var(--ink);
+  text-align:center;
+  overflow:visible;
+}
+
+/* Chrome / Edge : réserver assez de place aux heures ET aux minutes. */
+.journal-block-head input.bloc-heure::-webkit-datetime-edit{
+  padding:0;
+}
+.journal-block-head input.bloc-heure::-webkit-datetime-edit-fields-wrapper{
+  padding:0;
+}
+.journal-block-head input.bloc-heure::-webkit-datetime-edit-hour-field,
+.journal-block-head input.bloc-heure::-webkit-datetime-edit-minute-field{
+  padding:0 1px;
+}
+.journal-block-head input.bloc-heure::-webkit-calendar-picker-indicator{
+  margin-left:3px;
+  padding:0;
+  width:13px;
+  height:13px;
+}
+
+.journal-block-head .sep{color:var(--ink-soft);}
+.journal-block-head .spacer{flex:1;}
+
+.journal-block-body{
+  min-width:0;
+  max-width:100%;
+}
+
+.groupe-commun{
+  margin:10px;
+  border:1px solid var(--line);
+  border-radius:8px;
+  background:var(--panel-raised);
+  overflow:hidden;
+  min-width:0;
+  max-width:calc(100% - 20px);
+  box-sizing:border-box;
+}
+
+.groupe-commun-head{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  flex-wrap:wrap;
+  padding:8px 9px;
+  background:#F1EFE9;
+  border-bottom:1px solid var(--line);
+}
+
+.groupe-commun-title{
+  font-size:13px;
+  font-weight:700;
+  min-width:0;
+}
+
+.groupe-commun-classes{
+  display:flex;
+  flex-wrap:wrap;
+  gap:4px;
+  min-width:0;
+}
+
+.groupe-commun-classes span{
+  display:inline-flex;
+  align-items:center;
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:#fff;
+  padding:2px 7px;
+  font-size:10px;
+  font-weight:700;
+  color:var(--ink-soft);
+}
+
+.groupe-commun-body{
+  padding:0 10px;
+  min-width:0;
+}
+
+.groupe-commun-body > .groupe-card{
+  width:100%;
+  max-width:100%;
+  margin:0;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  padding:8px 0;
+}
+
+.groupe-commun-body > .groupe-card + .groupe-card{
+  border-top:1px dashed var(--line);
+}
+
+.groupe-commun.fixe{
+  background:#F1EFE9;
+  color:var(--ink-soft);
+  font-style:italic;
+}
+
+.journal-block-add{
+  display:flex;
+  padding:8px 10px 10px;
+}
+
+.journal-block-add .add-groupe-btn{
+  width:100%;
+  min-width:0;
+  min-height:34px;
+}
+
+.journal-table,
+.journal-table td,
+.journal-lanes,
+.journal-lane,
+.journal-block,
+.journal-block-head,
+.journal-block-body,
+.bloc-groupes,
+.groupe-commun,
+.groupe-commun-body,
+.groupe-card{
+  max-width:100%;
+  box-sizing:border-box;
+}
+
+@media(max-width:700px){
+  .journal-lane{
+    grid-template-columns:1fr;
+  }
+}
+.groupe-card.fixe{background:#F1EFE9;font-style:italic;color:var(--ink-soft);}
+.groupe-card .row1{display:flex;gap:6px;align-items:center;margin-bottom:6px;}
+.groupe-card select.adulte-type{border:1px solid var(--line);border-radius:6px;padding:4px 6px;font-size:12px;font-weight:700;background:#fff;}
+.groupe-card input.adulte-nom{border:1px solid var(--line);border-radius:6px;padding:4px 6px;font-size:12.5px;flex:1;min-width:60px;}
+.groupe-card input.groupe-titre{width:100%;border:1px solid var(--line);border-radius:6px;padding:5px 7px;font-size:13px;font-weight:600;margin-bottom:6px;background:#fff;}
+.groupe-card .domaine-tag{font-size:10.5px;color:var(--ink-soft);font-family:'IBM Plex Mono',monospace;margin-bottom:6px;display:block;}
+.groupe-card .seance-lien-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:6px;}
+.groupe-card .seance-badge{display:inline-flex;align-items:center;background:#EFF4FB;border:1px solid #C9D8F0;color:var(--accent-sky);border-radius:14px;padding:3px 9px;font-size:11px;font-weight:600;max-width:100%;}
+.groupe-card .btn-delier-seance{border:none;background:var(--panel-raised);border-radius:50%;width:16px;height:16px;font-size:10px;line-height:1;color:var(--danger);flex-shrink:0;}
+.groupe-card select.lier-seance{flex:1 1 100%;border:1px dashed var(--line);border-radius:6px;padding:4px 6px;font-size:11.5px;background:#fff;color:var(--ink-soft);}
+.groupe-card .seance-vide{flex:1 1 100%;display:flex;flex-direction:column;gap:5px;border:1px dashed var(--line);border-radius:6px;padding:7px 8px;background:var(--panel-raised);}
+.groupe-card .seance-vide .seance-vide-note{font-size:10.5px;color:var(--ink-soft);}
+.groupe-card .seance-vide input.seance-manuelle{width:100%;border:1px solid var(--line);border-radius:6px;padding:4px 6px;font-size:11.5px;background:#fff;}
+.groupe-card .seance-vide .btn-generer-seance{align-self:flex-start;font-size:11px;font-weight:600;color:var(--accent-sky);text-decoration:none;border:1px solid #C9D8F0;background:#EFF4FB;border-radius:6px;padding:4px 8px;}
+.groupe-card .seance-vide .btn-generer-seance:hover{background:#E2EBF9;}
+.eleves-chips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:6px;}
+.eleve-chip{display:inline-flex;align-items:center;gap:5px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:2px 4px 2px 10px;font-size:11.5px;}
+.eleve-chip button{border:none;background:var(--panel-raised);border-radius:50%;width:16px;height:16px;font-size:10px;line-height:1;color:var(--danger);}
+.eleve-chip select[data-role=reaffecter]{border:1px solid var(--line);border-radius:10px;font-size:10.5px;padding:1px 3px;background:var(--panel-raised);color:var(--accent-sky);max-width:90px;}
+.groupe-card select.add-eleve{width:100%;border:1px dashed var(--line);border-radius:6px;padding:4px 6px;font-size:12px;background:#fff;color:var(--ink-soft);margin-bottom:6px;}
+.groupe-card textarea.remarque{width:100%;border:1px solid var(--line);border-radius:6px;padding:5px 7px;font-size:12px;resize:vertical;min-height:32px;}
+.groupe-card .card-foot{display:flex;justify-content:flex-end;margin-top:6px;}
+.groupe-card .card-foot button{border:none;background:none;color:var(--danger);font-size:11.5px;font-weight:600;}
+.add-groupe-btn{flex:0 0 auto;align-self:stretch;border:1px dashed var(--line);background:transparent;border-radius:8px;min-width:56px;color:var(--ink-soft);font-size:20px;}
+.add-groupe-btn:hover{background:var(--panel-raised);}
+.add-bloc-row{text-align:center;padding:14px;}
+
+/* -------- Bas de journal -------- */
+.journal-bottom{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px;}
+.journal-bottom .field{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:12px 14px;}
+.journal-bottom .field label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-soft);margin-bottom:6px;}
+.journal-bottom textarea{width:100%;border:1px solid var(--line);border-radius:6px;padding:8px;font-size:13.5px;min-height:60px;resize:vertical;}
+
+/* -------- Modal coffre (repris de sequences.html) -------- */
+.modal-overlay{position:fixed;inset:0;background:rgba(20,29,51,.45);display:none;align-items:center;justify-content:center;z-index:80;padding:20px;}
+.modal-overlay.open{display:flex;}
+.modal{background:#fff;border-radius:var(--radius);max-width:520px;width:100%;max-height:90vh;overflow-y:auto;}
+.modal-head{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:1px solid var(--line);}
+.modal-close{border:none;background:var(--panel-raised);border-radius:8px;width:30px;height:30px;font-size:15px;}
+.modal-body{padding:18px 20px;}
+.modal-body .field{margin-bottom:14px;}
+.modal-body label{display:block;font-size:12.5px;font-weight:600;margin-bottom:5px;}
+.modal-body input[type=password]{width:100%;border:1px solid var(--line);border-radius:6px;padding:9px;font-size:13.5px;}
+.modal-foot{display:flex;justify-content:flex-end;gap:8px;padding:14px 20px;border-top:1px solid var(--line);}
+
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--navy);color:#fff;padding:10px 18px;border-radius:8px;font-size:13px;opacity:0;pointer-events:none;transition:all .25s;z-index:90;}
+
+/* -------- Résumé du jour -------- */
+.day-summary{display:flex;gap:16px;flex-wrap:wrap;margin:0 0 14px;font-size:12.5px;color:var(--ink-soft);}
+.day-summary strong{color:var(--ink);font-family:'IBM Plex Mono',monospace;}
+.day-summary .warn{color:var(--gold);font-weight:600;}
+
+/* -------- Nettoyage des créneaux de test -------- */
+.nettoyage-jour{border:1px solid var(--line);border-radius:8px;margin-bottom:10px;overflow:hidden;}
+.nettoyage-jour-head{background:var(--panel-raised);padding:8px 12px;font-size:12.5px;font-weight:700;display:flex;justify-content:space-between;align-items:center;}
+.nettoyage-item{display:flex;align-items:center;gap:10px;padding:8px 12px;border-top:1px solid var(--line);font-size:12.5px;}
+.nettoyage-item .item-info{flex:1;min-width:0;}
+.nettoyage-item .item-titre{font-weight:600;}
+.nettoyage-item .item-heure{font-family:'IBM Plex Mono',monospace;color:var(--ink-soft);font-size:11.5px;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+.synapses-footer{margin-top:40px;padding:18px 24px;text-align:center;font-size:11px;color:var(--ink-soft);border-top:1px solid var(--line);}
+.synapses-footer div:first-child{font-weight:600;letter-spacing:.04em;}
+
+/* =========================================================
+   IMPRESSION — cahier journal
+   Une vue dédiée est générée avant window.print().
+   ========================================================= */
+
+.print-journal{display:none;}
+
+@media print{
+
+  @page{
+    size:A4 portrait;
+    margin:10mm 9mm 10mm 9mm;
+  }
+
+  html,body{
+    width:100%;
+    min-width:0;
+    background:#fff !important;
+  }
+
+  body{
+    margin:0 !important;
+    color:#111 !important;
+    font-size:10.5pt;
+  }
+
+  /* Tout ce qui sert à la navigation/édition disparaît : seule la vue
+     imprimable dédiée (.print-journal, ajoutée directement à <body>) doit
+     apparaître. Cette règle générique évite qu'un élément d'écran ajouté
+     par la suite (résumé du jour, onglets, filtres…) ne se retrouve par
+     mégarde sur le papier. */
+  body > *:not(.print-journal){
+    display:none !important;
+  }
+
+  /* Vue imprimable uniquement. */
+  .print-journal{
+    display:block !important;
+    width:100%;
+    max-width:100%;
+    margin:0;
+    padding:0;
+    color:#111;
+    font-family:Arial,Helvetica,sans-serif;
+  }
+
+  .print-head{
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:15px;
+    padding:0 0 9px;
+    margin-bottom:10px;
+    border-bottom:3px solid #1E2A4A;
+  }
+
+  .print-brand{
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+
+  .print-brand .mark{
+    width:26px;
+    height:26px;
+    border-radius:6px;
+    background:linear-gradient(160deg,#2E5EAA,#5486d6);
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:Georgia,'Times New Roman',serif;
+    font-weight:700;
+    font-size:13pt;
+  }
+
+  .print-brand .sub{
+    font-size:7.5pt;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:#5B5F6B;
+  }
+
+  .print-title{
+    font-family:Georgia,'Times New Roman',serif;
+    font-size:17pt;
+    font-weight:700;
+    line-height:1.15;
+    color:#1E2A4A;
+  }
+
+  .print-date{
+    font-size:10.5pt;
+    font-weight:600;
+    text-align:right;
+    white-space:nowrap;
+    color:#1E2A4A;
+  }
+
+  .print-schedule{
+    width:100%;
+  }
+
+  .print-cj-table{
+    width:100%;
+    border-collapse:collapse;
+    table-layout:fixed;
+    border:1.4px solid #111;
+  }
+
+  .print-cj-table th,
+  .print-cj-table td{
+    border:1px solid #111;
+    vertical-align:top;
+    padding:4px 5px;
+    font-size:8.6pt;
+  }
+
+  .print-cj-table thead th{
+    background:#EAF0FA;
+    font-weight:700;
+    text-align:left;
+    font-size:8.8pt;
+    color:#1E2A4A;
+  }
+
+  .print-cj-table td.print-cj-col-creneau{
+    width:16%;
+    background:#F6F5F1;
+    font-family:'Courier New',monospace;
+    font-weight:700;
+  }
+
+  .print-cj-table td.print-cj-empty{
+    color:#bbb;
+    text-align:center;
+  }
+
+  .print-cj-table tr{
+    break-inside:avoid;
+    page-break-inside:avoid;
+  }
+
+  .print-cj-entry{
+    margin:0 0 5px;
+  }
+
+  .print-cj-entry:last-child{
+    margin-bottom:0;
+  }
+
+  .print-cj-entry-time{
+    font-family:'Courier New',monospace;
+    font-size:7.8pt;
+    font-weight:700;
+    color:#2E5EAA;
+  }
+
+  .print-cj-entry-titre{
+    font-weight:700;
+    font-size:8.6pt;
+    margin:1px 0 1px;
+  }
+
+  .print-cj-entry-domaine{
+    font-size:7.8pt;
+    font-style:italic;
+    color:#444;
+  }
+
+  .print-cj-entry-eleves{
+    font-size:8pt;
+    color:#222;
+  }
+
+  .print-cj-entry-remarque{
+    font-size:7.8pt;
+    font-style:italic;
+    color:#7a3a20;
+    margin-top:1px;
+  }
+
+  .print-cj-banner-row td{
+    background:#f1f1f1;
+    font-style:italic;
+    font-weight:700;
+  }
+
+  .print-cj-banner-row td.print-cj-col-creneau{
+    font-style:normal;
+  }
+
+  .print-bottom{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+    margin-top:8px;
+    break-inside:avoid;
+    page-break-inside:avoid;
+  }
+
+  .print-bottom-box{
+    border:1px solid #aaa;
+    border-radius:5px;
+    padding:5px 6px;
+    min-height:34px;
+    break-inside:avoid;
+    page-break-inside:avoid;
+  }
+
+  .print-bottom-label{
+    font-size:8pt;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+    margin-bottom:2px;
+  }
+
+  .print-bottom-text{
+    font-size:8.8pt;
+    white-space:pre-wrap;
+  }
+
+  /* Évite qu'une ligne soit coupée entre deux pages. */
+  .print-cj-table tr,
+  .print-bottom{
+    orphans:3;
+    widows:3;
+  }
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-top">
+    <a href="../index.html" class="brand">
+      <span class="brand-mark" aria-hidden="true">RÉ</span>
+      <span class="brand-text">
+        <span class="top">Portail non institutionnel</span>
+        <span class="bottom">Planning</span>
+      </span>
+    </a>
+    <nav class="main-nav" aria-label="Navigation principale">
+      <a href="../index.html">Accueil</a>
+      <a href="sequences.html">Séquences &amp; séances</a>
+      <a href="planning-gestion.html" class="nav-programmation">Planning — Gestion</a>
+      <a href="planning-affichage.html" class="nav-programmation">Planning — Affichage</a>
+      <a href="planning-jour.html" class="nav-programmation active">Cahier journal</a>
+    </nav>
+    <div class="coffre-widget">
+      <span class="badge-coffre" id="coffre-status">Coffre fermé</span>
+      <button class="btn small on-header" id="btn-coffre-toggle">Ouvrir le coffre</button>
+      <button class="btn small on-header" id="btn-changer-planning" style="display:none;" title="Revenir à l'écran d'import">🔄 Changer de planning</button>
+    </div>
+  </div>
+</header>
+
+<div class="modal-overlay" id="modal-coffre">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>Ouvrir le coffre élèves</h3>
+      <button class="modal-close" data-close="modal-coffre">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <label>Fichier .synapses — sur cet ordinateur</label>
+        <button type="button" class="btn" id="coffre-browse-btn" style="width:100%;text-align:left;">📁 Parcourir mon ordinateur…</button>
+        <input type="file" id="coffre-file" accept=".synapses" style="display:none;">
+        <div id="coffre-file-name" style="font-size:12.5px;color:var(--ink-soft);margin-top:6px;">Aucun fichier sélectionné.</div>
+      </div>
+      <div class="field"><label>Mot de passe</label><input type="password" id="coffre-password" placeholder="Mot de passe du coffre"></div>
+      <p style="font-size:12.5px;color:var(--ink-soft);margin:14px 0 0;line-height:1.6;">
+        🔒 Ce fichier est lu directement depuis votre disque par votre navigateur : il n'est jamais envoyé au site, ni à un serveur, ni sur GitHub.<br>
+        ⚠️ Ne placez jamais ce fichier dans le dépôt GitHub du site.
+      </p>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" data-close="modal-coffre">Annuler</button>
+      <button class="btn primary" id="btn-coffre-open-confirm">Ouvrir</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-planning-import">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>Importer un planning .synapses</h3>
+      <button class="modal-close" data-close="modal-planning-import">✕</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:12.5px;color:var(--ink-soft);margin:0 0 14px;line-height:1.6;">
+        Choisissez le fichier <code>.synapses</code> exporté depuis « Planning — Gestion » (bouton « Exporter le planning »). Il contient la configuration, les grilles horaires, les affectations et le cahier journal.
+      </p>
+      <div class="field">
+        <label>Fichier .synapses — sur cet ordinateur</label>
+        <button type="button" class="btn" id="planning-import-browse-btn" style="width:100%;text-align:left;">📁 Parcourir mon ordinateur…</button>
+        <input type="file" id="planning-import-file" accept=".synapses" style="display:none;">
+        <div id="planning-import-file-name" style="font-size:12.5px;color:var(--ink-soft);margin-top:6px;">Aucun fichier sélectionné.</div>
+      </div>
+      <div class="field"><label>Mot de passe</label><input type="password" id="planning-import-password" placeholder="Mot de passe du planning"></div>
+      <p id="planning-import-erreur" style="display:none;color:var(--danger);font-size:12.5px;margin:10px 0 0;"></p>
+      <p style="font-size:12.5px;color:var(--ink-soft);margin:14px 0 0;line-height:1.6;">
+        ⚠️ Ce planning remplace entièrement celui actuellement enregistré dans cet onglet (configuration, grilles, affectations, cahier journal).
+      </p>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" data-close="modal-planning-import">Annuler</button>
+      <button class="btn primary" id="btn-planning-import-confirm">Importer</button>
+    </div>
+  </div>
+</div>
+
+
+<main>
+  <h1 style="font-size:24px;margin:0 0 14px;">Cahier journal</h1>
+
+  <div id="import-gate">
+    <h2>Aucun planning chargé</h2>
+    <p>Cette page reste vide tant qu'aucun planning n'a été importé : elle n'affiche plus automatiquement d'anciennes données. Importez le fichier <code>.synapses</code> exporté depuis « Planning — Gestion » pour afficher le cahier journal, puis, si besoin, ouvrez le coffre élèves pour voir les noms.</p>
+    <div class="gate-actions">
+      <button class="btn primary" id="btn-ouvrir-import-planning">📥 Importer le planning (.synapses)</button>
+      <button class="btn" id="btn-ouvrir-coffre-depuis-gate">🔐 Ouvrir le coffre élèves</button>
+    </div>
+    <p class="gate-note">Les deux fichiers sont indépendants : le planning (classes, grilles, cahier journal) vient de « Planning — Gestion » ; le coffre (identités des élèves) est un fichier <code>.synapses</code> séparé.</p>
+  </div>
+
+  <div id="app-content" style="display:none;">
+  <div class="onboarding" id="onboarding">
+    <button class="close-onboarding" id="btn-close-onboarding">Masquer ✕</button>
+    <h3>Comment utiliser cette page ?</h3>
+    <ol>
+      <li><strong>Organiser</strong> — pour chaque créneau, ajoutez ou ajustez les groupes de besoin/travail (colonnes), affectez un adulte (enseignant, AESH, ATSEM…) et un titre à chacun.</li>
+      <li><strong>Élèves</strong> — ouvrez le coffre élèves pour affecter des élèves aux groupes du jour et voir leurs noms.</li>
+    </ol>
+    <p style="font-size:12px;color:var(--ink-soft);margin:0;">Aucune identité d'élève n'est jamais écrite dans ce planning : seuls des identifiants Synapses (ELEVE-xxxx) y apparaissent, rapprochés des noms en mémoire uniquement si le coffre est ouvert dans cet onglet.</p>
+  </div>
+
+  <div class="day-toolbar">
+    <div class="day-nav">
+      <button id="prev-day">◀</button>
+      <input type="date" id="date-picker">
+      <button id="next-day">▶</button>
+      <button id="btn-today">Aujourd'hui</button>
+    </div>
+    <div class="day-title" id="day-title">—</div>
+    <div class="day-actions">
+      <button class="btn" id="btn-print">🖨 Imprimer</button>
+    </div>
+  </div>
+
+  <div class="journal-tabs" id="journal-tabs">
+    <button type="button" class="active" data-journal-tab="tab-journee">Journée</button>
+    <button type="button" data-journal-tab="tab-ia-devoirs">Prompt IA — devoirs</button>
+  </div>
+
+  <section class="journal-tab-panel active" id="tab-journee">
+    <div class="classe-filter-bar" id="classe-filter-bar"></div>
+    <div class="day-summary" id="day-summary"></div>
+    <div id="content"></div>
+
+    <div class="journal-bottom">
+      <div class="field">
+        <label for="j-remarque">Remarque</label>
+        <textarea id="j-remarque" placeholder="Ex. Accueil observateur…"></textarea>
+      </div>
+      <div class="field">
+        <label for="j-devoirs">Devoirs</label>
+        <textarea id="j-devoirs"></textarea>
+      </div>
+    </div>
+  </section>
+
+  <section class="journal-tab-panel" id="tab-ia-devoirs">
+    <div class="ia-panel">
+      <div class="ia-panel-head">
+        <div>
+          <h2>Prompt IA pour les devoirs</h2>
+          <p>Le prompt est construit à partir des séances suivies aujourd'hui et, lorsque le coffre est ouvert, des besoins et objectifs actifs des élèves.</p>
+        </div>
+        <div class="ia-actions">
+          <button type="button" class="btn primary" id="btn-generer-prompt-ia">✨ Générer le prompt</button>
+          <button type="button" class="btn" id="btn-copier-prompt-ia">Copier</button>
+        </div>
+      </div>
+      <textarea id="prompt-ia" class="prompt-ia" spellcheck="false" placeholder="Cliquez sur « Générer le prompt ». "></textarea>
+      <div id="prompt-ia-status" class="hint"></div>
+    </div>
+  </section>
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script src="../fata-morgana/synapses-crypto.js"></script>
+<script>
+/* Nettoyage du localStorage à la fermeture de la page.
+ * Ces pages sont des outils de travail temporaires : aucune donnée ne doit
+ * rester persistée côté navigateur après leur fermeture.
+ * BUG CORRIGÉ : ce code était auparavant placé à l'intérieur d'une balise
+ * <script src="..."> ; le contenu inline d'une telle balise n'est jamais
+ * exécuté par le navigateur, donc ce nettoyage ne se déclenchait jamais. */
+(function(){
+  let nettoye = false;
+  function nettoyerLocalStorage(){
+    if(nettoye) return;
+    nettoye = true;
+    try { localStorage.clear(); } catch(e) {}
+  }
+  window.addEventListener("pagehide", nettoyerLocalStorage);
+  window.addEventListener("beforeunload", nettoyerLocalStorage);
+})();
+</script>
+<script src="../fata-morgana/synapses-coffre.js"></script>
+<script src="planning-core.js"></script>
+
+
+<script>
+"use strict";
+const PC = window.PlanningCore;
+const $ = id => document.getElementById(id);
+
+function toast(msg){ const t=$("toast"); t.textContent=msg; t.classList.add("show"); setTimeout(()=>t.classList.remove("show"),2400); }
+function escapeAttr(s){ return (s==null?"":String(s)).replace(/"/g,'&quot;'); }
+function escapeHTML(s){ return (s==null?"":String(s)).replace(/[&<>]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c])); }
+
+/* ---------------- État ---------------- */
+let config = PC.chargerConfig();
+let grilles = PC.chargerGrilles();
+let affectations = PC.chargerAffectations();
+let iso = (new URLSearchParams(location.search).get("date")) || PC.dateISO(new Date());
+let jour = null;
+// Banque de séquences/séances (index.json du dépôt + banque locale créée
+// dans sequences.html). Chargée une fois de façon asynchrone : tant qu'elle
+// n'est pas prête, les sélecteurs "Lier une séance" des cartes de groupe
+// restent vides, mais tout le reste de la page (dont un seanceRef déjà
+// enregistré) continue de fonctionner normalement — cette banque ne sert
+// qu'à PROPOSER un lien, jamais à valider ou effacer un lien existant.
+let banque = {};
+let banqueChargee = false;
+async function chargerBanquePage(){
+  try{ banque = await PC.chargerBanque(); }
+  catch(e){ banque = {}; }
+  banqueChargee = true;
+  if(sessionActive()) renderJour();
+}
+
+// Liste plate de tous les items (séances) de la banque, tous niveaux et
+// domaines confondus, pour alimenter le sélecteur de chaque carte de
+// groupe. Chaque entrée porte son niveau et son domaine d'origine (perdus
+// dans la structure imbriquée renvoyée par PC.chargerBanque()).
+function seancesPlates(){
+  const out = [];
+  Object.keys(banque).forEach(niveau=>{
+    const parDomaine = banque[niveau] || {};
+    Object.keys(parDomaine).forEach(domaineCle=>{
+      const bucket = parDomaine[domaineCle];
+      (bucket.items||[]).forEach(item=>{
+        out.push(Object.assign({niveau, domaineLabel:bucket.label}, item));
+      });
+    });
+  });
+  return out;
+}
+
+function itemSeanceParId(id){
+  return seancesPlates().find(it=>it.id===id) || null;
+}
+
+// Libellé compact pour le badge affiché sur une carte déjà liée à une
+// séance : "Séquence — n°Numéro Titre". Si la séance n'est plus trouvée
+// dans la banque actuellement chargée (banque pas encore chargée, ou
+// séance retirée de la bibliothèque depuis), on retombe sur les bribes
+// d'information déjà connues sans jamais effacer le lien enregistré.
+function seanceLabelDe(ref){
+  if(!ref) return "";
+  if(ref.source === "manuel") return ref.titre || "Séance (saisie libre)";
+  const item = itemSeanceParId(ref.id);
+  if(item){
+    const num = item.numero ? "n°"+item.numero+" " : "";
+    return (item.seqTitre ? item.seqTitre+" — " : "") + num + (item.titre || item.type || "Séance");
+  }
+  return banqueChargee ? "Séance liée (introuvable dans la banque)" : "Séance liée…";
+}
+
+// Options du sélecteur "Lier une séance", regroupées par niveau puis
+// domaine puis séquence, dans l'ordre pédagogique (PC.NIVEAUX) plutôt
+// qu'alphabétique.
+function optionsSeances(g){
+  const items = seancesPlates();
+  if(!items.length) return "";
+  const rangNiveau = n => { const i = PC.NIVEAUX.indexOf(n); return i===-1 ? 999 : i; };
+  const groupes = new Map();
+  items.forEach(it=>{
+    const gKey = it.niveau + "|" + it.domaineLabel + "|" + (it.seqTitre||"");
+    if(!groupes.has(gKey)) groupes.set(gKey, { niveau:it.niveau, domaineLabel:it.domaineLabel, seqTitre:it.seqTitre, items:[] });
+    groupes.get(gKey).items.push(it);
+  });
+  const ordre = Array.from(groupes.values()).sort((a,b)=>
+    rangNiveau(a.niveau)-rangNiveau(b.niveau) ||
+    a.domaineLabel.localeCompare(b.domaineLabel) ||
+    (a.items[0].ordreSeq||0)-(b.items[0].ordreSeq||0)
+  );
+  return ordre.map(grp=>{
+    const label = grp.niveau + " · " + grp.domaineLabel + (grp.seqTitre ? " — " + grp.seqTitre : "");
+    const opts = grp.items.map(it=>{
+      const num = it.numero ? "n°"+it.numero+" — " : "";
+      return `<option value="${escapeAttr(it.id)}" ${g.seanceRef && g.seanceRef.id===it.id ? "selected":""}>${escapeHTML(num + (it.titre || it.type || "Séance"))}</option>`;
+    }).join("");
+    return `<optgroup label="${escapeAttr(label)}">${opts}</optgroup>`;
+  }).join("");
+}
+
+// Filtre d'affichage du cahier journal (onglet "Journée") : il n'existe
+// volontairement PAS d'option "Toutes les classes" — on affiche toujours
+// une seule classe (ou le dispositif ULIS / un autre dispositif) à la
+// fois. La valeur est encodée "cls:<id>" pour une classe de
+// config.classes, ou "disp:<id>" pour un dispositif de config.dispositifs.
+// N'affecte que le RENDU — jour.groupes (donnée réellement enregistrée)
+// n'est jamais tronqué par ce filtre.
+let classeFiltreCourante = null;
+
+/* ---------------- Portail d'import ----------------
+   Cette page ne doit plus jamais afficher automatiquement d'anciennes
+   données accumulées dans le stockage partagé (config/grilles/journal) :
+   elle reste vide tant qu'un planning .synapses n'a pas été importé
+   explicitement DANS CETTE PAGE. Ce drapeau, propre à planning-jour.html,
+   ne touche à aucune donnée : il ne fait que décider si l'écran d'import
+   ou le cahier journal est affiché. Un import réel remplace de toute
+   façon entièrement config/grilles/affectations/journal (voir
+   PC.appliquerPaquetPlanning), ce qui règle aussi la pollution des
+   données elles-mêmes, pas seulement leur affichage.
+   BUG CORRIGÉ : ce drapeau était stocké dans localStorage, qui ne
+   s'efface JAMAIS tout seul (contrairement à ce que son nom "session"
+   laisse penser) — une fois importé une seule fois, la page rouvrait
+   directement le cahier journal à chaque visite ultérieure, y compris
+   après un redémarrage du navigateur des jours plus tard, sans jamais
+   repasser par le portail d'import. sessionStorage est effacé à la
+   fermeture de l'onglet/du navigateur : c'est le seul moyen de tenir la
+   promesse "reste vide tant qu'aucun planning n'a été importé [dans
+   cette page, pour cette session]" énoncée ci-dessus et à l'écran. */
+const SESSION_KEY = "synapses_planning_jour_session_active";
+function sessionActive(){ return sessionStorage.getItem(SESSION_KEY) === "1"; }
+function afficherEtatSelonSession(){
+  const actif = sessionActive();
+  $("import-gate").style.display = actif ? "none" : "";
+  $("app-content").style.display = actif ? "" : "none";
+  $("btn-changer-planning").style.display = actif ? "" : "none";
+}
+
+/* ---------------- Coffre (repris du modèle sequences.html) ---------------- */
+let coffre = null;
+try{ coffre = new SynapsesCoffre.Coffre(); }catch(e){ coffre = null; }
+function coffreDisponible(){ return !!coffre; }
+function coffreOuvert(){ return !!(coffre && coffre.ouvert); }
+function eleveLabel(e){
+  // Affiche le prénom et le nom de l'élève, calculés à la volée à partir de
+  // son identité (coffre ouvert, en mémoire uniquement du navigateur) : ce
+  // libellé n'est jamais stocké — seul l'identifiant d'anonymat
+  // (identifiantSynapses) est enregistré dans les groupes du jour, dans
+  // localStorage (non chiffré). Le nom/prénom réel n'existe donc qu'à
+  // l'écran (et sur l'impression), jamais persisté hors du fichier
+  // .synapses lui-même.
+  const prenom = ((e.identite && e.identite.prenom) || "").trim();
+  const nomFamille = ((e.identite && e.identite.nom) || "").trim();
+  const complet = [prenom, nomFamille].filter(Boolean).join(" ");
+  return complet || e.identifiantSynapses;
+}
+function updateCoffreWidget(){
+  const status = $("coffre-status"), btn = $("btn-coffre-toggle");
+  if(!coffreDisponible()){ status.textContent = "Coffre indisponible"; btn.style.display = "none"; return; }
+  if(coffreOuvert()){
+    status.textContent = "Coffre ouvert · " + coffre.listerEleves().length + " élève(s)";
+    status.classList.add("ouvert");
+    btn.textContent = "Fermer le coffre";
+  } else {
+    status.textContent = "Coffre fermé";
+    status.classList.remove("ouvert");
+    btn.textContent = "Ouvrir le coffre";
+  }
+}
+function openModal(id){ document.getElementById(id).classList.add('open'); }
+function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('[data-close]').forEach(btn=>{
+  btn.addEventListener('click', ()=> closeModal(btn.getAttribute('data-close')));
+});
+if($("btn-coffre-toggle")){
+  $("btn-coffre-toggle").addEventListener("click", ()=>{
+    if(coffreOuvert()){
+      if(confirm("Fermer le coffre et purger les données élèves de la mémoire de cet onglet ?")){
+        coffre.purger();
+        updateCoffreWidget();
+        toast("Coffre fermé, données purgées");
+        rafraichirEtat();
+      }
+    } else {
+      openModal('modal-coffre');
+    }
+  });
+  $("coffre-browse-btn").addEventListener("click", ()=> $("coffre-file").click());
+  $("coffre-file").addEventListener("change", ()=>{
+    const f = $("coffre-file").files[0];
+    $("coffre-file-name").textContent = f ? ("Sélectionné : " + f.name) : "Aucun fichier sélectionné.";
+  });
+  $("btn-coffre-open-confirm").addEventListener("click", async ()=>{
+    const file = $("coffre-file").files[0];
+    const pwd = $("coffre-password").value;
+    if(!file){ toast("Choisissez un fichier .synapses"); return; }
+    if(!pwd){ toast("Saisissez le mot de passe du coffre"); return; }
+    try{
+      await coffre.ouvrir(file, pwd);
+      closeModal('modal-coffre');
+      $("coffre-password").value = "";
+      $("coffre-file").value = "";
+      $("coffre-file-name").textContent = "Aucun fichier sélectionné.";
+      updateCoffreWidget();
+      // Resynchronise IMMÉDIATEMENT le cahier journal : les élèves du
+      // coffre qui ont un planning individuel (onglet Affectation) ou qui
+      // relèvent d'un dispositif (ULIS…) apparaissent aussitôt, par leur
+      // prénom/nom, sur les créneaux concernés — sans action supplémentaire.
+      rafraichirEtat();
+      toast("Coffre ouvert : " + coffre.listerEleves().length + " élève(s) chargé(s) sur la journée");
+    }catch(e){
+      toast("Impossible d'ouvrir le coffre : " + e.message);
+    }
+  });
+  window.addEventListener('beforeunload', ()=>{ if(coffre) coffre.purger(); });
+  // Filet de sécurité redondant : 'pagehide' se déclenche de façon plus
+  // fiable que 'beforeunload' sur mobile (Safari iOS notamment) et lors
+  // d'une mise en cache arrière (bfcache). Contrairement à
+  // 'visibilitychange', il ne se déclenche PAS à chaque changement d'onglet,
+  // donc il ne purge pas le coffre pendant une utilisation normale.
+  window.addEventListener('pagehide', ()=>{ if(coffre) coffre.purger(); });
+}
+
+/* ---------------- Portail d'import : planning .synapses ---------------- */
+$("planning-import-browse-btn").addEventListener("click", ()=> $("planning-import-file").click());
+$("planning-import-file").addEventListener("change", ()=>{
+  const f = $("planning-import-file").files[0];
+  $("planning-import-file-name").textContent = f ? ("Sélectionné : " + f.name) : "Aucun fichier sélectionné.";
+});
+$("btn-planning-import-confirm").addEventListener("click", async ()=>{
+  const erreurEl = $("planning-import-erreur");
+  erreurEl.style.display = "none";
+  const file = $("planning-import-file").files[0];
+  const pwd = $("planning-import-password").value;
+  if(!file){ erreurEl.textContent = "Choisissez d'abord un fichier .synapses."; erreurEl.style.display = ""; return; }
+  if(!pwd){ erreurEl.textContent = "Saisissez le mot de passe du planning."; erreurEl.style.display = ""; return; }
+  try{
+    const enveloppe = await PC.lireFichierJSON(file);
+    if(!enveloppe || enveloppe.format !== "synapses-planning-secure"){
+      throw new Error("Ce fichier n'est pas un planning .synapses protégé.");
+    }
+    const paquet = await PC.dechiffrerPlanningJSON(enveloppe, pwd);
+    const applique = PC.appliquerPaquetPlanning(paquet);
+    sessionStorage.setItem(SESSION_KEY, "1");
+    closeModal('modal-planning-import');
+    $("planning-import-password").value = "";
+    $("planning-import-file").value = "";
+    $("planning-import-file-name").textContent = "Aucun fichier sélectionné.";
+    afficherEtatSelonSession();
+    rafraichirEtat();
+    toast("Planning importé : " + applique.join(", ") + ".");
+  }catch(e){
+    erreurEl.textContent = e.message || "Import impossible.";
+    erreurEl.style.display = "";
+  }
+});
+$("btn-ouvrir-import-planning").addEventListener("click", ()=> openModal('modal-planning-import'));
+if($("btn-ouvrir-coffre-depuis-gate")){
+  $("btn-ouvrir-coffre-depuis-gate").addEventListener("click", ()=>{
+    if(!coffreDisponible()){ toast("Le coffre est indisponible : synapses-coffre.js n'a pas pu être chargé."); return; }
+    openModal('modal-coffre');
+  });
+}
+$("btn-changer-planning").addEventListener("click", ()=>{
+  if(!confirm("Revenir à l'écran d'import ? Rien n'est supprimé : le planning actuellement enregistré reste intact, vous pourrez le réimporter à tout moment.")) return;
+  sessionStorage.removeItem(SESSION_KEY);
+  afficherEtatSelonSession();
+});
+
+/* ---------------- Onboarding ---------------- */
+const ONB_KEY = "synapses_journal_onboarding_vu";
+if(localStorage.getItem(ONB_KEY)) $("onboarding").style.display = "none";
+$("btn-close-onboarding").addEventListener("click", ()=>{
+  $("onboarding").style.display = "none";
+  localStorage.setItem(ONB_KEY, "1");
+});
+
+/* ---------------- Sauvegarde ---------------- */
+function sauver(){
+  const journal = PC.chargerJournal();
+  journal[iso] = jour;
+  PC.sauverJournal(journal);
+}
+
+/* ---------------- Rendu ---------------- */
+function labelEleve(id){
+  if(coffreOuvert()){
+    const e = coffre.listerEleves().find(x=>x.identifiantSynapses===id);
+    if(e) return eleveLabel(e);
+  }
+  return id;
+}
+
+// `siblings` = les autres groupes du même créneau (même brique), le cas
+// échéant. On exclut de la liste tout élève déjà présent dans CE groupe
+// OU dans un groupe voisin du même créneau : un élève ne doit jamais se
+// retrouver affecté à deux groupes en même temps. Pour déplacer un élève
+// d'un groupe voisin vers celui-ci, on passe par le contrôle de
+// réaffectation de la puce (voir renderGroupeCard), pas par cette liste.
+function optionsElevesDisponibles(groupe, siblings){
+  if(!coffreOuvert()) return "";
+  const dejaPlaces = new Set(groupe.eleves||[]);
+  (siblings||[]).forEach(s=>(s.eleves||[]).forEach(id=>dejaPlaces.add(id)));
+  return coffre.listerEleves()
+    .filter(e=> !dejaPlaces.has(e.identifiantSynapses))
+    .map(e=>`<option value="${escapeAttr(e.identifiantSynapses)}">${escapeHTML(eleveLabel(e))}</option>`).join("");
+}
+
+/* ---------------- Filtre d'affichage par classe / dispositif ---------------- */
+// Options disponibles pour le filtre : une entrée par classe de
+// config.classes, PLUS une entrée par dispositif de config.dispositifs
+// (ex. ULIS). Chaque option est identifiée par une clé "cls:<id>" ou
+// "disp:<id>". Il n'y a jamais d'option "Toutes les classes" : on affiche
+// toujours une seule de ces entités à la fois.
+function optionsFiltreClasse(){
+  const classes = (config.classes || []).map(cl=>({ cle: "cls:"+cl.id, nom: cl.nom }));
+  const dispositifs = (config.dispositifs || []).map(d=>({ cle: "disp:"+d.id, nom: d.nom }));
+  return classes.concat(dispositifs);
+}
+
+function matchFiltreClasse(g){
+  if(!classeFiltreCourante) return true; // aucune option disponible (config vide)
+  if(classeFiltreCourante.startsWith("disp:")){
+    const dispositifId = classeFiltreCourante.slice(5);
+    return (g.dispositifId||"") === dispositifId;
+  }
+  const classeId = classeFiltreCourante.slice(4);
+  if((g.classeId||"") === classeId) return true;
+  // Les groupes non rattachés à une classe précise (AESH, autonomie,
+  // groupes de besoin ULIS sans classe d'origine unique, briques ajoutées
+  // à la main) concernent potentiellement des élèves de plusieurs classes :
+  // on les garde visibles quel que soit l'onglet de classe sélectionné —
+  // sauf s'ils appartiennent déjà à un dispositif (ceux-là ne s'affichent
+  // que sous leur propre onglet, voir ci-dessus).
+  if(!g.classeId && !g.dispositifId) return true;
+  return false;
+}
+
+function renderClasseFilterBar(){
+  const bar = $("classe-filter-bar");
+  if(!bar) return;
+  const options = optionsFiltreClasse();
+  if(!options.length){ bar.innerHTML = ""; classeFiltreCourante = null; return; }
+  if(!classeFiltreCourante || !options.some(o=>o.cle===classeFiltreCourante)){
+    // Jamais de "Toutes les classes" : on retombe toujours sur la première
+    // entrée disponible (classe si elle existe, sinon dispositif).
+    classeFiltreCourante = options[0].cle;
+  }
+
+  const nb = cle => (jour && jour.groupes ? jour.groupes : []).filter(g=>{
+    if(cle.startsWith("disp:")) return (g.dispositifId||"") === cle.slice(5);
+    return (g.classeId||"") === cle.slice(4);
+  }).length;
+
+  const boutons = options.map(o=>
+    `<button type="button" data-classe-filtre="${escapeAttr(o.cle)}" class="${classeFiltreCourante===o.cle?"active":""}">${escapeHTML(o.nom)}<span class="n">(${nb(o.cle)})</span></button>`
+  );
+  bar.innerHTML = boutons.join("");
+  bar.querySelectorAll("[data-classe-filtre]").forEach(b=>{
+    b.addEventListener("click", ()=>{
+      classeFiltreCourante = b.dataset.classeFiltre;
+      renderJour();
+    });
+  });
+}
+
+function renderJour(){
+  $("date-picker").value = iso;
+  $("day-title").textContent = PC.formatDateLong(PC.parseISO(iso));
+
+  // Resynchronise le cahier journal du jour avec la grille horaire (classes
+  // + dispositifs) actuellement chargée AVANT de l'afficher. Sans cet appel,
+  // cette page se contentait de relire le journal tel quel (PC.journalPourDate)
+  // sans jamais le recalculer depuis les grilles : après un import de
+  // planning (nouvelles grilles), ou toute modification faite dans
+  // Planning — Gestion, les créneaux affichés ici restaient ceux de
+  // l'ancien état, jusqu'à ce que quelqu'un relance "Répartir la semaine".
+  // genererJournalDepuisGrille() est sans danger à chaque appel : elle
+  // respecte les groupes déjà personnalisés (modifie=true) et les créneaux
+  // volontairement supprimés (jour.exclusions), et ne touche qu'aux groupes
+  // encore synchronisés avec leur créneau de grille d'origine.
+  jour = PC.genererJournalDepuisGrille(iso, config, grilles, affectations, {}, coffre);
+
+  $("j-remarque").value = jour.remarque || "";
+  $("j-devoirs").value = jour.devoirs || "";
+
+  const content = $("content");
+  content.innerHTML = "";
+
+  renderClasseFilterBar();
+  renderDaySummary(jour.groupes.filter(matchFiltreClasse));
+
+  if(!jour.groupes.length){
+    content.innerHTML = `
+      <div class="empty-journal">
+        <h3>Aucun cahier journal pour ce jour</h3>
+        <p>Ajoutez un premier créneau à la main pour commencer à organiser cette journée.</p>
+        <button class="btn primary" id="btn-ajouter-bloc-vide">+ Ajouter un créneau</button>
+      </div>`;
+    $("btn-ajouter-bloc-vide").addEventListener("click", ()=>ajouterBloc());
+    return;
+  }
+
+  const groupesVisibles = jour.groupes.filter(matchFiltreClasse);
+
+  if(!groupesVisibles.length){
+    let nomFiltre = "cette classe";
+    if(classeFiltreCourante && classeFiltreCourante.startsWith("disp:")){
+      const d = PC.dispositifById(config, classeFiltreCourante.slice(5));
+      if(d) nomFiltre = "« "+escapeHTML(d.nom)+" »";
+    } else if(classeFiltreCourante){
+      const cl = PC.classeById(config, classeFiltreCourante.slice(4));
+      if(cl) nomFiltre = "« "+escapeHTML(cl.nom)+" »";
+    }
+    content.innerHTML = `
+      <div class="empty-journal">
+        <h3>Aucun groupe pour ${nomFiltre} ce jour-là</h3>
+        <p>Cette classe (ou ce dispositif) n'a peut-être pas cours ce jour dans sa grille horaire, ou tous ses créneaux ont été retirés du cahier journal. Vous pouvez sélectionner une autre classe ci-dessus ou ajouter un créneau à la main.</p>
+        <button class="btn" id="btn-ajouter-bloc-vide">+ Ajouter un créneau</button>
+      </div>`;
+    $("btn-ajouter-bloc-vide").addEventListener("click", ()=>ajouterBloc());
+    return;
+  }
+
+  /* =========================================================
+     PRÉSENTATION DES BRIQUES
+     =========================================================
+     Une "unité d'affichage" correspond à :
+       - même début
+       - même fin
+       - même contenu
+
+     Donc :
+       10:10-10:25 + Lecture + CP C/CP A
+       -> UNE brique commune.
+
+       10:10-10:25 + Lecture
+       10:10-10:25 + Mathématiques
+       -> DEUX briques côte à côte.
+
+     Les objets g restent indépendants dans jour.groupes.
+  ========================================================= */
+
+  function hm(h){
+    return PC.heureVersMin(h);
+  }
+
+  function chevauche(a,b){
+    return hm(a.debut) < hm(b.fin) &&
+           hm(b.debut) < hm(a.fin);
+  }
+
+  function contenuKey(g){
+    if(g.fixe){
+      return "fixe|" + String(g.titre || "").trim().toLowerCase();
+    }
+
+    const ref = g.seanceRef && g.seanceRef.id
+      ? String(g.seanceRef.id)
+      : "";
+
+    return [
+      "seance",
+      String(g.titre || "").trim().toLowerCase(),
+      String(g.domaineCle || "").trim().toLowerCase(),
+      ref
+    ].join("|");
+  }
+
+  const map = new Map();
+
+  groupesVisibles.forEach(g=>{
+    const key = [
+      g.debut,
+      g.fin,
+      contenuKey(g)
+    ].join("|");
+
+    if(!map.has(key)){
+      map.set(key,{
+        debut:g.debut,
+        fin:g.fin,
+        groupes:[]
+      });
+    }
+
+    map.get(key).groupes.push(g);
+  });
+
+  const blocs = Array.from(map.values()).sort((a,b)=>{
+    return hm(a.debut)-hm(b.debut) ||
+           hm(a.fin)-hm(b.fin);
+  });
+
+  /* =========================================================
+     ORGANISATION VERTICALE DE LA JOURNÉE
+     ---------------------------------------------------------
+     Une ligne = un groupe de créneaux qui se chevauchent.
+
+     Exemples :
+       10:10–10:25 + 10:10–10:25
+       => même ligne, côte à côte
+
+       10:10–10:25 + 10:20–10:25
+       => même ligne, côte à côte
+
+       10:10–10:25
+       10:25–10:50
+       => deux lignes, de haut en bas
+
+     On ne place donc JAMAIS un créneau plus tard dans la
+     journée sur la même ligne qu'un créneau terminé avant lui.
+     ========================================================= */
+
+  const lignes = [];
+  let ligneCourante = [];
+  let finLigne = -1;
+
+  blocs.forEach(bloc=>{
+    const debut = hm(bloc.debut);
+    const fin = hm(bloc.fin);
+
+    /*
+     * Si le nouveau bloc commence avant la fin du groupe
+     * actuellement affiché, il chevauche celui-ci :
+     * il reste sur la même ligne.
+     *
+     * Sinon, on ferme la ligne et on commence une nouvelle
+     * ligne immédiatement en dessous.
+     */
+    if(
+      ligneCourante.length &&
+      debut < finLigne
+    ){
+      ligneCourante.push(bloc);
+      finLigne = Math.max(finLigne, fin);
+    }else{
+      if(ligneCourante.length){
+        lignes.push(ligneCourante);
+      }
+
+      ligneCourante = [bloc];
+      finLigne = fin;
+    }
+  });
+
+  if(ligneCourante.length){
+    lignes.push(ligneCourante);
+  }
+
+  const table = document.createElement("table");
+  table.className = "journal-table";
+
+  const tbody = document.createElement("tbody");
+
+  lignes.forEach(ligne=>{
+    ligne.sort((a,b)=>{
+      return hm(a.debut)-hm(b.debut) ||
+             hm(a.fin)-hm(b.fin);
+    });
+
+    const tr = document.createElement("tr");
+    const td = document.createElement("td");
+
+    const lanes = document.createElement("div");
+    lanes.className = "journal-lanes";
+
+    const lane = document.createElement("div");
+    lane.className = "journal-lane";
+
+    ligne.forEach(bloc=>{
+      const blocEl = document.createElement("div");
+      blocEl.className = "journal-block";
+
+      /* -----------------------------------------------------
+         EN-TÊTE : chaque brique possède son propre horaire.
+         Cela permet à 10:10-10:25 et 10:20-10:25 d'être
+         affichés côte à côte.
+      ----------------------------------------------------- */
+
+      const head = document.createElement("div");
+      head.className = "journal-block-head";
+
+      head.innerHTML = `
+        <input
+          class="bloc-label"
+          value="${escapeAttr(PC.libelleBloc(jour,bloc.debut,bloc.fin))}"
+          data-role="label"
+          title="Libellé du créneau"
+        >
+        <input
+          class="bloc-heure"
+          type="time"
+          value="${escapeAttr(bloc.debut)}"
+          data-role="debut"
+        >
+        <span class="sep">–</span>
+        <input
+          class="bloc-heure"
+          type="time"
+          value="${escapeAttr(bloc.fin)}"
+          data-role="fin"
+        >
+        <span class="spacer"></span>
+        <button
+          class="btn small danger"
+          data-role="del-bloc"
+          title="Supprimer cette brique et ses groupes"
+        >✕</button>
+      `;
+
+      head.querySelector('[data-role=label]').addEventListener("change",e=>{
+        jour.libellesBlocs[
+          PC.cleBloc(bloc.debut,bloc.fin)
+        ] = e.target.value;
+        sauver();
+      });
+
+      head.querySelector('[data-role=debut]').addEventListener("change",e=>{
+        const ancienneCle =
+          PC.cleBloc(bloc.debut,bloc.fin);
+
+        const label =
+          jour.libellesBlocs[ancienneCle];
+
+        delete jour.libellesBlocs[ancienneCle];
+
+        bloc.groupes.forEach(g=>{
+          g.debut = e.target.value;
+          g.modifie = true;
+        });
+
+        if(label){
+          jour.libellesBlocs[
+            PC.cleBloc(e.target.value,bloc.fin)
+          ] = label;
+        }
+
+        sauver();
+        renderJour();
+      });
+
+      head.querySelector('[data-role=fin]').addEventListener("change",e=>{
+        const ancienneCle =
+          PC.cleBloc(bloc.debut,bloc.fin);
+
+        const label =
+          jour.libellesBlocs[ancienneCle];
+
+        delete jour.libellesBlocs[ancienneCle];
+
+        bloc.groupes.forEach(g=>{
+          g.fin = e.target.value;
+          g.modifie = true;
+        });
+
+        if(label){
+          jour.libellesBlocs[
+            PC.cleBloc(bloc.debut,e.target.value)
+          ] = label;
+        }
+
+        sauver();
+        renderJour();
+      });
+
+      head.querySelector('[data-role=del-bloc]').addEventListener("click",()=>{
+        if(!confirm("Supprimer cette brique et tous ses groupes ?")) return;
+
+        bloc.groupes.forEach(g=>{
+          if(g.origine){
+            jour.exclusions.push(g.origine);
+          }
+        });
+
+        jour.groupes =
+          jour.groupes.filter(g=>!bloc.groupes.includes(g));
+
+        delete jour.libellesBlocs[
+          PC.cleBloc(bloc.debut,bloc.fin)
+        ];
+
+        sauver();
+        renderJour();
+      });
+
+      blocEl.appendChild(head);
+
+      /* -----------------------------------------------------
+         CORPS DE LA BRIQUE
+      ----------------------------------------------------- */
+
+      const body = document.createElement("div");
+      body.className = "journal-block-body";
+
+      /* Plusieurs classes + même contenu :
+         UNE seule brique avec les classes à l'intérieur. */
+      if(bloc.groupes.length > 1){
+
+        const commun =
+          document.createElement("div");
+
+        commun.className = "groupe-commun";
+
+        const classes =
+          [...new Set(
+            bloc.groupes
+              .map(g=>g.niveau || g.classeId || "Classe")
+              .filter(Boolean)
+          )];
+
+        const tousFixes =
+          bloc.groupes.every(g=>g.fixe);
+
+        const titreCommun =
+          bloc.groupes[0].titre ||
+          (tousFixes ? "Créneau fixe" : "Créneau commun");
+
+        const communHead =
+          document.createElement("div");
+
+        communHead.className =
+          "groupe-commun-head";
+
+        communHead.innerHTML = `
+          <div class="groupe-commun-title">
+            ${escapeHTML(titreCommun)}
+          </div>
+          <div class="groupe-commun-classes">
+            ${
+              classes.map(n=>
+                `<span>${escapeHTML(n)}</span>`
+              ).join("")
+            }
+          </div>
+        `;
+
+        commun.appendChild(communHead);
+
+        if(tousFixes){
+
+          commun.classList.add("fixe");
+
+          body.appendChild(commun);
+
+        }else{
+
+          /* Les groupes restent indépendants :
+             chaque carte conserve ses propres élèves,
+             adulte, remarque, suppression, etc. */
+          const communBody =
+            document.createElement("div");
+
+          communBody.className =
+            "groupe-commun-body";
+
+          bloc.groupes.forEach(g=>{
+            communBody.appendChild(
+              renderGroupeCard(g, bloc.groupes.filter(x=>x!==g))
+            );
+          });
+
+          commun.appendChild(
+            communBody
+          );
+
+          body.appendChild(
+            commun
+          );
+        }
+
+      }else{
+
+        const groupesWrap =
+          document.createElement("div");
+
+        groupesWrap.className =
+          "bloc-groupes";
+
+        groupesWrap.appendChild(
+          renderGroupeCard(
+            bloc.groupes[0]
+          )
+        );
+
+        body.appendChild(
+          groupesWrap
+        );
+      }
+
+      /* -----------------------------------------------------
+         AJOUTER UN GROUPE
+      ----------------------------------------------------- */
+
+      const addZone =
+        document.createElement("div");
+
+      addZone.className =
+        "journal-block-add";
+
+      const addBtn =
+        document.createElement("button");
+
+      addBtn.className =
+        "add-groupe-btn";
+
+      addBtn.title =
+        "Ajouter un groupe sur cette brique";
+
+      addBtn.textContent =
+        "+ Ajouter un groupe";
+
+      addBtn.addEventListener("click",()=>{
+        if(bloc.groupes.length >= 3){ toast("Maximum de 3 groupes pour ce créneau."); return; }
+
+        /* Le nouveau groupe doit apparaître à droite du/des groupe(s)
+           existant(s) sur cette brique, en gardant le même créneau
+           horaire. Pour cela il doit rejoindre la MÊME brique : la
+           fonction contenuKey() (plus haut) regroupe les groupes par
+           début + fin + contenu (titre/domaineCle/seanceRef/fixe).
+           On reprend donc ces champs du groupe de référence de la
+           brique, sinon le nouveau groupe (contenu différent) se
+           retrouverait dans une brique séparée, avec son propre
+           en-tête et ses propres champs horaires indépendants. */
+        const ref = bloc.groupes[0];
+
+        jour.groupes.push({
+          id:PC.uid("grp"), debut:bloc.debut, fin:bloc.fin, origine:null, modifie:true,
+          adulte:{type:"enseignant",nom:""},
+          titre:ref.titre || "Nouveau groupe",
+          domaineCle:ref.domaineCle || "",
+          niveau:"", classeId:"",
+          seanceRef:ref.seanceRef || null,
+          eleves:[], remarque:"", fixe:ref.fixe || false
+        });
+        sauver(); renderJour();
+      });
+      if(bloc.groupes.length >= 3){
+        addBtn.disabled=true;
+        addBtn.textContent="3 groupes maximum";
+        addBtn.style.fontSize="11px";
+        addBtn.style.cursor="not-allowed";
+      }
+
+      addZone.appendChild(
+        addBtn
+      );
+
+      body.appendChild(
+        addZone
+      );
+
+      blocEl.appendChild(
+        body
+      );
+
+      lane.appendChild(
+        blocEl
+      );
+    });
+
+    lanes.appendChild(lane);
+    td.appendChild(lanes);
+    tr.appendChild(td);
+    tbody.appendChild(tr);
+  });
+
+  table.appendChild(tbody);
+  content.appendChild(table);
+
+  const addBlocRow =
+    document.createElement("div");
+
+  addBlocRow.className =
+    "add-bloc-row";
+
+  addBlocRow.innerHTML =
+    `<button class="btn" id="btn-add-bloc">+ Ajouter un créneau</button>`;
+
+  content.appendChild(
+    addBlocRow
+  );
+
+  $("btn-add-bloc").addEventListener(
+    "click",
+    ()=>ajouterBloc()
+  );
+}
+
+function ajouterBloc(){
+  const debut = prompt("Heure de début (HH:MM)", "09:00"); if(debut===null) return;
+  const fin = prompt("Heure de fin (HH:MM)", "09:30"); if(fin===null) return;
+  const label = prompt("Libellé du créneau", "Nouveau créneau") || "Créneau";
+  jour.libellesBlocs[PC.cleBloc(debut,fin)] = label;
+  jour.groupes.push({ id: PC.uid("grp"), debut, fin, origine: null, modifie: true,
+    adulte:{type:"enseignant",nom:""}, titre:"Nouveau groupe", domaineCle:"", niveau:"", seanceRef:null, eleves:[], remarque:"", fixe:false });
+  sauver(); renderJour();
+}
+
+// Bloc "lier une séance" d'une carte de groupe.
+// La séquence/séance d'un créneau n'est pas forcément déjà rédigée : tant
+// qu'aucune VRAIE séance de la banque n'est liée, la saisie libre reste
+// donc toujours affichée (pense-bête pour se souvenir de quoi il s'agit),
+// que la banque soit vide ou non. Dès que la banque contient au moins une
+// séance, le sélecteur apparaît juste à côté pour faire correspondre ce
+// pense-bête à la vraie séance dès qu'elle existe — sans jamais perdre le
+// texte tant que ce choix n'a pas été fait. Une fois une vraie séance liée,
+// seul le sélecteur reste affiché (pour en changer) ; la saisie libre n'a
+// alors plus lieu d'être, le badge + « ✕ Détacher » couvrant ce cas.
+function blocLienSeance(g){
+  const estLieReel = g.seanceRef && g.seanceRef.source !== "manuel";
+
+  if(estLieReel){
+    if(!banqueChargee){
+      return `<select class="lier-seance" data-role="lier-seance"><option value="">Chargement de la banque de séances…</option></select>`;
+    }
+    return `<select class="lier-seance" data-role="lier-seance">
+      <option value="">🔗 Changer la séance liée…</option>
+      ${optionsSeances(g)}
+    </select>`;
+  }
+
+  const titreManuel = (g.seanceRef && g.seanceRef.source==="manuel") ? g.seanceRef.titre||"" : "";
+  const saisieLibre = `<input type="text" class="seance-manuelle" data-role="seance-manuelle" placeholder="Nom de la séance/séquence (pense-bête, pas encore rédigée)" value="${escapeAttr(titreManuel)}">`;
+
+  if(!banqueChargee){
+    return `<div class="seance-vide" data-role="seance-vide">${saisieLibre}</div>`;
+  }
+  if(seancesPlates().length){
+    return `
+      <div class="seance-vide" data-role="seance-vide">
+        ${saisieLibre}
+        <select class="lier-seance" data-role="lier-seance">
+          <option value="">🔗 Faire correspondre à une séance déjà rédigée…</option>
+          ${optionsSeances(g)}
+        </select>
+      </div>`;
+  }
+  return `
+    <div class="seance-vide" data-role="seance-vide">
+      ${saisieLibre}
+      <span class="seance-vide-note">Aucune séance/séquence dans la banque pour l'instant — ce pense-bête reste ici pour la retrouver dès qu'elle sera rédigée.</span>
+      <a class="btn-generer-seance" href="generateur-sequences-projet.html" target="_blank" rel="noopener">🧩 Générer une séance/séquence</a>
+    </div>`;
+}
+
+// `siblings` (optionnel) = les autres groupes déjà présents sur le même
+// créneau (même brique). Quand il y en a, chaque puce élève affiche un
+// petit sélecteur « ⇄ » permettant de réaffecter directement l'élève vers
+// un de ces groupes voisins, sans repasser par une suppression manuelle.
+function renderGroupeCard(g, siblings){
+  siblings = siblings || [];
+  const card = document.createElement("div");
+  card.className = "groupe-card" + (g.fixe ? " fixe" : "");
+
+  if(g.fixe){
+    const eleves = (g.eleves||[]).map(id=>`<span class="eleve-chip">${escapeHTML(labelEleve(id))}</span>`).join("");
+    card.innerHTML = `<div class="row1"><b>${escapeHTML(g.titre)}</b></div>${eleves ? `<div class="eleves-chips" style="margin-top:6px;">${eleves}</div>` : ""}`;
+    return card;
+  }
+
+  const typeAdulteActuel = g.adulte ? g.adulte.type : "autonomie";
+  const typesOptions = PC.TYPES_ADULTE.map(t=>`<option value="${t.id}" ${t.id===typeAdulteActuel?'selected':''}>${t.label}</option>`).join("");
+  const cadenas = g.modifie ? `<span title="Modifié à la main" style="float:right;font-size:11px;color:var(--ink-soft);">🔒</span>` : "";
+
+  card.innerHTML = `
+    <input class="groupe-titre" value="${escapeAttr(g.titre)}" placeholder="Titre du groupe / séance">
+    ${cadenas}
+    ${g.domaineCle ? `<span class="domaine-tag">${escapeHTML(g.niveau||"")} · ${escapeHTML(g.domaineCle)}</span>` : ""}
+    <div class="seance-lien-row" data-role="seance-lien-row">
+      ${g.seanceRef ? `<span class="seance-badge" data-role="seance-badge" title="${escapeAttr(seanceLabelDe(g.seanceRef))}">🔗 ${escapeHTML(seanceLabelDe(g.seanceRef))}</span><button type="button" class="btn-delier-seance" data-role="delier-seance" title="Détacher cette séance (le titre reste modifiable à la main)">✕</button>` : ""}
+      ${blocLienSeance(g)}
+    </div>
+    <div class="row1">
+      <select class="adulte-type">${typesOptions}</select>
+      <input class="adulte-nom" placeholder="Nom (ex. Vincent, Yasmina…)" value="${escapeAttr(g.adulte ? g.adulte.nom : "")}" ${g.adulte ? "" : "disabled"}>
+    </div>
+    <div class="eleves-chips" data-role="chips"></div>
+    <select class="add-eleve" data-role="add-eleve"><option value="">${coffreOuvert() ? "+ Ajouter un élève…" : "Ouvrez le coffre pour ajouter des élèves"}</option>${optionsElevesDisponibles(g, siblings)}</select>
+    <textarea class="remarque" placeholder="Point de vigilance / remarque…">${escapeHTML(g.remarque||"")}</textarea>
+    <div class="card-foot"><button data-role="del-groupe">✕ Supprimer ce groupe</button></div>`;
+
+  function rafraichirAddEleve(){
+    card.querySelector('[data-role=add-eleve]').innerHTML=`<option value="">${coffreOuvert()?"+ Ajouter un élève…":"Ouvrez le coffre pour ajouter des élèves"}</option>${optionsElevesDisponibles(g, siblings)}`;
+  }
+
+  function renderChips(){
+    const chips=card.querySelector('[data-role=chips]');
+    chips.innerHTML="";
+    (g.eleves||[]).forEach(id=>{
+      const chip=document.createElement("span");
+      chip.className="eleve-chip";
+
+      const reaffectOptions = siblings.map((s,i)=>
+        `<option value="${i}">→ ${escapeHTML(s.titre || "Groupe "+(i+2))}</option>`
+      ).join("");
+
+      chip.innerHTML=`${escapeHTML(labelEleve(id))} ${
+        siblings.length ? `<select title="Réaffecter vers un autre groupe de ce créneau" data-role="reaffecter"><option value="">⇄</option>${reaffectOptions}</select>` : ""
+      } <button title="Retirer">✕</button>`;
+
+      if(siblings.length){
+        chip.querySelector('[data-role=reaffecter]').addEventListener("change",e=>{
+          const idx=e.target.value; if(idx==="") return;
+          const cible=siblings[Number(idx)]; if(!cible) return;
+          g.eleves=(g.eleves||[]).filter(x=>x!==id);
+          cible.eleves=cible.eleves||[];
+          if(!cible.eleves.includes(id)) cible.eleves.push(id);
+          marquerPersonnalise();
+          cible.modifie=true; if(cible.repartitionAuto) cible.personnalise=true;
+          sauver(); renderJour();
+        });
+      }
+
+      chip.querySelector("button").addEventListener("click",()=>{
+        g.eleves=g.eleves.filter(x=>x!==id); marquerPersonnalise(); sauver(); renderChips();
+        rafraichirAddEleve();
+      });
+      chips.appendChild(chip);
+    });
+  }
+  renderChips();
+
+  // Marque le groupe comme touché à la main. Pour un groupe créé par la
+  // répartition automatique (repartitionAuto), on pose aussi `personnalise`
+  // : c'est ce second indicateur qui le protège désormais d'être supprimé
+  // et reconstruit au prochain clic sur « Répartir les élèves » — sans lui,
+  // la structure des groupes auto (niveaux, AESH, autonomie) est toujours
+  // recalculée à neuf à chaque exécution, seuls les groupes réellement
+  // personnalisés par l'enseignant restent intacts.
+  function marquerPersonnalise(){ g.modifie = true; if(g.repartitionAuto) g.personnalise = true; }
+
+  card.querySelector(".groupe-titre").addEventListener("change",e=>{g.titre=e.target.value;marquerPersonnalise();sauver();renderJour();});
+  const selectLierSeance = card.querySelector('[data-role=lier-seance]');
+  if(selectLierSeance){
+    selectLierSeance.addEventListener("change",e=>{
+      const id=e.target.value; if(!id) return;
+      const item=itemSeanceParId(id); if(!item) return;
+      g.seanceRef={id:item.id, source:item.source, fichier:item.fichier||null};
+      // On propose le titre et le domaine de la séance choisie comme point de
+      // départ, mais le champ "Titre du groupe / séance" et le domaineCle
+      // restent des champs libres, modifiables à la main ensuite : lier une
+      // séance ne verrouille jamais rien sur la carte.
+      g.titre = item.titre || item.type || g.titre;
+      g.domaineCle = item.domaineCle || g.domaineCle;
+      marquerPersonnalise();
+      sauver(); renderJour();
+    });
+  }
+  const inputSeanceManuelle = card.querySelector('[data-role=seance-manuelle]');
+  if(inputSeanceManuelle){
+    inputSeanceManuelle.addEventListener("change",e=>{
+      const titre = e.target.value.trim();
+      // Pense-bête : pas d'id de banque, seulement le texte tapé. Reste en
+      // place tant qu'aucune vraie séance n'est choisie dans le sélecteur ;
+      // le choisir remplacera ce lien "manuel" par le vrai lien (et fera
+      // disparaître ce champ, la séance étant alors désignée sans ambiguïté).
+      g.seanceRef = titre ? {id:null, source:"manuel", titre} : null;
+      marquerPersonnalise();
+      sauver(); renderJour();
+    });
+  }
+  const btnDelier = card.querySelector('[data-role=delier-seance]');
+  if(btnDelier){
+    btnDelier.addEventListener("click",()=>{
+      g.seanceRef=null; marquerPersonnalise(); sauver(); renderJour();
+    });
+  }
+  card.querySelector(".adulte-type").addEventListener("change",e=>{
+    const val=e.target.value;
+    const nomInput=card.querySelector(".adulte-nom");
+    if(val==="autonomie"){
+      g.adulte=null;
+      if(nomInput){ nomInput.value=""; nomInput.disabled=true; }
+    }else{
+      g.adulte=g.adulte||{}; g.adulte.type=val; if(g.adulte.nom===undefined) g.adulte.nom="";
+      if(nomInput) nomInput.disabled=false;
+    }
+    marquerPersonnalise();sauver();
+  });
+  card.querySelector(".adulte-nom").addEventListener("change",e=>{g.adulte=g.adulte||{};g.adulte.nom=e.target.value;marquerPersonnalise();sauver();});
+  card.querySelector(".remarque").addEventListener("change",e=>{g.remarque=e.target.value;sauver();});
+  card.querySelector('[data-role=add-eleve]').addEventListener("change",e=>{
+    const id=e.target.value;if(!id)return;g.eleves=g.eleves||[];if(!g.eleves.includes(id))g.eleves.push(id);marquerPersonnalise();sauver();renderChips();
+    rafraichirAddEleve();
+  });
+  card.querySelector('[data-role=del-groupe]').addEventListener("click",()=>{
+    if(g.origine) jour.exclusions.push(g.origine);
+    jour.groupes=jour.groupes.filter(x=>x.id!==g.id);sauver();renderJour();
+  });
+  return card;
+}
+
+/* ---------------- Onglets cahier journal ---------------- */
+document.querySelectorAll("[data-journal-tab]").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    document.querySelectorAll("[data-journal-tab]").forEach(b=>b.classList.toggle("active",b===btn));
+    document.querySelectorAll(".journal-tab-panel").forEach(p=>p.classList.toggle("active",p.id===btn.dataset.journalTab));
+    if(btn.dataset.journalTab==="tab-ia-devoirs") genererPromptIA();
+  });
+});
+
+/* ---------------- Prompt IA pour les devoirs ---------------- */
+function genererPromptIA(){
+  const out=$("prompt-ia"); if(!out)return;
+  const map=new Map();
+  if(coffreOuvert()) coffre.listerEleves().forEach(e=>map.set(e.identifiantSynapses,e));
+  // Les créneaux fixes (récréations, pause méridienne, etc.) ne sont pas
+  // des séances d'apprentissage et ne doivent pas apparaître dans le prompt
+  // destiné à préparer les devoirs.
+  const groupes=(jour&&jour.groupes?jour.groupes:[])
+    .filter(g=>!g.fixe && g._fixeType!=='recreation' && g._fixeType!=='pause')
+    .slice()
+    .sort((a,b)=>PC.heureVersMin(a.debut)-PC.heureVersMin(b.debut));
+  const L=[];
+  L.push("Tu es un enseignant du premier degré. Prépare des devoirs courts, réalistes et directement liés aux apprentissages travaillés aujourd'hui.");
+  L.push(`Date : ${PC.formatDateLong(PC.parseISO(iso))}`);
+  L.push("");
+  L.push("Règles :");
+  L.push("- Adapter chaque proposition au niveau et aux besoins de l'élève.");
+  L.push("- Prendre en compte en priorité les besoins et objectifs actifs réellement renseignés.");
+  L.push("- Ne pas inventer un besoin individuel absent des données.");
+  L.push("- Ne pas proposer de devoir si aucun entraînement à la maison n'est pertinent.");
+  L.push("- Favoriser une activité autonome de 5 à 15 minutes.");
+  L.push("- Différencier les propositions lorsque les besoins sont différents.");
+  L.push("- Répondre sous forme de tableau : Élève/groupe | Devoir | Durée | Consigne famille.");
+  L.push("");
+  L.push("Séances suivies aujourd'hui :");
+  groupes.forEach(g=>{
+    const noms=(g.eleves||[]).map(id=>{const e=map.get(id);return e&&e.identite&&(e.identite.prenom||e.identite.nom)||id;});
+    const besoins=[];
+    (g.eleves||[]).forEach(id=>{
+      const e=map.get(id); if(!e)return;
+      (e.besoins||[]).forEach(b=>{const v=typeof b==="object"?(b.libelle||b.domaine||b.champ||b.hypothese||""):b;if(v)besoins.push(String(v));});
+      (e.objectifs||[]).filter(o=>!o.statut||o.statut==="actif").forEach(o=>{const v=typeof o==="object"?(o.libelle||o.domaine||o.contexte||o.champ||""):o;if(v)besoins.push(String(v));});
+    });
+    L.push(`- ${g.debut}–${g.fin} · ${g.titre||"Séance"} · ${g.niveau||"niveau non précisé"}`);
+    if(noms.length)L.push(`  Élèves : ${noms.join(", ")}`);
+    const u=[...new Set(besoins)]; if(u.length)L.push(`  Besoins/objectifs : ${u.join(" ; ")}`);
+    if(g.remarque)L.push(`  Vigilance : ${g.remarque}`);
+  });
+  if(!coffreOuvert())L.push("\nLe coffre élèves n'est pas ouvert : produire uniquement des devoirs au niveau des groupes, sans inventer de besoins individuels.");
+  out.value=L.join("\n");
+  $("prompt-ia-status").textContent=coffreOuvert()?"Prompt enrichi avec les besoins/objectifs du coffre ouvert.":"Prompt généré sans données individuelles : ouvrez le coffre pour une différenciation par élève.";
+}
+$("btn-generer-prompt-ia").addEventListener("click",genererPromptIA);
+$("btn-copier-prompt-ia").addEventListener("click",async()=>{
+  if(!$("prompt-ia").value)genererPromptIA();
+  try{await navigator.clipboard.writeText($("prompt-ia").value);}catch(e){$("prompt-ia").select();document.execCommand("copy");}
+  $("prompt-ia-status").textContent="Prompt copié.";
+});
+
+/* ---------------- Résumé du jour ---------------- */
+function renderDaySummary(groupesVisibles){
+  const el = $("day-summary");
+  if(!el) return;
+  const nonFixes = groupesVisibles.filter(g=>!g.fixe);
+  const idsAffectes = new Set();
+  nonFixes.forEach(g=>(g.eleves||[]).forEach(id=>idsAffectes.add(id)));
+  const sansEleve = nonFixes.filter(g=>!(g.eleves||[]).length).length;
+  const parts = [`<span><strong>${nonFixes.length}</strong> séance(s) affichée(s)</span>`];
+  if(coffreOuvert()){
+    parts.push(`<span><strong>${idsAffectes.size}</strong> élève(s) placé(s) sur cette vue</span>`);
+    if(sansEleve) parts.push(`<span class="warn">⚠ ${sansEleve} séance(s) sans élève affecté</span>`);
+  } else {
+    parts.push(`<span>Ouvrez le coffre pour voir les élèves affectés</span>`);
+  }
+  el.innerHTML = parts.join("");
+}
+
+/* ---------------- Actions globales ----------------
+   Cette page ne génère plus aucune séance automatiquement depuis la
+   grille (Planning — Gestion) : elle se contente d'afficher et de
+   modifier le cahier journal tel qu'enregistré. Cette fonction ne fait
+   que recharger l'état courant (config/grilles/affectations, utile pour
+   rester cohérent avec les autres onglets) puis réaffiche le jour.
+--------------------------------------------------------------------- */
+function rafraichirEtat(){
+  config = PC.chargerConfig();
+  grilles = PC.chargerGrilles();
+  affectations = PC.chargerAffectations();
+  renderJour();
+}
+
+/* ---------------- Impression ergonomique ----------------
+   La version imprimée est une vue dédiée :
+   - aucun bouton ni champ de saisie ;
+   - horaire + intitulé ;
+   - classes concernées ;
+   - adulte ;
+   - élèves ;
+   - remarques ;
+   - remarque générale et devoirs.
+
+   La vue écran n'est jamais modifiée.
+------------------------------------------------------------ */
+
+function construireVueImpression(){
+
+  const old =
+    document.getElementById("print-journal");
+
+  if(old) old.remove();
+
+  const root =
+    document.createElement("section");
+
+  root.id =
+    "print-journal";
+
+  root.className =
+    "print-journal";
+
+
+  /* ---------- En-tête ---------- */
+
+  const head =
+    document.createElement("div");
+
+  head.className =
+    "print-head";
+
+  head.innerHTML = `
+    <div>
+      <div class="print-brand">
+        <span class="mark">RÉ</span>
+        <span class="sub">Synapses — Planning</span>
+      </div>
+      <div class="print-title">
+        Cahier journal
+      </div>
+    </div>
+    <div class="print-date">
+      ${escapeHTML(
+        PC.formatDateLong(
+          PC.parseISO(iso)
+        )
+      )}
+    </div>
+  `;
+
+  root.appendChild(head);
+
+
+  /* ---------- Outils horaires ---------- */
+
+  function hm(h){
+    return PC.heureVersMin(h);
+  }
+
+  function chevauche(a,b){
+    return hm(a.debut) < hm(b.fin) &&
+           hm(b.debut) < hm(a.fin);
+  }
+
+  function contenuKey(g){
+
+    if(g.fixe){
+      return "fixe|" +
+        String(g.titre || "")
+          .trim()
+          .toLowerCase();
+    }
+
+    const ref =
+      g.seanceRef &&
+      g.seanceRef.id
+        ? String(g.seanceRef.id)
+        : "";
+
+    return [
+      "seance",
+      String(g.titre || "")
+        .trim()
+        .toLowerCase(),
+      String(g.domaineCle || "")
+        .trim()
+        .toLowerCase(),
+      ref
+    ].join("|");
+  }
+
+
+  /* ---------- Même horaire + même contenu ---------- */
+
+  const map =
+    new Map();
+
+  jour.groupes.forEach(g=>{
+
+    const key = [
+      g.debut,
+      g.fin,
+      contenuKey(g)
+    ].join("|");
+
+    if(!map.has(key)){
+      map.set(key,{
+        debut:g.debut,
+        fin:g.fin,
+        groupes:[]
+      });
+    }
+
+    map.get(key).groupes.push(g);
+
+  });
+
+
+  const blocs =
+    Array.from(map.values())
+      .sort(
+        (a,b)=>
+          hm(a.debut)-hm(b.debut) ||
+          hm(a.fin)-hm(b.fin)
+      );
+
+
+  /* ---------- Lignes de chevauchement ---------- */
+
+  const lignes = [];
+
+  blocs.forEach(bloc=>{
+
+    let placee = false;
+
+    for(const ligne of lignes){
+
+      if(!ligne.some(
+        autre=>chevauche(bloc,autre)
+      )){
+        ligne.push(bloc);
+        placee = true;
+        break;
+      }
+
+    }
+
+    if(!placee){
+      lignes.push([bloc]);
+    }
+
+  });
+
+
+  const schedule =
+    document.createElement("div");
+
+  schedule.className =
+    "print-schedule";
+
+  /* ---------- Aides locales, calquées sur l'ancienne vue CJ ---------- */
+
+  function heureCourteImpr(hhmm){
+    if(!hhmm) return "";
+    const [h,m] = String(hhmm).split(":");
+    const hh = String(parseInt(h,10));
+    return (!m || m==="00") ? hh+"h" : hh+"h"+m;
+  }
+
+  function classifierGroupeImpr(g){
+    if(g.fixe && !g.adulte) return "banner";
+    const t = g.adulte && g.adulte.type;
+    if(t === "enseignant") return "ens";
+    if(t === "aesh" || t === "atsem" || t === "autre") return "aesh";
+    return "auto";
+  }
+
+  function renderEntreeImpr(bloc, g){
+    const eleves = (g.eleves||[]).map(id=>labelEleve(id));
+    const nomAdulte = g.adulte && g.adulte.nom ? " · " + escapeHTML(g.adulte.nom) : "";
+    return `
+      <div class="print-cj-entry">
+        <div class="print-cj-entry-time">${escapeHTML(heureCourteImpr(bloc.debut))}–${escapeHTML(heureCourteImpr(bloc.fin))}${nomAdulte}</div>
+        <div class="print-cj-entry-titre">${escapeHTML(g.titre || "")}</div>
+        ${g.domaineCle ? `<div class="print-cj-entry-domaine">${escapeHTML((g.niveau?g.niveau+" · ":"")+g.domaineCle)}</div>` : ""}
+        ${eleves.length ? `<div class="print-cj-entry-eleves">${eleves.map(escapeHTML).join(", ")}</div>` : ""}
+        ${g.remarque ? `<div class="print-cj-entry-remarque">⚠ ${escapeHTML(g.remarque)}</div>` : ""}
+      </div>`;
+  }
+
+  const table =
+    document.createElement("table");
+
+  table.className =
+    "print-cj-table";
+
+  table.innerHTML = `<thead><tr>
+    <th class="print-cj-col-creneau">Créneau</th>
+    <th>Enseignant</th>
+    <th>AESH / autre adulte</th>
+    <th>Autonomie</th>
+  </tr></thead>`;
+
+  const tbody =
+    document.createElement("tbody");
+
+  lignes.forEach(ligneBrute=>{
+
+    const ligne = ligneBrute.slice().sort(
+      (a,b)=>hm(a.debut)-hm(b.debut) || hm(a.fin)-hm(b.fin)
+    );
+
+    let minDebutStr = ligne[0].debut, maxFinStr = ligne[0].fin;
+    ligne.forEach(b=>{
+      if(hm(b.debut) < hm(minDebutStr)) minDebutStr = b.debut;
+      if(hm(b.fin) > hm(maxFinStr)) maxFinStr = b.fin;
+    });
+
+    const label = ligne.length === 1
+      ? (PC.libelleBloc(jour, ligne[0].debut, ligne[0].fin) || (heureCourteImpr(ligne[0].debut) + "–" + heureCourteImpr(ligne[0].fin)))
+      : (heureCourteImpr(minDebutStr) + "–" + heureCourteImpr(maxFinStr));
+
+    const cols = { ens: [], aesh: [], auto: [] };
+    const banners = [];
+
+    ligne.forEach(bloc=>{
+      (bloc.groupes || []).forEach(g=>{
+        const t = classifierGroupeImpr(g);
+        if(t === "banner"){
+          banners.push(g);
+        }else{
+          cols[t].push(renderEntreeImpr(bloc, g));
+        }
+      });
+    });
+
+    const aDuContenu = cols.ens.length || cols.aesh.length || cols.auto.length;
+    const titresBanner = [...new Set(banners.map(g=>g.titre).filter(Boolean))];
+
+    const tr = document.createElement("tr");
+
+    if(!aDuContenu && banners.length){
+      tr.className = "print-cj-banner-row";
+      tr.innerHTML = `
+        <td class="print-cj-col-creneau">${escapeHTML(label)}</td>
+        <td colspan="3">${escapeHTML(titresBanner.join(" · ") || "Créneau fixe")}</td>
+      `;
+    }else{
+      const noteBanner = titresBanner.length
+        ? `<div style="margin-top:3px;font-style:italic;font-size:7.6pt;color:#555;">${escapeHTML(titresBanner.join(" · "))}</div>`
+        : "";
+      tr.innerHTML = `
+        <td class="print-cj-col-creneau">${escapeHTML(label)}${noteBanner}</td>
+        <td>${cols.ens.join("") || `<span class="print-cj-empty">—</span>`}</td>
+        <td>${cols.aesh.join("") || `<span class="print-cj-empty">—</span>`}</td>
+        <td>${cols.auto.join("") || `<span class="print-cj-empty">—</span>`}</td>
+      `;
+    }
+
+    tbody.appendChild(tr);
+  });
+
+  table.appendChild(tbody);
+  schedule.appendChild(table);
+
+  root.appendChild(
+    schedule
+  );
+
+  /* ---------- Remarque / devoirs ---------- */
+
+  if(
+    String(jour.remarque || "").trim() ||
+    String(jour.devoirs || "").trim()
+  ){
+
+    const bottom =
+      document.createElement("div");
+
+    bottom.className =
+      "print-bottom";
+
+
+    bottom.innerHTML = `
+      <div class="print-bottom-box">
+        <div class="print-bottom-label">
+          Remarque
+        </div>
+        <div class="print-bottom-text">
+          ${escapeHTML(
+            jour.remarque || ""
+          )}
+        </div>
+      </div>
+
+      <div class="print-bottom-box">
+        <div class="print-bottom-label">
+          Devoirs
+        </div>
+        <div class="print-bottom-text">
+          ${escapeHTML(
+            jour.devoirs || ""
+          )}
+        </div>
+      </div>
+    `;
+
+
+    root.appendChild(
+      bottom
+    );
+
+  }
+
+
+  document.body.appendChild(
+    root
+  );
+
+}
+
+
+$("btn-print").addEventListener(
+  "click",
+  ()=>{
+    construireVueImpression();
+    window.print();
+  }
+);
+
+$("j-remarque").addEventListener("change", e=>{ jour.remarque=e.target.value; sauver(); });
+$("j-devoirs").addEventListener("change", e=>{ jour.devoirs=e.target.value; sauver(); });
+
+/* ---------------- Navigation jour ---------------- */
+async function allerA(nouvIso){
+  iso = nouvIso;
+  const url = new URL(location.href);
+  url.searchParams.set("date", iso);
+  history.replaceState(null, "", url);
+  rafraichirEtat();
+}
+$("prev-day").addEventListener("click", ()=> allerA(PC.dateISO(PC.addDays(PC.parseISO(iso), -1))));
+$("next-day").addEventListener("click", ()=> allerA(PC.dateISO(PC.addDays(PC.parseISO(iso), 1))));
+$("btn-today").addEventListener("click", ()=> allerA(PC.dateISO(new Date())));
+$("date-picker").addEventListener("change", e=>{ if(e.target.value) allerA(e.target.value); });
+
+// Si la grille/config/affectations changent dans un autre onglet (Planning
+// — Gestion ou Planning — Affichage), on relit l'état ici aussi, sans
+// jamais toucher aux groupes déjà modifiés à la main et sans jamais
+// générer automatiquement de séance. On ne le fait que si un planning a
+// été explicitement importé dans cette page (voir portail d'import).
+window.addEventListener("storage", (e)=>{
+  if(sessionActive() && [PC.STORE_CONFIG, PC.STORE_GRILLES, PC.STORE_AFFECT].includes(e.key)){
+    rafraichirEtat();
+  }
+});
+
+/* ---------------- Initialisation ---------------- */
+(function init(){
+  updateCoffreWidget();
+  afficherEtatSelonSession();
+  if(sessionActive()) rafraichirEtat();
+  chargerBanquePage();
+})();
+</script>
+
+<footer class="synapses-footer">
+    <div>Synapses — Grand Planificateur pédagogique</div>
+    <div>© 2026 Cskrh13 / Vincent · v0.9.0-test · 27/08/2026</div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<!-- SYNAPSES-AUTHOR: Cskrh13 / Vincent | © 2026 -->
+<meta name="author" content="Cskrh13 / Vincent">
+<meta name="copyright" content="© 2026 Cskrh13 / Vincent — Synapses">
+<meta name="application-name" content="Synapses">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Synapses — Portail pédagogique</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#1E2A4A;
+  --navy-deep:#141d33;
+  --bg:#F6F5F1;
+  --panel:#FFFFFF;
+  --panel-raised:#FAF9F5;
+  --line:#DEDBD2;
+  --ink:#20242E;
+  --ink-soft:#5B5F6B;
+  --accent-sky:#2E5EAA;
+  --ring:#2E5EAA;
+  --lecture:#B5502E;
+  --ecriture:#2A7F72;
+  --oral:#6B4E8E;
+  --vocabulaire:#B5871E;
+  --grammaire:#1E2A4A;
+  --radius:10px;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:'Inter',system-ui,sans-serif;line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{font-family:'Fraunces',serif;font-weight:600;margin:0;letter-spacing:-0.01em;}
+a{color:inherit;}
+button{font-family:inherit;cursor:pointer;}
+.eyebrow{
+  font-family:'Inter',sans-serif;font-size:12px;letter-spacing:0.06em;
+  text-transform:uppercase;color:var(--accent-sky);font-weight:700;
+}
+:focus-visible{outline:3px solid var(--ring);outline-offset:2px;}
+
+.skip-link{position:absolute;left:-999px;top:0;background:var(--navy);color:#fff;padding:10px 16px;z-index:999;border-radius:0 0 8px 0;}
+.skip-link:focus{left:0;}
+
+/* ===== Header (repris à l'identique de la DA du portail) ===== */
+header.site-header{background:var(--navy);color:#fff;position:sticky;top:0;z-index:50;border-bottom:3px solid var(--accent-sky);}
+.header-top{display:flex;align-items:center;justify-content:space-between;max-width:1240px;margin:0 auto;padding:14px 24px;gap:20px;flex-wrap:wrap;}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:#fff;}
+.brand-mark{width:40px;height:40px;border-radius:8px;background:linear-gradient(160deg,var(--accent-sky),#5486d6);display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-weight:700;font-size:18px;color:#fff;flex-shrink:0;}
+.brand-text{display:flex;flex-direction:column;line-height:1.15;}
+.brand-text .top{font-size:10.5px;letter-spacing:0.1em;text-transform:uppercase;color:#B9C6E5;font-family:'Inter',sans-serif;font-weight:600;}
+.brand-text .bottom{font-family:'Fraunces',serif;font-weight:600;font-size:17px;}
+nav.main-nav{display:flex;gap:6px;flex-wrap:wrap;row-gap:6px;align-items:center;}
+.nav-dropdown{flex:0 0 auto;position:relative;}
+.nav-dropdown>summary{height:36px;line-height:20px;list-style:none;color:#D9E0F2;font-size:14px;font-weight:500;padding:8px 12px;border-radius:6px;cursor:pointer;white-space:nowrap;display:block;box-sizing:border-box;}
+.nav-dropdown>summary::-webkit-details-marker{display:none;}
+.nav-dropdown>summary::after{content:"⌄";font-size:11px;margin-left:7px;opacity:.75;}
+.nav-dropdown[open]>summary,.nav-dropdown>summary:hover{background:rgba(255,255,255,.09);color:#fff;}
+.nav-dropdown-menu{position:absolute;top:100%;right:0;margin-top:7px;min-width:235px;background:var(--navy);border:1px solid rgba(255,255,255,.16);border-radius:8px;padding:7px;box-shadow:0 14px 30px rgba(0,0,0,.25);z-index:100;}
+.nav-dropdown-menu a{display:block!important;color:#D9E0F2!important;padding:9px 11px!important;border-radius:5px;margin:0!important;background:transparent!important;border:0!important;text-decoration:none;font-size:14px;}
+.nav-dropdown-menu a:hover{background:rgba(255,255,255,.09)!important;color:#fff!important;}
+.menu-separator{height:1px;background:rgba(255,255,255,.12);margin:6px 4px;}
+.menu-label{padding:5px 11px 3px;color:#9EADD0;font-family:'Inter',sans-serif;font-weight:700;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;}
+nav.main-nav a.nav-coffre{background:rgba(181,80,46,.16);border:1px solid rgba(181,80,46,.4);margin-left:4px;color:#fff;text-decoration:none;font-size:14px;font-weight:500;padding:8px 12px;border-radius:6px;height:36px;box-sizing:border-box;display:flex;align-items:center;white-space:nowrap;}
+nav.main-nav a.nav-coffre:hover{background:rgba(181,80,46,.3);}
+@media(max-width:760px){nav.main-nav{width:100%;}.nav-dropdown-menu{position:static;margin-top:4px;width:100%;}}
+
+/* ===== Hero ===== */
+.hero{
+  background:radial-gradient(1100px 460px at 12% -10%, rgba(46,94,170,.16), transparent 60%), var(--panel);
+  border-bottom:1px solid var(--line);
+  padding:70px 24px 56px;
+}
+.hero-inner{max-width:860px;margin:0 auto;}
+.hero h1{font-size:clamp(34px,5.2vw,58px);line-height:1.05;color:var(--navy);margin-top:14px;}
+.hero p.lead{max-width:680px;color:var(--ink-soft);font-size:17px;margin:20px 0 0;}
+.hero-cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px;}
+.btn{
+  font-family:'Inter',sans-serif;font-size:14px;font-weight:600;
+  border:1px solid var(--line);background:#fff;color:var(--navy);
+  padding:12px 20px;border-radius:8px;transition:background .15s,border-color .15s;
+  text-decoration:none;display:inline-flex;align-items:center;gap:8px;
+}
+.btn:hover{background:#F0EEE7;}
+.btn.primary{background:var(--navy);color:#fff;border-color:var(--navy);}
+.btn.primary:hover{background:var(--navy-deep);}
+.hero-meta{display:flex;gap:10px;flex-wrap:wrap;margin-top:26px;}
+.pill{background:#EFEDE5;border:1px solid var(--line);border-radius:999px;padding:7px 12px;font:500 12px 'IBM Plex Mono',monospace;color:var(--navy);}
+
+/* ===== Sections ===== */
+.section{max-width:1080px;margin:0 auto;padding:64px 24px;}
+.section-head{max-width:720px;margin-bottom:32px;}
+.section h2{font-size:31px;color:var(--navy);margin-top:8px;}
+.section-head p{color:var(--ink-soft);margin:12px 0 0;font-size:15px;}
+
+/* ===== Parcours pas-à-pas ===== */
+.timeline{position:relative;padding-left:30px;counter-reset:step;}
+.timeline:before{content:"";position:absolute;left:9px;top:6px;bottom:6px;width:2px;background:var(--line);}
+.step{position:relative;padding:0 0 30px 22px;counter-increment:step;}
+.step:last-child{padding-bottom:0;}
+.step:before{
+  content:counter(step);position:absolute;left:-30px;top:0;width:22px;height:22px;border-radius:50%;
+  background:var(--accent-sky);color:#fff;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;
+  display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 5px var(--bg);
+}
+.step-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:20px 22px;}
+.step-card h3{font-size:18px;color:var(--navy);margin-bottom:8px;}
+.step-card p{color:var(--ink-soft);font-size:14.5px;margin:0 0 12px;}
+.step-card a.step-link{
+  font-size:13px;font-weight:600;color:var(--accent-sky);text-decoration:none;
+  display:inline-flex;align-items:center;gap:5px;
+}
+.step-card a.step-link:hover{text-decoration:underline;}
+.step-tag{
+  display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:10.5px;font-weight:600;
+  padding:3px 9px;border-radius:20px;background:#EEECE3;color:var(--ink-soft);margin-bottom:10px;
+}
+
+/* ===== Grille d'outils ===== */
+.tool-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px;}
+.tool-card{
+  text-align:left;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+  padding:20px;position:relative;overflow:hidden;transition:transform .15s,box-shadow .15s,border-color .15s;
+  text-decoration:none;display:block;
+}
+.tool-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--dcolor,var(--accent-sky));}
+.tool-card:hover{transform:translateY(-2px);box-shadow:0 14px 28px -18px rgba(30,42,74,.35);border-color:#c7c2b3;}
+.tool-card h3{font-size:16.5px;color:var(--navy);padding-left:10px;line-height:1.35;}
+.tool-card p{font-size:13px;color:var(--ink-soft);margin-top:8px;padding-left:10px;line-height:1.55;}
+.tool-card .tc-arrow{display:block;margin-top:14px;padding-left:10px;font-size:12.5px;font-weight:600;color:var(--accent-sky);}
+.badge{
+  font-family:'IBM Plex Mono',monospace;font-size:10.5px;font-weight:600;padding:3px 8px;border-radius:20px;
+  background:color-mix(in srgb, var(--dcolor,var(--accent-sky)) 14%, white);color:var(--dcolor,var(--accent-sky));
+  margin-left:10px;
+}
+
+/* ===== Principe ===== */
+.principle{background:var(--navy);color:#fff;border-radius:var(--radius);padding:34px;}
+.principle p.quote{font-family:'Fraunces',serif;font-size:23px;line-height:1.4;margin:0;}
+.principle span{display:block;margin-top:14px;font:12px 'IBM Plex Mono',monospace;color:#B9C6E5;}
+
+/* ===== Avancement ===== */
+.status-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;}
+.status-card{background:var(--panel-raised);border:1px solid var(--line);border-radius:var(--radius);padding:18px;}
+.status-card .sc-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:7px;}
+.status-card.ok .sc-dot{background:var(--ecriture);}
+.status-card.wip .sc-dot{background:var(--vocabulaire);}
+.status-card h4{font-size:14px;color:var(--navy);display:inline;}
+.status-card p{font-size:12.5px;color:var(--ink-soft);margin:8px 0 0;line-height:1.5;}
+
+footer{background:var(--navy);color:#B9C6E5;padding:40px 24px 28px;margin-top:20px;}
+.footer-inner{max-width:1080px;margin:0 auto;display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;font-size:13px;}
+.footer-inner strong{color:#fff;font-family:'Fraunces',serif;}
+.footer-inner a{color:#B9C6E5;text-decoration:none;}
+.footer-inner a:hover{text-decoration:underline;}
+
+@media(max-width:760px){
+  .section{padding:48px 20px;}
+  .section h2{font-size:26px;}
+}
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Aller au contenu principal</a>
+
+<!-- ===================== HEADER ===================== -->
+<header class="site-header">
+  <div class="header-top">
+    <a href="index.html" class="brand">
+      <span class="brand-mark" aria-hidden="true">SY</span>
+      <span class="brand-text">
+        <span class="top">Portail non institutionnel</span>
+        <span class="bottom">Synapses</span>
+      </span>
+    </a>
+    <nav class="main-nav" aria-label="Navigation principale">
+      <details class="nav-dropdown">
+        <summary>Consulter le référentiel</summary>
+        <div class="nav-dropdown-menu">
+          <div class="menu-label">Référentiel des compétences</div>
+          <a href="ref-competences.html#niveaux">Parcourir par niveau</a>
+          <a href="ref-competences.html#disciplines">Parcourir par discipline</a>
+          <a href="ref-competences.html#repertoire">Rechercher une compétence</a>
+          <a href="ref-competences.html#vue-ensemble">Vue d'ensemble</a>
+          <div class="menu-separator"></div>
+          <a href="cartographie-competences.html">Cartographie des compétences</a>
+        </div>
+      </details>
+      <details class="nav-dropdown">
+        <summary>Préparer l'année</summary>
+        <div class="nav-dropdown-menu">
+          <div class="menu-label">Programmation pédagogique</div>
+          <a href="Programmation/sequences.html">Ma programmation</a>
+          <a href="Programmation/planning-gestion.html">Mon emploi du temps</a>
+          <a href="Programmation/generateur-sequences-projet.html">Créer une séquence</a>
+        </div>
+      </details>
+      <details class="nav-dropdown">
+        <summary>Pédagogie</summary>
+        <div class="nav-dropdown-menu">
+          <a href="Programmation/bibliotheque.html">Bibliothèque</a>
+          <a href="Programmation/veillepedagogie.html">Veille pédagogique</a>
+        </div>
+      </details>
+      <details class="nav-dropdown">
+        <summary>À propos</summary>
+        <div class="nav-dropdown-menu">
+          <a href="detailduprojet.html">Le projet Synapses</a>
+          <a href="feedback/feedback.html">Donner mon avis</a>
+          <a href="feedback/maintenance.html">État du site</a>
+        </div>
+      </details>
+      <a href="fata-morgana/coffre.html" class="nav-coffre">🔒 Besoins éducatifs particuliers</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- ===================== HERO ===================== -->
+  <section class="hero">
+    <div class="hero-inner">
+      <p class="eyebrow">Synapses · Grand planificateur pédagogique</p>
+      <h1>Un bureau pédagogique pour piloter votre année</h1>
+      <p class="lead">Synapses relie le référentiel des programmes, la programmation annuelle, les séquences, les séances et le cahier journal dans un seul environnement cohérent. Cette page vous guide, étape par étape, dans la prise en main des outils.</p>
+      <div class="hero-cta">
+        <a class="btn primary" href="Programmation/planning-gestion.html">Commencer par mes classes →</a>
+        <a class="btn" href="ref-competences.html">Explorer le référentiel</a>
+      </div>
+      <div class="hero-meta">
+        <span class="pill">Projet non institutionnel</span>
+        <span class="pill">Cycle 2 · Cycle 3 · ULIS</span>
+        <span class="pill">Données stockées localement</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== PARCOURS PAS-À-PAS ===================== -->
+  <section class="section">
+    <div class="section-head">
+      <p class="eyebrow">Par où commencer ?</p>
+      <h2>Le parcours conseillé, dans l'ordre</h2>
+      <p>Chaque étape s'appuie sur la précédente : ce que vous renseignez au début (vos classes, vos emplois du temps) est ensuite réutilisé automatiquement plus loin dans les outils, sans ressaisie.</p>
+    </div>
+
+    <div class="timeline">
+      <div class="step">
+        <div class="step-card">
+          <span class="step-tag">Étape 1 · Fondations</span>
+          <h3>Configurer mes classes et mon emploi du temps</h3>
+          <p>Déclarez vos classes (niveau, couleur), vos grilles horaires, vos récréations et, si besoin, votre organisation ULIS. C'est la base sur laquelle s'appuient toutes les autres pages.</p>
+          <a class="step-link" href="Programmation/planning-gestion.html">Ouvrir « Planning — Gestion » →</a>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-card">
+          <span class="step-tag">Étape 2 · Repères</span>
+          <h3>Explorer le référentiel de compétences</h3>
+          <p>Parcourez les compétences du programme par niveau, domaine ou mot-clé, pour repérer les objectifs sur lesquels vous voulez construire vos séquences.</p>
+          <a class="step-link" href="ref-competences.html">Ouvrir le référentiel →</a>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-card">
+          <span class="step-tag">Étape 3 · Programmation</span>
+          <h3>Construire mes séquences et mes séances</h3>
+          <p>Créez vos séquences, positionnez-les sur les 36 semaines de l'année, puis détaillez chaque séance (objectif, déroulé, différenciation).</p>
+          <a class="step-link" href="Programmation/sequences.html">Ouvrir « Ma programmation » →</a>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-card">
+          <span class="step-tag">Étape 4 · Vision globale</span>
+          <h3>Visualiser mon année et ma semaine</h3>
+          <p>Retrouvez vos grilles horaires et vos séances positionnées sur la semaine, classe par classe, pour vérifier la cohérence de votre organisation.</p>
+          <a class="step-link" href="Programmation/planning-affichage.html">Ouvrir « Mon emploi du temps » →</a>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-card">
+          <span class="step-tag">Étape 5 · Quotidien</span>
+          <h3>Tenir mon cahier journal au jour le jour</h3>
+          <p>Le cahier journal reprend automatiquement les séances déjà préparées pour la journée, à compléter ou ajuster selon le réel de la classe.</p>
+          <a class="step-link" href="Programmation/planning-jour.html">Ouvrir le cahier journal →</a>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-card">
+          <span class="step-tag">Étape 6 · Besoins éducatifs particuliers</span>
+          <h3>Prendre en compte mes élèves à besoins éducatifs particuliers</h3>
+          <p>Suivi individuel, grilles d'analyse, adaptations : ces éléments se préparent dans un espace à part, chiffré et protégé par un mot de passe, pour que la prise en compte de ces élèves reste organisée sans exposer d'informations sensibles.</p>
+          <a class="step-link" href="fata-morgana/coffre.html">Ouvrir l'espace élèves à besoins particuliers →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== OUTILS EN UN COUP D'ŒIL ===================== -->
+  <section class="section" style="background:var(--panel-raised);border-top:1px solid var(--line);border-bottom:1px solid var(--line);">
+    <div class="section-head">
+      <p class="eyebrow">Vue d'ensemble</p>
+      <h2>Les outils, en un coup d'œil</h2>
+      <p>Vous pouvez aussi entrer directement par n'importe lequel de ces outils, sans suivre le parcours pas à pas.</p>
+    </div>
+    <div class="tool-grid">
+      <a class="tool-card" href="ref-competences.html" style="--dcolor:#B5502E;">
+        <h3>Référentiel des compétences<span class="badge">Repères</span></h3>
+        <p>Le texte du programme, organisé par niveau, domaine et sous-domaine, avec exemples de réussite.</p>
+        <span class="tc-arrow">Ouvrir →</span>
+      </a>
+      <a class="tool-card" href="cartographie-competences.html" style="--dcolor:#6B4E8E;">
+        <h3>Cartographie des compétences<span class="badge">Repères</span></h3>
+        <p>Une carte interactive en 3D reliant compétences, séquences et séances entre elles.</p>
+        <span class="tc-arrow">Ouvrir →</span>
+      </a>
+      <a class="tool-card" href="Programmation/sequences.html" style="--dcolor:#2A7F72;">
+        <h3>Ma programmation<span class="badge">Séquences</span></h3>
+        <p>Créer, positionner sur l'année et détailler vos séquences et vos séances.</p>
+        <span class="tc-arrow">Ouvrir →</span>
+      </a>
+      <a class="tool-card" href="Programmation/generateur-sequences-projet.html" style="--dcolor:#2A7F72;">
+        <h3>Créer une séquence<span class="badge">Séquences</span></h3>
+        <p>Un générateur pas-à-pas pour démarrer une nouvelle séquence de programmation.</p>
+        <span class="tc-arrow">Ouvrir →</span>
+      </a>
+      <a class="tool-card" href="Programmation/planning-gestion.html" style="--dcolor:#2E5EAA;">
+        <h3>Mes classes &amp; emploi du temps<span class="badge">Planning</span></h3>
+        <p>Déclarer vos classes, vos grilles horaires, vos récréations et votre organisation ULIS.</p>
+        <span class="tc-arrow">Ouvrir →</span>
+      </a>
+      <a class="tool-card" href="Programmation/planning-affichage.html" style="--dcolor:#2E5EAA;">
+        <h3>Mon emploi du temps<span class="badge">Planning</span></h3>
+        <p>La vue semaine de vos classes, avec les séances déjà positionnées.</p>
+        <span class="tc-arrow">Ouvrir →</span>
+      </a>
+      <a class="tool-card" href="Programmation/planning-jour.html" style="--dcolor:#B5871E;">
+        <h3>Cahier journal<span class="badge">Quotidien</span></h3>
+        <p>La préparation du jour, pré-remplie à partir de votre programmation.</p>
+        <span class="tc-arrow">Ouvrir →</span>
+      </a>
+      <a class="tool-card" href="fata-morgana/coffre.html" style="--dcolor:#B5502E;">
+        <h3>Élèves à besoins éducatifs particuliers<span class="badge">Confidentiel</span></h3>
+        <p>Un espace chiffré pour organiser le suivi individuel, les adaptations et les grilles d'analyse liées à ces élèves.</p>
+        <span class="tc-arrow">Ouvrir →</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ===================== PRINCIPE ===================== -->
+  <section class="section">
+    <div class="principle">
+      <p class="quote">« Je planifie une fois, puis l'information circule partout. »</p>
+      <span>Le principe qui guide la construction de Synapses</span>
+    </div>
+  </section>
+
+  <!-- ===================== AVANCEMENT ===================== -->
+  <section class="section" style="padding-top:0;">
+    <div class="section-head">
+      <p class="eyebrow">Transparence</p>
+      <h2>Où en est le projet</h2>
+      <p>Synapses évolue régulièrement. Voici, en toute transparence, ce qui est stable et ce qui est encore en chantier.</p>
+    </div>
+    <div class="status-grid">
+      <div class="status-card ok"><h4><span class="sc-dot"></span>Référentiel &amp; cartographie</h4><p>Consultation, recherche et carte 3D des compétences.</p></div>
+      <div class="status-card ok"><h4><span class="sc-dot"></span>Programmation des séquences</h4><p>Création, positionnement sur l'année et détail des séances.</p></div>
+      <div class="status-card wip"><h4><span class="sc-dot"></span>Emploi du temps &amp; récréations</h4><p>Affichage multi-classes en cours d'ajustement sur certains écrans.</p></div>
+      <div class="status-card wip"><h4><span class="sc-dot"></span>Cahier journal</h4><p>Génération automatique à partir des séances, en cours de finalisation.</p></div>
+    </div>
+    <p style="margin-top:18px;"><a href="feedback/maintenance.html" style="color:var(--accent-sky);font-weight:600;text-decoration:none;">Voir l'état détaillé du site →</a> · <a href="feedback/feedback.html" style="color:var(--accent-sky);font-weight:600;text-decoration:none;">Signaler un problème →</a></p>
+  </section>
+
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <div><strong>Synapses — Grand Planificateur pédagogique</strong><br>Projet personnel et non institutionnel.</div>
+    <div>
+      <a href="detailduprojet.html">Détails du projet</a><br><br>
+      <a href="feedback/feedback.html">Donner mon avis</a><br><br>
+      © 2026 Cskrh13 / Vincent
+    </div>
+  </div>
+</footer>
+
+<script>
+// Les menus déroulants du nav (<details class="nav-dropdown">) se ferment
+// automatiquement dès qu'on ouvre un autre menu ou qu'on clique ailleurs sur la page.
+(function(){
+  const menus = document.querySelectorAll('nav.main-nav .nav-dropdown');
+  menus.forEach(menu=>{
+    menu.addEventListener('toggle', ()=>{
+      if(menu.open){
+        menus.forEach(autre=>{ if(autre!==menu) autre.open=false; });
+      }
+    });
+  });
+  document.addEventListener('click', e=>{
+    menus.forEach(menu=>{
+      if(menu.open && !menu.contains(e.target)) menu.open=false;
+    });
+  });
+})();
+</script>
+</body>
+</html>

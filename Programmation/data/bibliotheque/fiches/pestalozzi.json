@@ -1,0 +1,140 @@
+{
+  "id": "pestalozzi",
+  "nom": "Johann Heinrich Pestalozzi",
+  "type": "pedagogue",
+  "periode": "1746–1827",
+  "description_courte": "Pédagogue suisse qui articule tête, cœur et main et accorde une place importante à l’expérience concrète.",
+  "description": "Pédagogue suisse qui articule tête, cœur et main et accorde une place importante à l’expérience concrète.",
+  "courants": [
+    "education-nouvelle"
+  ],
+  "concepts": [
+    "experience",
+    "observation",
+    "activite"
+  ],
+  "pratiques": [
+    "manipulation",
+    "progression",
+    "concret-vers-abstrait"
+  ],
+  "influences": [
+    "rousseau",
+    "humanisme"
+  ],
+  "ouvrages": [
+    "Comment Gertrude instruit ses enfants"
+  ],
+  "biographie": "Pédagogue suisse qui articule tête, cœur et main et accorde une place importante à l’expérience concrète.",
+  "travail": {
+    "principe_directeur": "Partir du concret, faire observer et manipuler, puis conduire progressivement vers la représentation et la conceptualisation.",
+    "pour_sequence": [
+      "Partir du concret, faire observer et manipuler, puis conduire progressivement vers la représentation et la conceptualisation."
+    ],
+    "pour_seance": [
+      "Partir du concret, faire observer et manipuler, puis conduire progressivement vers la représentation et la conceptualisation."
+    ],
+    "pour_programmation": [
+      "Choisir quelques principes cohérents avec les objectifs disciplinaires plutôt que chercher à reproduire intégralement une méthode."
+    ],
+    "adaptations": [
+      "manipulation",
+      "progression",
+      "concret-vers-abstrait"
+    ],
+    "points_de_vigilance": [
+      "Étudier son œuvre comme un jalon historique de l’éducation nouvelle ; distinguer ses formulations historiques des usages contemporains."
+    ],
+    "instruction_generation": "Partir du concret, faire observer et manipuler, puis conduire progressivement vers la représentation et la conceptualisation."
+  },
+  "culture_recherche": {
+    "statut": "dossier vivant",
+    "derniere_veille": "2026-09-06",
+    "actualites": [],
+    "recherches_recentes": [],
+    "debats": [],
+    "sources": [],
+    "note": "Étudier son œuvre comme un jalon historique de l’éducation nouvelle ; distinguer ses formulations historiques des usages contemporains."
+  },
+  "relations": {
+    "courants": [
+      "education-nouvelle"
+    ],
+    "proche_de": [
+      "froebel",
+      "montessori"
+    ]
+  },
+  "veille": {
+    "active": true,
+    "frequence": "mensuelle",
+    "themes": [
+      "pedagogie",
+      "recherche",
+      "education inclusive",
+      "formation des enseignants"
+    ],
+    "sources": [
+      "INSEI",
+      "eduscol",
+      "education.gouv.fr"
+    ]
+  },
+  "presentation": {
+    "chapo": "Pédagogue suisse qui articule tête, cœur et main et accorde une place importante à l’expérience concrète.",
+    "texte": [
+      "Pédagogue suisse qui articule tête, cœur et main et accorde une place importante à l’expérience concrète.",
+      "Sa pensée est généralement rattachée au(x) courant(s) suivant(s) : education-nouvelle. Ce rattachement aide à situer Pestalozzi dans l'histoire des idées pédagogiques, sans réduire pour autant l'originalité propre de son travail.",
+      "Pour aller directement aux sources, les textes de référence les plus souvent cités sont « Comment Gertrude instruit ses enfants ».",
+      "Comme pour toute figure historique de la pédagogie, il est utile de distinguer trois plans : ce que cette personne a effectivement écrit et mis en œuvre à son époque, ce que la postérité en a retenu ou simplifié, et ce qui, dans ce corpus, peut réellement nourrir une pratique de classe aujourd'hui."
+    ],
+    "role": "pédagogue",
+    "periode": "1746–1827",
+    "reperes": {
+      "periode": "1746–1827",
+      "courants": [
+        "education-nouvelle"
+      ],
+      "ouvrages_reference": [
+        "Comment Gertrude instruit ses enfants"
+      ]
+    }
+  },
+  "concepts_detailles": [
+    {
+      "id": "experience",
+      "terme": "Expérience",
+      "definition": "Chez Dewey notamment, contact actif et réfléchi avec le réel à partir duquel se construit la connaissance ; l'expérience éducative articule action et réflexion sur l'action."
+    },
+    {
+      "id": "observation",
+      "terme": "Observation",
+      "definition": "Attitude et méthode qui consistent à regarder attentivement l'enfant ou le réel avant d'agir, fondement revendiqué par de nombreux pédagogues, de Montessori à Decroly."
+    },
+    {
+      "id": "activite",
+      "terme": "Activité",
+      "definition": "Principe selon lequel l'enfant apprend en agissant sur le réel plutôt qu'en recevant passivement un enseignement ; fondement commun aux pédagogies dites « actives »."
+    }
+  ],
+  "pratiques_detaillees": [
+    {
+      "id": "manipulation",
+      "terme": "Manipulation",
+      "definition": "Action directe de l'élève sur un matériel concret, considérée par de nombreux pédagogues comme un préalable nécessaire à l'abstraction."
+    },
+    {
+      "id": "progression",
+      "terme": "Progression",
+      "definition": "Organisation dans le temps des apprentissages visés, qui peut être commune ou individualisée."
+    },
+    {
+      "id": "concret-vers-abstrait",
+      "terme": "Du concret vers l'abstrait",
+      "definition": "Progression pédagogique qui part de la manipulation ou de l'expérience sensible avant d'introduire la représentation abstraite ou symbolique correspondante."
+    }
+  ],
+  "podcasts": [],
+  "_schema_version": 2,
+  "_derniere_maj": "2026-09-08"
+}

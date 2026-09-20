@@ -1,0 +1,167 @@
+{
+  "id": "washburne",
+  "nom": "Carleton Washburne",
+  "type": "pedagogue",
+  "periode": "1889–1968",
+  "description_courte": "Pédagogue américain associé aux Winnetka Public Schools, il développe une organisation de l’enseignement combinant objectifs communs, progression individualisée et activités sociales.",
+  "description": "Pédagogue américain associé aux Winnetka Public Schools, il développe une organisation de l’enseignement combinant objectifs communs, progression individualisée et activités sociales.",
+  "courants": [
+    "pedagogie-active",
+    "education-nouvelle"
+  ],
+  "concepts": [
+    "individualisation",
+    "progression",
+    "maîtrise",
+    "coopération",
+    "curriculum"
+  ],
+  "pratiques": [
+    "travail individualisé",
+    "fiches auto-instructives",
+    "rythmes différenciés",
+    "activités collectives"
+  ],
+  "influences": [
+    "dewey",
+    "education-nouvelle",
+    "kilpatrick"
+  ],
+  "ouvrages": [
+    "Winnetka Plan"
+  ],
+  "biographie": "Pédagogue américain associé aux Winnetka Public Schools, il développe une organisation de l’enseignement combinant objectifs communs, progression individualisée et activités sociales.",
+  "travail": {
+    "principe_directeur": "Articuler une progression individualisée sur certains apprentissages avec des expériences collectives qui construisent culture commune et coopération.",
+    "pour_sequence": [
+      "Distinguer les objectifs qui nécessitent une progression individualisée de ceux qui gagnent à être appris collectivement.",
+      "Construire des critères de maîtrise observables."
+    ],
+    "pour_seance": [
+      "Permettre à l’élève d’avancer à son rythme sur une partie du travail, avec des points de régulation."
+    ],
+    "pour_programmation": [
+      "Éviter que l’individualisation devienne une juxtaposition permanente de parcours sans moments de culture commune."
+    ],
+    "adaptations": [
+      "plan de travail",
+      "maîtrise",
+      "progression",
+      "différenciation",
+      "collectif"
+    ],
+    "points_de_vigilance": [
+      "Le modèle historique de Winnetka ne doit pas être assimilé sans précaution aux dispositifs contemporains de personnalisation."
+    ],
+    "instruction_generation": "Combiner parcours individualisés sur des compétences ciblées et temps collectifs de construction de culture commune."
+  },
+  "culture_recherche": {
+    "statut": "dossier vivant",
+    "derniere_veille": "2026-09-06",
+    "actualites": [],
+    "recherches_recentes": [],
+    "debats": [],
+    "sources": [
+      "Winnetka Public Schools",
+      "INSEI"
+    ],
+    "note": "Washburne est une référence historique intéressante pour penser la différenciation sans abandonner le collectif."
+  },
+  "relations": {
+    "courants": [
+      "pedagogie-active"
+    ],
+    "proche_de": [
+      "parkhurst",
+      "dewey",
+      "kilpatrick"
+    ]
+  },
+  "veille": {
+    "active": true,
+    "frequence": "mensuelle",
+    "themes": [
+      "pedagogie",
+      "recherche",
+      "éducation inclusive",
+      "formation des enseignants"
+    ],
+    "sources": [
+      "Winnetka Public Schools",
+      "INSEI"
+    ]
+  },
+  "presentation": {
+    "chapo": "Pédagogue américain associé aux Winnetka Public Schools, il développe une organisation de l’enseignement combinant objectifs communs, progression individualisée et activités sociales.",
+    "texte": [
+      "Pédagogue américain associé aux Winnetka Public Schools, il développe une organisation de l’enseignement combinant objectifs communs, progression individualisée et activités sociales.",
+      "Sa pensée est généralement rattachée au(x) courant(s) suivant(s) : pedagogie-active, education-nouvelle. Ce rattachement aide à situer Washburne dans l'histoire des idées pédagogiques, sans réduire pour autant l'originalité propre de son travail.",
+      "Pour aller directement aux sources, les textes de référence les plus souvent cités sont « Winnetka Plan ».",
+      "Comme pour toute figure historique de la pédagogie, il est utile de distinguer trois plans : ce que cette personne a effectivement écrit et mis en œuvre à son époque, ce que la postérité en a retenu ou simplifié, et ce qui, dans ce corpus, peut réellement nourrir une pratique de classe aujourd'hui."
+    ],
+    "role": "pédagogue",
+    "periode": "1889–1968",
+    "reperes": {
+      "periode": "1889–1968",
+      "courants": [
+        "pedagogie-active",
+        "education-nouvelle"
+      ],
+      "ouvrages_reference": [
+        "Winnetka Plan"
+      ]
+    }
+  },
+  "concepts_detailles": [
+    {
+      "id": "individualisation",
+      "terme": "Individualisation",
+      "definition": "Ajustement du parcours, du rythme ou des supports d'apprentissage à chaque élève pris isolément."
+    },
+    {
+      "id": "progression",
+      "terme": "Progression",
+      "definition": "Organisation dans le temps des apprentissages, qui peut être commune à la classe ou individualisée selon le rythme de chaque élève."
+    },
+    {
+      "id": "maîtrise",
+      "terme": "Maîtrise",
+      "definition": "Niveau de compétence suffisant pour utiliser un savoir ou un savoir-faire de manière fiable, souvent visé avant de passer à une notion suivante."
+    },
+    {
+      "id": "coopération",
+      "terme": "Coopération",
+      "definition": "Organisation du travail scolaire dans laquelle les élèves s'entraident et construisent ensemble, plutôt que d'être placés en situation de seule compétition individuelle."
+    },
+    {
+      "id": "curriculum",
+      "terme": "Curriculum",
+      "definition": "Organisation d'ensemble des contenus et des progressions enseignés, que certains pédagogues proposent de repenser à partir des besoins de l'enfant plutôt que des seules disciplines."
+    }
+  ],
+  "pratiques_detaillees": [
+    {
+      "id": "travail individualisé",
+      "terme": "Travail individualisé",
+      "definition": "Organisation dans laquelle chaque élève avance sur des tâches adaptées à son propre niveau et à son propre rythme."
+    },
+    {
+      "id": "fiches auto-instructives",
+      "terme": "Fiches auto-instructives",
+      "definition": "Supports de travail conçus pour permettre à l'élève de progresser seul, étape par étape, avec un système d'autocorrection intégré."
+    },
+    {
+      "id": "rythmes différenciés",
+      "terme": "Rythmes différenciés",
+      "definition": "Organisation du temps scolaire qui tient compte des variations individuelles de rythme d'apprentissage et de fatigue des élèves."
+    },
+    {
+      "id": "activités collectives",
+      "terme": "Activités collectives",
+      "definition": "Tâches réalisées ensemble par la classe ou un groupe d'élèves, qui favorisent la coopération et donnent un cadre commun à l'apprentissage."
+    }
+  ],
+  "podcasts": [],
+  "_schema_version": 2,
+  "_derniere_maj": "2026-09-08"
+}

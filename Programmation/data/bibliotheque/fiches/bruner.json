@@ -1,0 +1,160 @@
+{
+  "id": "bruner",
+  "nom": "Jerome Bruner",
+  "type": "pedagogue",
+  "periode": "1915–2016",
+  "description_courte": "Psychologue américain qui a travaillé sur les représentations, la découverte guidée, le curriculum et l’étayage.",
+  "description": "Psychologue américain qui a travaillé sur les représentations, la découverte guidée, le curriculum et l’étayage.",
+  "courants": [
+    "socioconstructivisme",
+    "pedagogie-active"
+  ],
+  "concepts": [
+    "etayage",
+    "representation",
+    "curriculum",
+    "spirale"
+  ],
+  "pratiques": [
+    "questionnement",
+    "guidage",
+    "decouverte-guidee",
+    "revisitation"
+  ],
+  "influences": [
+    "psychologie cognitive",
+    "vygotski",
+    "piaget",
+    "pragmatisme"
+  ],
+  "ouvrages": [
+    "The Process of Education",
+    "Actual Minds, Possible Worlds"
+  ],
+  "biographie": "Psychologue américain qui a travaillé sur les représentations, la découverte guidée, le curriculum et l’étayage.",
+  "travail": {
+    "principe_directeur": "Structurer les apprentissages par une progression accessible, multiplier les représentations, guider la recherche et revenir régulièrement sur les notions avec une complexité croissante.",
+    "pour_sequence": [
+      "Structurer les apprentissages par une progression accessible, multiplier les représentations, guider la recherche et revenir régulièrement sur les notions avec une complexité croissante."
+    ],
+    "pour_seance": [
+      "Structurer les apprentissages par une progression accessible, multiplier les représentations, guider la recherche et revenir régulièrement sur les notions avec une complexité croissante."
+    ],
+    "pour_programmation": [
+      "Choisir quelques principes cohérents avec les objectifs disciplinaires plutôt que chercher à reproduire intégralement une méthode."
+    ],
+    "adaptations": [
+      "questionnement",
+      "guidage",
+      "decouverte-guidee",
+      "revisitation"
+    ],
+    "points_de_vigilance": [
+      "La « pédagogie de la découverte » ne signifie pas découverte sans guidage ; les travaux de Bruner ont évolué au fil de sa carrière."
+    ],
+    "instruction_generation": "Structurer les apprentissages par une progression accessible, multiplier les représentations, guider la recherche et revenir régulièrement sur les notions avec une complexité croissante."
+  },
+  "culture_recherche": {
+    "statut": "dossier vivant",
+    "derniere_veille": "2026-09-06",
+    "actualites": [],
+    "recherches_recentes": [],
+    "debats": [],
+    "sources": [],
+    "note": "La « pédagogie de la découverte » ne signifie pas découverte sans guidage ; les travaux de Bruner ont évolué au fil de sa carrière."
+  },
+  "relations": {
+    "courants": [
+      "socioconstructivisme",
+      "pedagogie-active"
+    ],
+    "proche_de": [
+      "vygotski",
+      "dewey"
+    ]
+  },
+  "veille": {
+    "active": true,
+    "frequence": "mensuelle",
+    "themes": [
+      "pedagogie",
+      "recherche",
+      "education inclusive",
+      "formation des enseignants"
+    ],
+    "sources": [
+      "INSEI",
+      "eduscol",
+      "education.gouv.fr"
+    ]
+  },
+  "presentation": {
+    "chapo": "Psychologue américain qui a travaillé sur les représentations, la découverte guidée, le curriculum et l’étayage.",
+    "texte": [
+      "Psychologue américain qui a travaillé sur les représentations, la découverte guidée, le curriculum et l’étayage.",
+      "Sa pensée est généralement rattachée au(x) courant(s) suivant(s) : socioconstructivisme, pedagogie-active. Ce rattachement aide à situer Bruner dans l'histoire des idées pédagogiques, sans réduire pour autant l'originalité propre de son travail.",
+      "Pour aller directement aux sources, les textes de référence les plus souvent cités sont « The Process of Education », « Actual Minds, Possible Worlds ».",
+      "Comme pour toute figure historique de la pédagogie, il est utile de distinguer trois plans : ce que cette personne a effectivement écrit et mis en œuvre à son époque, ce que la postérité en a retenu ou simplifié, et ce qui, dans ce corpus, peut réellement nourrir une pratique de classe aujourd'hui."
+    ],
+    "role": "pédagogue",
+    "periode": "1915–2016",
+    "reperes": {
+      "periode": "1915–2016",
+      "courants": [
+        "socioconstructivisme",
+        "pedagogie-active"
+      ],
+      "ouvrages_reference": [
+        "The Process of Education",
+        "Actual Minds, Possible Worlds"
+      ]
+    }
+  },
+  "concepts_detailles": [
+    {
+      "id": "etayage",
+      "terme": "Étayage",
+      "definition": "Soutien qu'un adulte ou un pair plus expérimenté apporte à l'enfant pour l'aider à réaliser une tâche qu'il ne pourrait pas mener seul, en réduisant progressivement ce soutien."
+    },
+    {
+      "id": "representation",
+      "terme": "Représentation",
+      "definition": "Image mentale ou modèle que l'enfant se construit du réel, objet de travail pour de nombreuses démarches d'apprentissage."
+    },
+    {
+      "id": "curriculum",
+      "terme": "Curriculum",
+      "definition": "Organisation d'ensemble des contenus et des progressions enseignés, que certains pédagogues proposent de repenser à partir des besoins de l'enfant plutôt que des seules disciplines."
+    },
+    {
+      "id": "spirale",
+      "terme": "Curriculum en spirale",
+      "definition": "Organisation des apprentissages selon laquelle une même notion est retravaillée à plusieurs reprises, à des niveaux de complexité croissants (notion associée à Bruner)."
+    }
+  ],
+  "pratiques_detaillees": [
+    {
+      "id": "questionnement",
+      "terme": "Questionnement",
+      "definition": "Pratique consistant à interroger les élèves pour faire émerger, préciser ou reformuler leur pensée plutôt qu'à leur livrer directement une réponse."
+    },
+    {
+      "id": "guidage",
+      "terme": "Guidage",
+      "definition": "Degré et modalités d'intervention de l'enseignant dans l'activité de l'élève, question centrale de désaccord entre pédagogies plus ou moins directives."
+    },
+    {
+      "id": "decouverte-guidee",
+      "terme": "Découverte guidée",
+      "definition": "Démarche dans laquelle l'enseignant amène l'élève à découvrir par lui-même une notion, en orientant discrètement son exploration plutôt qu'en l'exposant directement."
+    },
+    {
+      "id": "revisitation",
+      "terme": "Révisitation",
+      "definition": "Reprise, à des moments différents et à des niveaux de complexité croissants, d'une même notion (proche du principe de curriculum en spirale)."
+    }
+  ],
+  "podcasts": [],
+  "_schema_version": 2,
+  "_derniere_maj": "2026-09-08"
+}

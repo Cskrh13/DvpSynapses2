@@ -1,0 +1,178 @@
+{
+  "id": "ferriere",
+  "nom": "Adolphe Ferrière",
+  "type": "pedagogue",
+  "periode": "1879–1960",
+  "description_courte": "Pédagogue suisse, théoricien et animateur international de l’Éducation nouvelle, il contribue à formaliser les principes de l’école active et à diffuser le mouvement.",
+  "description": "Pédagogue suisse, théoricien et animateur international de l’Éducation nouvelle, il contribue à formaliser les principes de l’école active et à diffuser le mouvement.",
+  "courants": [
+    "education-nouvelle",
+    "pedagogie-active"
+  ],
+  "concepts": [
+    "école active",
+    "intérêt",
+    "autonomie",
+    "coopération",
+    "activité"
+  ],
+  "pratiques": [
+    "travail par projets",
+    "activité choisie",
+    "coopération",
+    "observation"
+  ],
+  "influences": [
+    "rousseau",
+    "dewey",
+    "montessori",
+    "education-nouvelle"
+  ],
+  "ouvrages": [
+    "L’École active",
+    "Transformons l’école"
+  ],
+  "biographie": "Pédagogue suisse, théoricien et animateur international de l’Éducation nouvelle, il contribue à formaliser les principes de l’école active et à diffuser le mouvement.",
+  "travail": {
+    "principe_directeur": "Penser l’activité de l’élève comme une activité intellectuelle et sociale organisée, et non comme une simple occupation.",
+    "pour_sequence": [
+      "Identifier l’activité cognitive attendue avant de choisir la forme de travail.",
+      "Donner aux élèves une tâche qui exige recherche, choix, justification ou coopération."
+    ],
+    "pour_seance": [
+      "Faire expliciter les démarches plutôt que mesurer uniquement la quantité de travail produite."
+    ],
+    "pour_programmation": [
+      "Alterner temps d’initiative, enseignement explicite et mise en commun."
+    ],
+    "adaptations": [
+      "enquête",
+      "projet",
+      "coopération",
+      "choix",
+      "conseil"
+    ],
+    "points_de_vigilance": [
+      "Ferrière a parfois été présenté comme représentant de toute l’Éducation nouvelle ; distinguer son propre cadre théorique de la diversité du mouvement."
+    ],
+    "instruction_generation": "Construire une activité qui exige réellement de penser, choisir, chercher ou coopérer, puis expliciter les apprentissages réalisés."
+  },
+  "culture_recherche": {
+    "statut": "dossier vivant",
+    "derniere_veille": "2026-09-06",
+    "actualites": [],
+    "recherches_recentes": [],
+    "debats": [],
+    "sources": [
+      "INSEI",
+      "Éduscol — école inclusive",
+      "Ministère de l’Éducation nationale",
+      "Réseau Canopé",
+      "Cairn.info"
+    ],
+    "note": "Ferrière est utile pour comprendre la structuration internationale de l’Éducation nouvelle au début du XXe siècle."
+  },
+  "relations": {
+    "courants": [
+      "education-nouvelle",
+      "pedagogie-active"
+    ],
+    "proche_de": [
+      "dewey",
+      "montessori",
+      "decroly",
+      "cousinet"
+    ]
+  },
+  "veille": {
+    "active": true,
+    "frequence": "mensuelle",
+    "themes": [
+      "pedagogie",
+      "recherche",
+      "éducation inclusive",
+      "formation des enseignants"
+    ],
+    "sources": [
+      "INSEI",
+      "Éduscol — école inclusive",
+      "Ministère de l’Éducation nationale",
+      "Réseau Canopé",
+      "Cairn.info"
+    ]
+  },
+  "presentation": {
+    "chapo": "Pédagogue suisse, théoricien et animateur international de l’Éducation nouvelle, il contribue à formaliser les principes de l’école active et à diffuser le mouvement.",
+    "texte": [
+      "Pédagogue suisse, théoricien et animateur international de l’Éducation nouvelle, il contribue à formaliser les principes de l’école active et à diffuser le mouvement.",
+      "Sa pensée est généralement rattachée au(x) courant(s) suivant(s) : education-nouvelle, pedagogie-active. Ce rattachement aide à situer Ferrière dans l'histoire des idées pédagogiques, sans réduire pour autant l'originalité propre de son travail.",
+      "Pour aller directement aux sources, les textes de référence les plus souvent cités sont « L’École active », « Transformons l’école ».",
+      "Comme pour toute figure historique de la pédagogie, il est utile de distinguer trois plans : ce que cette personne a effectivement écrit et mis en œuvre à son époque, ce que la postérité en a retenu ou simplifié, et ce qui, dans ce corpus, peut réellement nourrir une pratique de classe aujourd'hui."
+    ],
+    "role": "pédagogue",
+    "periode": "1879–1960",
+    "reperes": {
+      "periode": "1879–1960",
+      "courants": [
+        "education-nouvelle",
+        "pedagogie-active"
+      ],
+      "ouvrages_reference": [
+        "L’École active",
+        "Transformons l’école"
+      ]
+    }
+  },
+  "concepts_detailles": [
+    {
+      "id": "école active",
+      "terme": "École active",
+      "definition": "Courant qui place l'activité propre de l'élève, et non la transmission descendante, au centre de l'acte d'apprendre."
+    },
+    {
+      "id": "intérêt",
+      "terme": "Intérêt",
+      "definition": "Mobile authentique de l'enfant, que plusieurs pédagogues considèrent comme le moteur nécessaire de l'attention et de l'apprentissage, à distinguer de l'amusement superficiel."
+    },
+    {
+      "id": "autonomie",
+      "terme": "Autonomie",
+      "definition": "Capacité de l'élève à agir, choisir et apprendre sans dépendre en permanence de la validation ou de la direction de l'adulte."
+    },
+    {
+      "id": "coopération",
+      "terme": "Coopération",
+      "definition": "Organisation du travail scolaire dans laquelle les élèves s'entraident et construisent ensemble, plutôt que d'être placés en situation de seule compétition individuelle."
+    },
+    {
+      "id": "activité",
+      "terme": "Activité",
+      "definition": "Principe selon lequel l'enfant apprend en agissant sur le réel plutôt qu'en recevant passivement un enseignement ; fondement commun aux pédagogies dites « actives »."
+    }
+  ],
+  "pratiques_detaillees": [
+    {
+      "id": "travail par projets",
+      "terme": "Travail par projets",
+      "definition": "Organisation de l'enseignement autour de la réalisation de projets concrets menés par les élèves."
+    },
+    {
+      "id": "activité choisie",
+      "terme": "Activité choisie",
+      "definition": "Tâche que l'élève sélectionne lui-même parmi un ensemble d'activités possibles, en fonction de son intérêt ou de son besoin du moment."
+    },
+    {
+      "id": "coopération",
+      "terme": "Coopération",
+      "definition": "Organisation du travail dans laquelle les élèves s'entraident et avancent ensemble plutôt que seuls face à la tâche."
+    },
+    {
+      "id": "observation",
+      "terme": "Observation",
+      "definition": "Recueil attentif d'informations sur l'enfant ou sur un phénomène, préalable indispensable à l'adaptation de l'action pédagogique."
+    }
+  ],
+  "podcasts": [],
+  "_schema_version": 2,
+  "_derniere_maj": "2026-09-08"
+}
