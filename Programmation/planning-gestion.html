@@ -136,6 +136,7 @@ table.vac td{padding:6px 8px;border-top:1px solid var(--line);}
 .disp-group h4{font-size:12px;margin:0 0 7px;}
 .disp-student{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:4px 6px;margin:3px 0;border-radius:5px;background:var(--panel-raised);font-size:11.5px;}
 .disp-student button{border:0;background:transparent;color:var(--danger);cursor:pointer;font-size:12px;}
+.disp-student-force{background:#FBF3E9;border:1px solid #EAD9BC;color:#7A5A22;font-weight:600;}
 .disp-empty{font-size:11px;color:var(--ink-soft);font-style:italic;}
 .disp-roster{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px;}
 .disp-roster button{border:1px solid var(--line);background:#fff;border-radius:14px;padding:4px 9px;font-size:11px;font-weight:600;cursor:pointer;}
@@ -2725,6 +2726,30 @@ function nomsAnonPourGroupe(g, roster){
   const map=new Map(roster.map((x,i)=>[x.id,`E${String(i+1).padStart(2,"0")}`]));
   return (g||[]).map(id=>map.get(id)).filter(Boolean);
 }
+// Élève(s) auprès de qui l'AESH est affectée EN CLASSE (checkbox « AESH »
+// de l'onglet Affectation) sur un jour/créneau donné, tous chevauchements
+// horaires confondus. Une seule AESH ne peut être qu'à un seul endroit à
+// la fois : sert à la faire apparaître « de force » dans le planning du
+// dispositif sur ce créneau, et à bloquer toute nouvelle affectation au
+// groupe AESH du dispositif tant qu'elle est occupée en classe.
+function aeshOccupeeEnClasseSurCreneau(jour, debut, fin){
+  if(!coffre || !coffre.ouvert) return [];
+  const dMin=RH.heureVersMin(debut), fMin=RH.heureVersMin(fin);
+  const occ=[];
+  (coffre.listerEleves ? coffre.listerEleves() : []).forEach(e=>{
+    (Array.isArray(e.planning)?e.planning:[]).forEach(p=>{
+      if(p.typeLieu!=="classe" || p.aesh!==true) return;
+      if(Number(p.jour)!==Number(jour)) return;
+      if(!p.debut || !p.fin) return;
+      if(!RH.chevaucheMin(RH.heureVersMin(p.debut), RH.heureVersMin(p.fin), dMin, fMin)) return;
+      occ.push({
+        eleveNom: (e.identite&&e.identite.prenom) || e.identifiantSynapses,
+        classeNom: p.classeNom || ""
+      });
+    });
+  });
+  return occ;
+}
 function renderDispositifSelect(){
   const sel=$("disp-repartition-select"); if(!sel) return;
   const ds=config.dispositifs||[];
@@ -2756,6 +2781,7 @@ function renderDispositif(){
     const slot=document.createElement("div"); slot.className="disp-slot";
     const roster=elevesSurDispositif(id,dispositifJourCourant,c.id);
     const groupes=groupesExistantsDisp(id,dispositifJourCourant,c);
+    const aeshOccupeeClasse=aeshOccupeeEnClasseSurCreneau(dispositifJourCourant,c.debut,c.fin);
     slot.innerHTML=`<div class="disp-slot-head"><span class="horaire">${escapeHTMLTexte(c.debut)}–${escapeHTMLTexte(c.fin)}</span><span>${escapeHTMLTexte(GrilleManager.libelleCreneau(c)||"Créneau")}</span><span class="hint">${roster.length} élève(s)</span></div><div class="disp-groups"></div><div style="padding:0 10px 10px;"><span class="hint">Seuls les élèves affectés à ce créneau du dispositif sont proposés.</span></div>`;
     const gs=slot.querySelector(".disp-groups");
     [["enseignant","Enseignant"],["aesh","AESH"],["autonomie","Autonomie"]].forEach(([key,label])=>{
@@ -2764,6 +2790,31 @@ function renderDispositif(){
       const list=box.querySelector(".disp-students"), chooser=box.querySelector(".disp-roster");
       const renderBox=()=>{
         list.innerHTML="";
+
+        // AESH occupée en classe sur ce créneau (checkbox « AESH » de
+        // l'onglet Affectation) : on la fait apparaître de force auprès de
+        // l'élève concerné, et on bloque toute nouvelle affectation au
+        // dispositif — elle est considérée comme dans la salle de la
+        // classe, pas dans celle du dispositif.
+        if(key==="aesh" && aeshOccupeeClasse.length){
+          aeshOccupeeClasse.forEach(occ=>{
+            const d=document.createElement("div"); d.className="disp-student disp-student-force";
+            d.title="AESH affectée en classe sur ce créneau (onglet Affectation) — non modifiable ici.";
+            d.innerHTML=`<span>🔒 ${escapeHTMLTexte(occ.eleveNom)}${occ.classeNom?` — ${escapeHTMLTexte(occ.classeNom)}`:""}</span>`;
+            list.appendChild(d);
+          });
+          const ids=groupes[key]||[];
+          ids.forEach(idE=>{
+            const e=coffreEleveById(idE); if(!e) return;
+            const n=(e.identite&&e.identite.prenom)||e.identifiantSynapses;
+            const d=document.createElement("div"); d.className="disp-student"; d.innerHTML=`<span>${escapeHTMLTexte(n)}</span><button title="Retirer">×</button>`;
+            d.querySelector("button").onclick=()=>{ groupes[key]=ids.filter(x=>x!==idE); sauvegarderGroupesDisp(id,dispositifJourCourant,c,groupes,false); renderDispositifTout(); };
+            list.appendChild(d);
+          });
+          chooser.innerHTML=`<div class="disp-empty">AESH indisponible sur ce créneau : elle accompagne ${aeshOccupeeClasse.map(o=>escapeHTMLTexte(o.eleveNom)).join(", ")} en classe.</div>`;
+          return;
+        }
+
         const ids=groupes[key]||[];
         if(!ids.length) list.innerHTML='<div class="disp-empty">Aucun élève.</div>';
         ids.forEach(idE=>{
