@@ -233,6 +233,8 @@ table.affg .affg-aesh-toggle{font-size:10px;font-weight:700;letter-spacing:.02em
 table.affg .affg-aesh-toggle.actif{background:#2563eb;border-color:#2563eb;color:#fff;}
 table.affg .affg-aesh-toggle:disabled{opacity:.35;cursor:not-allowed;}
 table.affg .affg-aesh-toggle.masque{display:none;}
+table.affg .affg-cointer-toggle{display:block;font-size:10px;font-weight:600;padding:2px 6px;margin:3px 0 5px;border-radius:9px;border:1px solid var(--line);background:#fff;color:var(--ink-soft);cursor:pointer;line-height:1.4;width:100%;text-align:left;}
+table.affg .affg-cointer-toggle.actif{background:#7A5A22;border-color:#7A5A22;color:#fff;}
 
 /* ---- Affectation dispositif (ULIS/SEGPA/RASED) ----
  * Rendue avec la même identité visuelle que la grille des classes
@@ -732,6 +734,12 @@ function toast(msg){ const t=$("toast"); t.textContent=msg; t.classList.add("sho
 
 let config = configMgr.charger();
 config.dispositifGroupes = config.dispositifGroupes || {};
+// Cointervention en classe ordinaire : l'enseignant référent d'un
+// dispositif (ULIS) co-intervient avec l'enseignant titulaire, sur un
+// créneau de la grille d'une classe. Clé "classeId::creneauId" -> objet
+// { actif, dispositifId }. Non nominatif (aucun élève) : ne concerne que
+// des adultes, donc stocké ici comme le reste de la configuration.
+config.coInterventionUlis = config.coInterventionUlis || {};
 let dispositifJourCourant = null;
 let dispositifIdCourant = null;
 let grilles = grilleMgr.charger();
@@ -1906,6 +1914,45 @@ function construireOccupationAeshPersistante(excludeClasseId){
   return occ;
 }
 
+function cleCointervention(classeId, creneauId){ return classeId+"::"+creneauId; }
+
+/* Bouton de cointervention ULIS sur un créneau de classe : l'enseignant
+   référent du dispositif choisi co-intervient avec le titulaire sur le
+   groupe classe entier (pas de répartition par élève, donc rien à écrire
+   dans le coffre — uniquement dans config, comme dispositifGroupes). */
+function construireToggleCointervention(cl, c, dispsLies){
+  const cle=cleCointervention(cl.id, c.id);
+  const etat=config.coInterventionUlis[cle];
+  const actif=!!(etat && etat.actif);
+  const dispId=(etat && etat.dispositifId) || dispsLies[0].id;
+  const disp=dispsLies.find(d=>d.id===dispId) || dispsLies[0];
+
+  const btn=document.createElement("button");
+  btn.type="button";
+  btn.className="affg-cointer-toggle"+(actif?" actif":"");
+  btn.textContent=actif
+    ? `🤝 Co-intervention ULIS — ${disp.enseignant||disp.nom}`
+    : "🤝 Co-intervention ULIS";
+  btn.title=actif
+    ? `${disp.enseignant||disp.nom} co-intervient avec ${cl.enseignant||"l'enseignant titulaire"} sur ce créneau — cliquer pour retirer.`
+    : `Marquer ${disp.enseignant||"l'enseignant du dispositif"} comme co-intervenant avec ${cl.enseignant||"le titulaire"} sur ce créneau.`;
+  btn.addEventListener("click", ()=>{
+    const nouvelEtat = actif ? null : { actif:true, dispositifId: dispsLies.length>1 ? dispId : dispsLies[0].id };
+    sauvegarderCointervention(cl.id, c.id, nouvelEtat);
+  });
+  return btn;
+}
+
+function sauvegarderCointervention(classeId, creneauId, etat){
+  const cle=cleCointervention(classeId, creneauId);
+  if(etat) config.coInterventionUlis[cle]=etat;
+  else delete config.coInterventionUlis[cle];
+  configMgr.sauver(config);
+  toast(etat ? "Cointervention enregistrée." : "Cointervention retirée.");
+  renderAffgGrille();
+  if(typeof renderDispositifTout==="function") renderDispositifTout();
+}
+
 function renderAffgGrille(){
   const wrap=$("affg-wrap"),hint=$("affg-sans-coffre");
   const classeId=$("affg-classe").value;
@@ -1920,6 +1967,7 @@ function renderAffgGrille(){
   const roster=elevesParClasse[classeId]||[];
   if(!roster.length){hint.style.display="";hint.textContent="Aucun élève chargé dans cette classe.";return;}
   hint.style.display="none";
+  const cl=configMgr.classeById(config, classeId);
 
   // Lecture seule : les créneaux de la classe servent uniquement de référence.
   const creneaux=(grilles[classeId]||[]).slice().sort(
@@ -2011,6 +2059,15 @@ function renderAffgGrille(){
         const nom=GrilleManager.libelleCreneau(c);
         if(nom){
           const lib=document.createElement("div");lib.className="affg-creneau-libelle";lib.textContent=nom;td.appendChild(lib);
+        }
+
+        // Cointervention ULIS : l'enseignant référent du dispositif co-
+        // intervient avec l'enseignant titulaire sur ce créneau (groupe
+        // classe entier, pas de répartition par élève). Uniquement proposé
+        // si la classe est liée à au moins un dispositif.
+        const dispsLies=(config.dispositifs||[]).filter(d=>(cl.dispositifs||[]).includes(d.id));
+        if(dispsLies.length){
+          td.appendChild(construireToggleCointervention(cl, c, dispsLies));
         }
 
         roster.forEach(ref=>{
@@ -2750,6 +2807,28 @@ function aeshOccupeeEnClasseSurCreneau(jour, debut, fin){
   });
   return occ;
 }
+// Cointervention(s) ULIS en cours pour CE dispositif sur un jour/créneau
+// donné (config.coInterventionUlis) : l'enseignant référent y est alors en
+// classe avec le titulaire, pas au dispositif. Sert à le faire apparaître
+// de force dans la répartition et à bloquer toute nouvelle affectation au
+// groupe « Enseignant » du dispositif sur ce créneau.
+function cointerventionOccupeSurCreneau(dispId, jour, debut, fin){
+  const dMin=RH.heureVersMin(debut), fMin=RH.heureVersMin(fin);
+  const occ=[];
+  Object.keys(config.coInterventionUlis||{}).forEach(cle=>{
+    const etat=config.coInterventionUlis[cle];
+    if(!etat || etat.actif!==true || etat.dispositifId!==dispId) return;
+    const idx=cle.indexOf("::");
+    if(idx===-1) return;
+    const classeId=cle.slice(0,idx), creneauId=cle.slice(idx+2);
+    const c=(grilles[classeId]||[]).find(x=>x.id===creneauId);
+    if(!c || Number(c.jour)!==Number(jour)) return;
+    if(!RH.chevaucheMin(RH.heureVersMin(c.debut), RH.heureVersMin(c.fin), dMin, fMin)) return;
+    const cl=(config.classes||[]).find(x=>x.id===classeId);
+    occ.push({classeNom: cl ? cl.nom : classeId});
+  });
+  return occ;
+}
 function renderDispositifSelect(){
   const sel=$("disp-repartition-select"); if(!sel) return;
   const ds=config.dispositifs||[];
@@ -2782,6 +2861,7 @@ function renderDispositif(){
     const roster=elevesSurDispositif(id,dispositifJourCourant,c.id);
     const groupes=groupesExistantsDisp(id,dispositifJourCourant,c);
     const aeshOccupeeClasse=aeshOccupeeEnClasseSurCreneau(dispositifJourCourant,c.debut,c.fin);
+    const enseignantEnCointervention=cointerventionOccupeSurCreneau(id,dispositifJourCourant,c.debut,c.fin);
     slot.innerHTML=`<div class="disp-slot-head"><span class="horaire">${escapeHTMLTexte(c.debut)}–${escapeHTMLTexte(c.fin)}</span><span>${escapeHTMLTexte(GrilleManager.libelleCreneau(c)||"Créneau")}</span><span class="hint">${roster.length} élève(s)</span></div><div class="disp-groups"></div><div style="padding:0 10px 10px;"><span class="hint">Seuls les élèves affectés à ce créneau du dispositif sont proposés.</span></div>`;
     const gs=slot.querySelector(".disp-groups");
     [["enseignant","Enseignant"],["aesh","AESH"],["autonomie","Autonomie"]].forEach(([key,label])=>{
@@ -2812,6 +2892,19 @@ function renderDispositif(){
             list.appendChild(d);
           });
           chooser.innerHTML=`<div class="disp-empty">AESH indisponible sur ce créneau : elle accompagne ${aeshOccupeeClasse.map(o=>escapeHTMLTexte(o.eleveNom)).join(", ")} en classe.</div>`;
+          return;
+        }
+
+        // Enseignant référent en cointervention ULIS sur un créneau de
+        // classe qui chevauche celui-ci : il n'est pas au dispositif.
+        if(key==="enseignant" && enseignantEnCointervention.length){
+          enseignantEnCointervention.forEach(occ=>{
+            const d=document.createElement("div"); d.className="disp-student disp-student-force";
+            d.title="Enseignant en cointervention en classe sur ce créneau (onglet Affectation) — non modifiable ici.";
+            d.innerHTML=`<span>🔒 Co-intervention — ${escapeHTMLTexte(occ.classeNom)}</span>`;
+            list.appendChild(d);
+          });
+          chooser.innerHTML=`<div class="disp-empty">Enseignant indisponible sur ce créneau : cointervention en classe (${enseignantEnCointervention.map(o=>escapeHTMLTexte(o.classeNom)).join(", ")}).</div>`;
           return;
         }
 
@@ -2911,6 +3004,33 @@ function construirePlanningAdulte(role){
             eleves:noms
           });
         });
+      });
+    });
+  }
+
+  // Cointervention ULIS en classe ordinaire : l'enseignant référent du
+  // dispositif co-intervient avec le titulaire sur un créneau marqué dans
+  // l'onglet Affectation (config.coInterventionUlis). Concerne le groupe
+  // classe entier — on représente ça par une « colonne » portant le nom de
+  // la classe plutôt qu'un élève nommé, pour réutiliser tel quel l'affichage
+  // en traits verticaux (renderPlanningAdulteComplet / impression).
+  if(role==="enseignant"){
+    Object.keys(config.coInterventionUlis||{}).forEach(cle=>{
+      const etat=config.coInterventionUlis[cle];
+      if(!etat || etat.actif!==true) return;
+      const idx=cle.indexOf("::");
+      if(idx===-1) return;
+      const classeId=cle.slice(0,idx), creneauId=cle.slice(idx+2);
+      const disp=(config.dispositifs||[]).find(d=>d.id===etat.dispositifId);
+      const cl=(config.classes||[]).find(c=>c.id===classeId);
+      const c=(grilles[classeId]||[]).find(x=>x.id===creneauId);
+      if(!disp || !cl || !c) return;
+      const j=jours.find(x=>Number(x.n)===Number(c.jour));
+      if(!j) return;
+      lignes.push({
+        jourN:j.n, jourNom:j.nom, debut:c.debut, fin:c.fin,
+        lieu:`${cl.nom} (co-intervention avec ${cl.enseignant||"l'enseignant titulaire"})`,
+        eleves:[cl.nom]
       });
     });
   }
