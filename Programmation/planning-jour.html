@@ -720,12 +720,11 @@ main{max-width:1400px;margin:0 auto;padding:24px 24px 90px;}
 
   <div id="import-gate">
     <h2>Aucun planning chargé</h2>
-    <p>Cette page reste vide tant qu'aucun planning n'a été importé : elle n'affiche plus automatiquement d'anciennes données. Importez le fichier <code>.synapses</code> exporté depuis « Planning — Gestion » pour afficher le cahier journal, puis, si besoin, ouvrez le coffre élèves pour voir les noms.</p>
+    <p>Importez le fichier <code>.synapses</code> de votre planning pour afficher le cahier journal.</p>
     <div class="gate-actions">
       <button class="btn primary" id="btn-ouvrir-import-planning">📥 Importer le planning (.synapses)</button>
-      <button class="btn" id="btn-ouvrir-coffre-depuis-gate">🔐 Ouvrir le coffre élèves</button>
     </div>
-    <p class="gate-note">Les deux fichiers sont indépendants : le planning (classes, grilles, cahier journal) vient de « Planning — Gestion » ; le coffre (identités des élèves) est un fichier <code>.synapses</code> séparé.</p>
+    <p class="gate-note">Vous n'avez pas encore de planning ? Retournez dans <a href="planning-gestion.html">Planning — Gestion</a> pour le créer, puis exportez-le et revenez l'importer ici.</p>
   </div>
 
   <div id="app-content" style="display:none;">
@@ -1077,6 +1076,39 @@ if($("btn-coffre-toggle")){
   window.addEventListener('pagehide', ()=>{ if(coffre) coffre.purger(); });
 }
 
+/* ---------------- Purge des résidus de répartition automatique ----------------
+   Où vivait le résidu : dans le CAHIER JOURNAL (clé localStorage
+   « synapses_planning_journal »), et donc aussi dans le fichier .synapses
+   exporté depuis Planning — Gestion (paquet.journal). Les moteurs de
+   répartition (semaine / journée / ULIS) écrivent leurs groupes dans le
+   journal avec origine:null, modifie:true et repartitionAuto:true — donc
+   genererDepuisGrille() ne les retire JAMAIS (aucune origine de grille à
+   invalider), et matchFiltreClasse() les affiche sous TOUS les onglets
+   (ni classeId ni dispositifId). Leurs élèves sont des identifiants
+   figés au moment de la répartition, sans lien avec la classe actuelle.
+   Cette page ne fait jamais de répartition : à l'import, on retire donc
+   du paquet tous ces groupes AVANT qu'il ne soit écrit dans le stockage.
+   Les créneaux issus des grilles (classes, dispositifs) et les groupes
+   ajoutés à la main (sans repartitionAuto) ne sont pas touchés. */
+function purgerResidusRepartition(paquet){
+  const bilan = { groupes: 0, eleves: 0 };
+  const journal = paquet && paquet.journal;
+  if(!journal || typeof journal !== "object") return bilan;
+  Object.keys(journal).forEach(date=>{
+    const j = journal[date];
+    if(!j || !Array.isArray(j.groupes)) return;
+    j.groupes = j.groupes.filter(g=>{
+      if(g && g.repartitionAuto){
+        bilan.groupes++;
+        bilan.eleves += (g.eleves || []).length;
+        return false;
+      }
+      return true;
+    });
+  });
+  return bilan;
+}
+
 /* ---------------- Portail d'import : planning .synapses ---------------- */
 $("planning-import-browse-btn").addEventListener("click", ()=> $("planning-import-file").click());
 $("planning-import-file").addEventListener("change", ()=>{
@@ -1096,6 +1128,7 @@ $("btn-planning-import-confirm").addEventListener("click", async ()=>{
       throw new Error("Ce fichier n'est pas un planning .synapses protégé.");
     }
     const paquet = await paquetMgr.dechiffrer(enveloppe, pwd);
+    const purge = purgerResidusRepartition(paquet);
     const applique = paquetMgr.appliquer(paquet);
     sessionStorage.setItem(SESSION_KEY, "1");
     closeModal('modal-planning-import');
@@ -1104,19 +1137,14 @@ $("btn-planning-import-confirm").addEventListener("click", async ()=>{
     $("planning-import-file-name").textContent = "Aucun fichier sélectionné.";
     afficherEtatSelonSession();
     rafraichirEtat();
-    toast("Planning importé : " + applique.join(", ") + ".");
+    toast("Planning importé : " + applique.join(", ") + "." +
+      (purge.groupes ? " " + purge.groupes + " groupe(s) de répartition automatique ignoré(s)." : ""));
   }catch(e){
     erreurEl.textContent = e.message || "Import impossible.";
     erreurEl.style.display = "";
   }
 });
 $("btn-ouvrir-import-planning").addEventListener("click", ()=> openModal('modal-planning-import'));
-if($("btn-ouvrir-coffre-depuis-gate")){
-  $("btn-ouvrir-coffre-depuis-gate").addEventListener("click", ()=>{
-    if(!coffreDisponible()){ toast("Le coffre est indisponible : synapses-coffre.js n'a pas pu être chargé."); return; }
-    openModal('modal-coffre');
-  });
-}
 $("btn-changer-planning").addEventListener("click", ()=>{
   if(!confirm("Revenir à l'écran d'import ? Rien n'est supprimé : le planning actuellement enregistré reste intact, vous pourrez le réimporter à tout moment.")) return;
   sessionStorage.removeItem(SESSION_KEY);
