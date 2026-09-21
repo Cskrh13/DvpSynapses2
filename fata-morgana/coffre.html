@@ -300,6 +300,31 @@ th{color:var(--ink-soft);font-weight:600;font-size:12px;text-transform:uppercase
 .pec-form input,.pec-form select{width:100%;box-sizing:border-box;font-size:13px;padding:6px 8px;}
 .pec-form .pec-form-actions{grid-column:1/-1;}
 
+/* ===== Onglets principaux (1 à 4) ===== */
+.main-tabs{display:flex;gap:4px;margin:0 0 18px;border-bottom:2px solid var(--line);overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.main-tab{display:flex;align-items:center;gap:8px;background:none;border:none;border-bottom:3px solid transparent;margin-bottom:-2px;padding:11px 16px;font-size:14px;font-weight:600;color:var(--ink-soft);border-radius:8px 8px 0 0;white-space:nowrap;}
+.main-tab .main-tab-num{width:22px;height:22px;border-radius:50%;background:var(--line);color:var(--ink-soft);font-size:12px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;}
+.main-tab:hover:not(:disabled){color:var(--ink);background:#EFEDE6;}
+.main-tab:focus-visible{outline:2px solid var(--accent-sky);outline-offset:-2px;}
+.main-tab.actif{color:var(--accent-sky);border-bottom-color:var(--accent-sky);}
+.main-tab.actif .main-tab-num{background:var(--accent-sky);color:#fff;}
+.main-tab:disabled{opacity:.45;cursor:not-allowed;}
+.tab-panel{display:none;}
+.tab-panel.actif{display:block;}
+@media(max-width:640px){.main-tab{padding:9px 11px;font-size:13px;}}
+
+/* ===== Choix du smiley d'un créneau (formulaire d'édition) ===== */
+.edt-emoji-choix{display:flex;flex-wrap:wrap;gap:4px;margin:4px 0 8px;}
+.edt-emoji-btn{width:34px;height:34px;padding:0;font-size:18px;line-height:1;border:1px solid var(--line);background:#fff;border-radius:7px;font-family:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif;}
+.edt-emoji-btn:hover{border-color:var(--accent-sky);}
+.edt-emoji-btn[aria-pressed="true"]{border-color:var(--accent-sky);background:#EAF1FA;box-shadow:0 0 0 2px rgba(46,94,170,.25);}
+.edt-emoji-btn.edt-emoji-auto{width:auto;padding:0 10px;font-size:12.5px;font-weight:600;color:var(--ink-soft);font-family:inherit;}
+.edt-emoji-libre{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.edt-edition-boite .edt-emoji-libre input{width:150px;}
+.edt-emoji-apercu{font-size:24px;line-height:1;font-family:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif;}
+.edt-edition-erreur{color:var(--danger);font-size:13px;margin:8px 0 0;}
+.edt-edition-boite .pec-form-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;}
+
 /* ===== grille-analyse.js (onglet "Analyse & IA") ===== */
 .ga-section { margin-bottom: 28px; }
 .ga-section h3 { font-family: Georgia, serif; margin: 0 0 10px; font-size: 1.1rem; }
@@ -409,8 +434,16 @@ th{color:var(--ink-soft);font-weight:600;font-size:12px;text-transform:uppercase
     <strong>Pourquoi c'est confidentiel :</strong> tant que vous n'avez pas cliqué sur « Sauvegarder », vos notes restent uniquement dans la mémoire de cet onglet — rien n'est envoyé à un serveur, rien n'est écrit ailleurs sur l'ordinateur. Elles disparaissent automatiquement si vous fermez l'onglet ou cliquez sur « Effacer mes données » : pensez donc à sauvegarder régulièrement si vous voulez les conserver.
   </div>
 
+  <!-- ============ Onglets 1 à 4 ============ -->
+  <div class="main-tabs" role="tablist" aria-label="Sections du coffre">
+    <button type="button" class="main-tab actif" role="tab" id="tabBtnOuverture" data-tab="cardOuverture" aria-selected="true" aria-controls="cardOuverture"><span class="main-tab-num">1</span><span>Ouvrir</span></button>
+    <button type="button" class="main-tab" role="tab" id="tabBtnSuivi" data-tab="cardSuivi" aria-selected="false" aria-controls="cardSuivi" tabindex="-1"><span class="main-tab-num">2</span><span>Observations</span></button>
+    <button type="button" class="main-tab" role="tab" id="tabBtnEdt" data-tab="cardEmploiDuTemps" aria-selected="false" aria-controls="cardEmploiDuTemps" tabindex="-1"><span class="main-tab-num">3</span><span>Emploi du temps</span></button>
+    <button type="button" class="main-tab" role="tab" id="tabBtnExport" data-tab="cardExport" aria-selected="false" aria-controls="cardExport" tabindex="-1"><span class="main-tab-num">4</span><span>Sauvegarder</span></button>
+  </div>
+
   <!-- ============ Ouverture / création ============ -->
-  <section class="card" id="cardOuverture">
+  <section class="card tab-panel actif" id="cardOuverture" role="tabpanel" aria-labelledby="tabBtnOuverture">
     <h2>1. Ouvrir mon espace de suivi</h2>
     <p class="hint">Un fichier correspond en général à une classe (ou un dispositif) pour une année scolaire.</p>
 
@@ -461,13 +494,13 @@ th{color:var(--ink-soft);font-weight:600;font-size:12px;text-transform:uppercase
   </section>
 
   <!-- ============ Suivi individuel (élèves + grille d'analyse BARRY/S4C) ============ -->
-  <section class="card disabled-overlay" id="cardSuivi" style="padding:0;overflow:hidden;">
+  <section class="card tab-panel disabled-overlay" id="cardSuivi" role="tabpanel" aria-labelledby="tabBtnSuivi" style="padding:0;overflow:hidden;">
     <div class="card-step-head">2. Noter mes observations, élève par élève</div>
     <div id="suiviIndividuelApp"></div>
   </section>
 
   <!-- ============ Emploi du temps ============ -->
-  <section class="card disabled-overlay" id="cardEmploiDuTemps">
+  <section class="card tab-panel disabled-overlay" id="cardEmploiDuTemps" role="tabpanel" aria-labelledby="tabBtnEdt">
     <h2>3. Emploi du temps</h2>
     <p class="hint">Consultez l'emploi du temps individuel d'un élève : les créneaux auxquels il a été affecté (onglet « Affectation » de Planning — Gestion), tels qu'enregistrés dans son coffre.</p>
     <div class="field edt-select-wrap">
@@ -489,7 +522,7 @@ th{color:var(--ink-soft);font-weight:600;font-size:12px;text-transform:uppercase
   </section>
 
   <!-- ============ Export / purge ============ -->
-  <section class="card disabled-overlay" id="cardExport">
+  <section class="card tab-panel disabled-overlay" id="cardExport" role="tabpanel" aria-labelledby="tabBtnExport">
     <h2>4. Sauvegarder ou effacer mes données</h2>
     <div class="grid2">
       <div>
@@ -555,11 +588,51 @@ const SYNAPSES_BUILD = {
     el.className = 'status ' + (ok ? 'ok' : 'err');
   }
 
+  /* -------- Onglets 1 à 4 --------
+     Un seul panneau visible à la fois. Tant qu'aucun coffre n'est ouvert,
+     les onglets 2 à 4 sont désactivés (rien à y voir) : seul l'onglet 1
+     « Ouvrir » est utilisable. */
+  const ONGLETS = ['cardOuverture', 'cardSuivi', 'cardEmploiDuTemps', 'cardExport'];
+
+  function boutonOnglet(idPanneau){
+    return document.querySelector('.main-tab[data-tab="' + idPanneau + '"]');
+  }
+
+  function activerOnglet(idPanneau){
+    ONGLETS.forEach((id) => {
+      const actif = id === idPanneau;
+      $(id).classList.toggle('actif', actif);
+      const btn = boutonOnglet(id);
+      btn.classList.toggle('actif', actif);
+      btn.setAttribute('aria-selected', actif ? 'true' : 'false');
+      btn.tabIndex = actif ? 0 : -1;
+    });
+  }
+
+  ONGLETS.forEach((id) => {
+    const btn = boutonOnglet(id);
+    btn.addEventListener('click', () => { if (!btn.disabled) activerOnglet(id); });
+    // Navigation au clavier (flèches gauche/droite, Début/Fin) entre onglets actifs.
+    btn.addEventListener('keydown', (ev) => {
+      const dispo = ONGLETS.filter((i) => !boutonOnglet(i).disabled);
+      const pos = dispo.indexOf(id);
+      let cible = null;
+      if (ev.key === 'ArrowRight') cible = dispo[(pos + 1) % dispo.length];
+      else if (ev.key === 'ArrowLeft') cible = dispo[(pos - 1 + dispo.length) % dispo.length];
+      else if (ev.key === 'Home') cible = dispo[0];
+      else if (ev.key === 'End') cible = dispo[dispo.length - 1];
+      if (cible) { ev.preventDefault(); activerOnglet(cible); boutonOnglet(cible).focus(); }
+    });
+  });
+
   function refreshLockState(){
     const on = coffre.ouvert;
     ['cardSuivi','cardEmploiDuTemps','cardExport'].forEach(id=>{
       $(id).classList.toggle('disabled-overlay', !on);
+      boutonOnglet(id).disabled = !on;
     });
+    // Coffre fermé (ou purgé) : retour à l'onglet 1, le seul utilisable.
+    if (!on) activerOnglet('cardOuverture');
     // Construction DOM (jamais innerHTML) : le nom d'établissement est une
     // donnée saisie par l'utilisateur (ou lue depuis un .synapses déchiffré),
     // donc potentiellement non fiable — on ne l'insère jamais comme HTML.
@@ -931,23 +1004,142 @@ const SYNAPSES_BUILD = {
     if (typeof marquerCoffreModifie === 'function') marquerCoffreModifie();
   }
 
-  /** Ouvre un petit formulaire modal-like (dans #edtEditionWrap) pour
-   *  préciser/corriger l'activité et l'adulte de référence d'une case de
-   *  l'emploi du temps, qu'elle vienne du planning (classe/dispositif) ou
-   *  d'une prise en charge extérieure. Ne modifie jamais l'horaire ni le
-   *  lieu : ces informations restent de la responsabilité de Planning —
-   *  Gestion (planning[]) ou du formulaire dédié ci-dessus (PEC). */
-  function ouvrirEditionCase(identifiantSynapses, brut, origine, formatte){
+  /* -------- Smileys choisis & créneaux ULIS personnalisés --------
+     Smiley : chaque créneau a un smiley « automatique » (voir
+     emojiNatureCreneau) que l'on peut remplacer par un smiley choisi.
+     Stockage : champ `emoji` sur l'entrée elle-même (affectation du
+     planning, prise en charge extérieure, créneau ULIS personnalisé) ; pour
+     les récréations/pauses fixes, qui ne sont pas des entrées du coffre,
+     table `edtEmojisFixes` { idRécréation: smiley } de l'élève. Chaîne
+     vide = retour au smiley automatique.
+
+     Créneau ULIS déduit : un « trou » de l'emploi du temps n'existe dans
+     aucune donnée. Dès qu'on le modifie, il devient un créneau à part entière
+     de CET élève, enregistré dans `eleve.creneauxUlisPerso[]`. Volontairement
+     PAS dans planning[] : planning-gestion/planning-jour lisent planning[]
+     pour savoir qui est affecté à quel créneau de la grille ; y glisser une
+     entrée sans créneau de grille correspondant fausserait la répartition.
+     Ces deux champs (`creneauxUlisPerso`, `edtEmojisFixes`) ne passent PAS par
+     listerEleves() (liste blanche de champs) : ils se lisent via getEleve().
+     Un créneau personnalisé garde la priorité « dispositif » (la plus basse) :
+     PEC et classe passent toujours devant. */
+  const EMOJIS_CHOIX = [
+    '📖', '✏️', '🔢', '🗣️', '🏃', '🎨', '🎵', '🔬', '🌍', '🤝',
+    '🧩', '🏫', '⚽', '🍽️', '🏥', '🔔', '🧠', '💬', '🎲', '💻',
+    '🧘', '🎭', '📚', '🖐️', '🕐', '⭐', '🌱', '🚌'
+  ];
+
+  /** Premier « caractère visible » (graphème) d'une saisie : un smiley composé
+   *  (drapeau, famille, teint de peau…) compte pour un seul. */
+  function premierGrapheme(txt){
+    const t = String(txt || '').trim();
+    if (!t) return '';
+    if (typeof Intl !== 'undefined' && Intl.Segmenter) {
+      const it = new Intl.Segmenter(undefined, { granularity: 'grapheme' }).segment(t)[Symbol.iterator]().next();
+      return it.done ? '' : it.value.segment;
+    }
+    return Array.from(t)[0] || '';
+  }
+
+  function emojiPersoValide(v){
+    return (typeof v === 'string' && v.length <= 16) ? v.trim() : '';
+  }
+
+  function lireEmojiPerso(c, identifiantSynapses){
+    if (!c) return '';
+    if (c._origine === 'recreation-fixe') {
+      const e = coffre.getEleve(identifiantSynapses);
+      return emojiPersoValide(e.edtEmojisFixes && e.edtEmojisFixes[c.id]);
+    }
+    return emojiPersoValide((c._brut || c).emoji);
+  }
+
+  function ecrireEmojiFixe(identifiantSynapses, idFixe, emoji){
+    const e = coffre.getEleve(identifiantSynapses);
+    if (!e.edtEmojisFixes || typeof e.edtEmojisFixes !== 'object') e.edtEmojisFixes = {};
+    if (emoji) e.edtEmojisFixes[idFixe] = emoji;
+    else delete e.edtEmojisFixes[idFixe];
+  }
+
+  function lireCreneauxUlisPerso(identifiantSynapses){
+    const e = coffre.getEleve(identifiantSynapses);
+    return Array.isArray(e.creneauxUlisPerso) ? e.creneauxUlisPerso : [];
+  }
+
+  function minutesVersHHMM(total){
+    return String(Math.floor(total / 60)).padStart(2, '0') + ':' + String(total % 60).padStart(2, '0');
+  }
+
+  function creerCreneauUlisPerso(identifiantSynapses, seg, f, valeurs){
+    const e = coffre.getEleve(identifiantSynapses);
+    if (!Array.isArray(e.creneauxUlisPerso)) e.creneauxUlisPerso = [];
+    const alea = Array.from(crypto.getRandomValues(new Uint8Array(4))).map((b) => b.toString(16).padStart(2, '0')).join('');
+    const entree = {
+      id: 'ULP-' + alea,
+      typeLieu: 'dispositif',
+      classeNom: f.lieuNom,
+      jour: Number(f.jour),
+      debut: minutesVersHHMM(seg.debutMin),
+      fin: minutesVersHHMM(seg.finMin),
+      activite: { nom: valeurs.activite, domaineCle: '' },
+      adulteReference: { nom: valeurs.adulteNom, role: valeurs.adulteRole },
+      remarque: '',
+      emoji: valeurs.emoji,
+      creeLe: new Date().toISOString()
+    };
+    e.creneauxUlisPerso.push(entree);
+    return entree;
+  }
+
+  function modifierCreneauUlisPerso(identifiantSynapses, id, valeurs){
+    const p = lireCreneauxUlisPerso(identifiantSynapses).find((x) => x.id === id);
+    if (!p) throw new Error('Créneau ULIS personnalisé introuvable.');
+    p.activite = Object.assign({ nom: '', domaineCle: '' }, p.activite || {}, { nom: valeurs.activite });
+    p.adulteReference = { nom: valeurs.adulteNom, role: valeurs.adulteRole };
+    p.emoji = valeurs.emoji;
+  }
+
+  function supprimerCreneauxUlisPerso(identifiantSynapses, ids){
+    const e = coffre.getEleve(identifiantSynapses);
+    if (!Array.isArray(e.creneauxUlisPerso)) return;
+    e.creneauxUlisPerso = e.creneauxUlisPerso.filter((x) => !ids.includes(x.id));
+  }
+
+  /** Ouvre le formulaire d'édition d'une case de l'emploi du temps (dans
+   *  #edtEditionWrap) : activité, adulte de référence, smiley. `seg` est le
+   *  segment affiché (voir resoudreJourneeContinue) : il peut regrouper
+   *  plusieurs entrées identiques et consécutives (seg.cs), toutes mises à
+   *  jour ensemble pour que le bloc ne se scinde pas après enregistrement.
+   *  Ne modifie jamais l'horaire ni le lieu : ces informations restent de la
+   *  responsabilité de Planning — Gestion (planning[]) ou du formulaire dédié
+   *  (PEC). Un créneau ULIS déduit (seg.synthese) devient, à l'enregistrement,
+   *  un créneau ULIS personnalisé de l'élève ; les récréations/pauses fixes ne
+   *  permettent que le choix du smiley. */
+  function ouvrirEditionCase(identifiantSynapses, seg, formatte){
     const zone = $('edtEditionWrap');
     zone.innerHTML = '';
+
+    const estDeduit = !!seg.synthese;
+    const cs = estDeduit ? [] : (seg.cs && seg.cs.length ? seg.cs : [seg.c]);
+    const seulementFixes = !estDeduit && cs.every((c) => c._origine === 'recreation-fixe');
+    const seulementExterne = !estDeduit && cs.every((c) => c._origine === 'externe');
+    const idsUlisPerso = cs.filter((c) => c._origine === 'ulis-perso').map((c) => (c._brut || c).id);
 
     const boite = document.createElement('div');
     boite.className = 'edt-edition-boite';
 
     const titre = document.createElement('h4');
     titre.style.cssText = 'margin:0 0 8px;font-size:14px;';
-    titre.textContent = formatte.lieuNom + ' — ' + (formatte.debut || '') + (formatte.fin ? ' – ' + formatte.fin : '');
+    titre.textContent = (estDeduit ? 'Créneau ULIS déduit — ' : formatte.lieuNom + ' — ') + (formatte.debut || '') + (formatte.fin ? ' – ' + formatte.fin : '');
     boite.appendChild(titre);
+
+    if (estDeduit) {
+      const note = document.createElement('p');
+      note.className = 'hint';
+      note.style.margin = '0 0 10px';
+      note.textContent = 'Ce créneau est déduit d\'un trou de l\'emploi du temps. En l\'enregistrant, il devient un créneau à part entière de cet élève (modifiable ensuite comme les autres).';
+      boite.appendChild(note);
+    }
 
     const inputActivite = document.createElement('input');
     inputActivite.type = 'text';
@@ -962,33 +1154,125 @@ const SYNAPSES_BUILD = {
     const inputAdulteRole = document.createElement('input');
     inputAdulteRole.type = 'text';
     inputAdulteRole.placeholder = 'Ex. Enseignante titulaire, AESH, ULIS…';
-    inputAdulteRole.value = formatte.adulteRole || (origine === 'externe' ? 'Intervenant extérieur' : '');
-    if (origine === 'externe') { inputAdulteRole.disabled = true; } // fixé par le type "externe"
+    inputAdulteRole.value = formatte.adulteRole || (seulementExterne ? 'Intervenant extérieur' : '');
+    if (seulementExterne) { inputAdulteRole.disabled = true; } // fixé par le type "externe"
 
-    boite.appendChild(ligneChampPec('Activité travaillée', inputActivite));
-    boite.appendChild(ligneChampPec('Adulte de référence', inputAdulteNom));
-    boite.appendChild(ligneChampPec('Rôle de l\'adulte', inputAdulteRole));
+    if (!seulementFixes) {
+      boite.appendChild(ligneChampPec('Activité travaillée', inputActivite));
+      boite.appendChild(ligneChampPec('Adulte de référence', inputAdulteNom));
+      boite.appendChild(ligneChampPec('Rôle de l\'adulte', inputAdulteRole));
+    }
+
+    // --- Choix du smiley ---
+    let emojiChoisi = seg.emojiPerso || '';
+    const emojiAuto = emojiNatureCreneau(formatte, Object.assign({}, seg, { emojiPerso: '' }));
+
+    const groupeEmoji = document.createElement('div');
+    const rangee = document.createElement('div');
+    rangee.className = 'edt-emoji-choix';
+    const btnAuto = document.createElement('button');
+    btnAuto.type = 'button';
+    btnAuto.className = 'edt-emoji-btn edt-emoji-auto';
+    btnAuto.textContent = 'Automatique';
+    btnAuto.title = 'Smiley choisi automatiquement selon le type de créneau et l\'activité';
+    rangee.appendChild(btnAuto);
+    const boutonsEmoji = EMOJIS_CHOIX.map((em) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'edt-emoji-btn';
+      b.textContent = em;
+      b.setAttribute('aria-label', 'Smiley ' + em);
+      b.addEventListener('click', () => { emojiChoisi = em; majEmoji(false); });
+      rangee.appendChild(b);
+      return b;
+    });
+    btnAuto.addEventListener('click', () => { emojiChoisi = ''; majEmoji(false); });
+
+    const libre = document.createElement('div');
+    libre.className = 'edt-emoji-libre';
+    const apercu = document.createElement('span');
+    apercu.className = 'edt-emoji-apercu';
+    apercu.setAttribute('aria-live', 'polite');
+    const inputEmoji = document.createElement('input');
+    inputEmoji.type = 'text';
+    inputEmoji.placeholder = 'Autre smiley…';
+    inputEmoji.maxLength = 16;
+    inputEmoji.setAttribute('aria-label', 'Saisir ou coller un autre smiley');
+    inputEmoji.addEventListener('input', () => {
+      emojiChoisi = premierGrapheme(inputEmoji.value);
+      majEmoji(true);
+    });
+    inputEmoji.addEventListener('blur', () => { inputEmoji.value = emojiChoisi && !EMOJIS_CHOIX.includes(emojiChoisi) ? emojiChoisi : ''; });
+    const aide = document.createElement('span');
+    aide.className = 'hint';
+    aide.style.cssText = 'font-size:12px;margin:0;';
+    aide.textContent = 'Astuce : Windows + point (.), ou Ctrl + Cmd + Espace sur Mac, ouvre le sélecteur de smileys du système.';
+    libre.appendChild(apercu);
+    libre.appendChild(inputEmoji);
+    libre.appendChild(aide);
+
+    function majEmoji(depuisSaisie){
+      apercu.textContent = emojiChoisi || emojiAuto;
+      btnAuto.setAttribute('aria-pressed', emojiChoisi ? 'false' : 'true');
+      boutonsEmoji.forEach((b) => b.setAttribute('aria-pressed', b.textContent === emojiChoisi ? 'true' : 'false'));
+      if (!depuisSaisie) inputEmoji.value = emojiChoisi && !EMOJIS_CHOIX.includes(emojiChoisi) ? emojiChoisi : '';
+    }
+    majEmoji(false);
+
+    groupeEmoji.appendChild(rangee);
+    groupeEmoji.appendChild(libre);
+    boite.appendChild(ligneChampPec('Smiley du créneau', groupeEmoji));
+
+    const erreurEl = document.createElement('p');
+    erreurEl.className = 'edt-edition-erreur';
+    erreurEl.setAttribute('role', 'alert');
+    boite.appendChild(erreurEl);
 
     const actions = document.createElement('div');
     actions.className = 'pec-form-actions';
     const btnEnregistrer = document.createElement('button');
-    btnEnregistrer.className = 'btn primary';
+    btnEnregistrer.className = 'btn btn-primary';
     btnEnregistrer.textContent = 'Enregistrer';
     btnEnregistrer.addEventListener('click', () => {
-      if (origine === 'externe') {
-        coffre.modifierPriseEnChargeExterieure(identifiantSynapses, brut.id, {
-          activite: inputActivite.value.trim(),
-          intervenant: inputAdulteNom.value.trim()
-        });
-      } else {
-        coffre.modifierAffectationCreneau(
-          identifiantSynapses,
-          brut.id || { classeId: brut.classeId, creneauId: brut.creneauId },
-          {
-            activite: { nom: inputActivite.value.trim() },
-            adulteReference: { nom: inputAdulteNom.value.trim(), role: inputAdulteRole.value.trim() }
-          }
-        );
+      const valeurs = {
+        activite: inputActivite.value.trim(),
+        adulteNom: inputAdulteNom.value.trim(),
+        adulteRole: inputAdulteRole.value.trim(),
+        emoji: emojiPersoValide(emojiChoisi)
+      };
+      try {
+        if (estDeduit) {
+          creerCreneauUlisPerso(identifiantSynapses, seg, formatte, valeurs);
+        } else {
+          cs.forEach((c) => {
+            const brut = c._brut || c;
+            if (c._origine === 'recreation-fixe') {
+              ecrireEmojiFixe(identifiantSynapses, c.id, valeurs.emoji);
+            } else if (c._origine === 'externe') {
+              coffre.modifierPriseEnChargeExterieure(identifiantSynapses, brut.id, {
+                activite: valeurs.activite,
+                intervenant: valeurs.adulteNom,
+                emoji: valeurs.emoji
+              });
+            } else if (c._origine === 'ulis-perso') {
+              modifierCreneauUlisPerso(identifiantSynapses, brut.id, valeurs);
+            } else {
+              coffre.modifierAffectationCreneau(
+                identifiantSynapses,
+                brut.id || { classeId: brut.classeId, creneauId: brut.creneauId },
+                {
+                  activite: { nom: valeurs.activite },
+                  adulteReference: { nom: valeurs.adulteNom, role: valeurs.adulteRole },
+                  emoji: valeurs.emoji
+                }
+              );
+            }
+          });
+        }
+      } catch (err) {
+        console.error('Enregistrement du créneau impossible :', err);
+        erreurEl.textContent = 'Enregistrement impossible : ' + err.message;
+        return;
       }
       zone.innerHTML = '';
       afficherEmploiDuTemps(identifiantSynapses);
@@ -1000,6 +1284,20 @@ const SYNAPSES_BUILD = {
     btnAnnuler.addEventListener('click', () => { zone.innerHTML = ''; });
     actions.appendChild(btnEnregistrer);
     actions.appendChild(btnAnnuler);
+    if (idsUlisPerso.length) {
+      const btnRetablir = document.createElement('button');
+      btnRetablir.className = 'btn';
+      btnRetablir.textContent = 'Revenir au créneau déduit';
+      btnRetablir.title = 'Supprime la personnalisation : le créneau redevient un créneau ULIS déduit du trou de l\'emploi du temps';
+      btnRetablir.addEventListener('click', () => {
+        if (!confirm('Supprimer ce créneau ULIS personnalisé ? Il redeviendra un créneau déduit, sans activité ni adulte renseignés.')) return;
+        supprimerCreneauxUlisPerso(identifiantSynapses, idsUlisPerso);
+        zone.innerHTML = '';
+        afficherEmploiDuTemps(identifiantSynapses);
+        marquerCoffreModifieSiDisponible();
+      });
+      actions.appendChild(btnRetablir);
+    }
     boite.appendChild(actions);
 
     zone.appendChild(boite);
@@ -1222,7 +1520,7 @@ const SYNAPSES_BUILD = {
 
       let seg;
       if (gagnant) {
-        seg = { debutMin: debutSeg, finMin: finSeg, f: gagnant.f, c: gagnant.c, synthese: false };
+        seg = { debutMin: debutSeg, finMin: finSeg, f: gagnant.f, c: gagnant.c, cs: [gagnant.c], emojiPerso: gagnant.emojiPerso || '', synthese: false };
       } else if (dansCreneauServiceEnseignant(jour, debutSeg, finSeg)) {
         continue; // trou volontairement laissé vide (service de l'enseignant)
       } else {
@@ -1233,7 +1531,7 @@ const SYNAPSES_BUILD = {
             activiteNom: '', domaineCle: '', adulteNom: '', adulteRole: '', remarque: '',
             jour, debut: minutesVersHeureEdt(debutSeg), fin: minutesVersHeureEdt(finSeg)
           },
-          c: null, synthese: true
+          c: null, cs: [], emojiPerso: '', synthese: true
         };
       }
 
@@ -1241,11 +1539,15 @@ const SYNAPSES_BUILD = {
       const memeContenu = precedent && !precedent.synthese && !seg.synthese &&
         precedent.f.typeLieu === seg.f.typeLieu && precedent.f.lieuNom === seg.f.lieuNom &&
         precedent.f.activiteNom === seg.f.activiteNom && precedent.f.adulteNom === seg.f.adulteNom &&
-        precedent.f.remarque === seg.f.remarque;
+        precedent.f.remarque === seg.f.remarque &&
+        (precedent.emojiPerso || '') === (seg.emojiPerso || '');
       const memeVide = precedent && precedent.synthese && seg.synthese;
       if (precedent && precedent.finMin === seg.debutMin && (memeContenu || memeVide)) {
         precedent.finMin = seg.finMin;
         precedent.f = Object.assign({}, precedent.f, { fin: minutesVersHeureEdt(seg.finMin) });
+        // Le bloc fusionné garde la trace de TOUTES les entrées sous-jacentes
+        // (sans doublon) : l'édition les met à jour ensemble.
+        seg.cs.forEach((c) => { if (!precedent.cs.includes(c)) precedent.cs.push(c); });
       } else {
         segments.push(seg);
       }
@@ -1269,6 +1571,7 @@ const SYNAPSES_BUILD = {
    *   2. matière travaillée, reconnue par mots-clés dans le nom de l'activité puis,
    *      à défaut, dans la clé de domaine (accents et casse ignorés) ;
    *   3. à défaut, le type de lieu : dispositif (ULIS…) ou classe.
+   *  (Un smiley choisi à la main par l'utilisateur, seg.emojiPerso, passe avant tout.)
    *  Pour ajouter / corriger une matière : modifier EMOJIS_MATIERES ci-dessous
    *  (les mots-clés sont testés dans l'ordre, le premier qui correspond gagne). */
   const EMOJIS_STRUCTURE = { recreation: '⚽', pause: '🍽️', externe: '🏥', autre: '🔔' };
@@ -1291,6 +1594,8 @@ const SYNAPSES_BUILD = {
   }
 
   function emojiNatureCreneau(f, seg){
+    // Smiley choisi par l'utilisateur pour ce créneau : toujours prioritaire.
+    if (seg && seg.emojiPerso) return seg.emojiPerso;
     const c = (seg && seg.c) || {};
     if (f.typeLieu === 'recreation' || c.type === 'recreation') return EMOJIS_STRUCTURE.recreation;
     if (f.typeLieu === 'pause' || c.type === 'pause') return EMOJIS_STRUCTURE.pause;
@@ -1429,25 +1734,26 @@ const SYNAPSES_BUILD = {
         bloc.appendChild(horaire);
 
         if (seg.synthese) {
-          // Un créneau déduit n'existe pas réellement dans le coffre : rien
-          // à éditer ici, seulement un repère visuel discret pour le
-          // distinguer d'un créneau réellement enregistré (voir aussi le
-          // style .edt-bloc-deduit, en pointillés).
+          // Repère visuel discret pour distinguer un créneau déduit d'un
+          // créneau réellement enregistré (voir aussi le style
+          // .edt-bloc-deduit, en pointillés). Il reste modifiable : l'édition
+          // le transforme en créneau ULIS personnalisé (voir ouvrirEditionCase).
           const badge = document.createElement('div');
           badge.className = 'edt-badge-deduit';
           badge.textContent = 'déduit';
           bloc.appendChild(badge);
-        } else if (seg.c && seg.c._origine !== 'recreation-fixe') {
-          const btnEditer = document.createElement('button');
-          btnEditer.type = 'button';
-          btnEditer.className = 'edt-btn-editer';
-          btnEditer.title = 'Préciser l\'activité / l\'adulte de référence';
-          btnEditer.textContent = '✎';
-          btnEditer.addEventListener('click', () => {
-            ouvrirEditionCase(identifiantSynapses, seg.c._brut || seg.c, seg.c._origine, f);
-          });
-          bloc.appendChild(btnEditer);
         }
+        const btnEditer = document.createElement('button');
+        btnEditer.type = 'button';
+        btnEditer.className = 'edt-btn-editer';
+        btnEditer.title = seg.synthese
+          ? 'Personnaliser ce créneau déduit (activité, adulte, smiley)'
+          : 'Préciser l\'activité / l\'adulte de référence / le smiley';
+        btnEditer.textContent = '✎';
+        btnEditer.addEventListener('click', () => {
+          ouvrirEditionCase(identifiantSynapses, seg, f);
+        });
+        bloc.appendChild(btnEditer);
 
         col.appendChild(bloc);
       });
@@ -1551,7 +1857,11 @@ const SYNAPSES_BUILD = {
     // nominative dans localStorage.
     const recreations = eleve ? recreationsFixesPourEleve(eleve) : [];
     const casesPlanning = planning.map((c) => Object.assign({ _origine: 'planning', _brut: c }, c));
-    const toutesCases = casesPlanning.concat(recreations, pecActives);
+    // Créneaux ULIS personnalisés (anciens créneaux « déduits » modifiés par
+    // l'utilisateur) : lus directement dans l'élève, hors listerEleves().
+    const ulisPerso = lireCreneauxUlisPerso(identifiantSynapses)
+      .map((p) => Object.assign({ _origine: 'ulis-perso', _brut: p }, p));
+    const toutesCases = casesPlanning.concat(recreations, pecActives, ulisPerso);
 
     if (!toutesCases.length) {
       const vide = document.createElement('div');
@@ -1590,7 +1900,7 @@ const SYNAPSES_BUILD = {
     const valides = casesUniques.map(c => {
       const f = formaterSansCasser(c);
       if(!f) return null;
-      return { c, f, debutMin:heureVersMinutesEdt(f.debut), finMin:heureVersMinutesEdt(f.fin) };
+      return { c, f, debutMin:heureVersMinutesEdt(f.debut), finMin:heureVersMinutesEdt(f.fin), emojiPerso: lireEmojiPerso(c, identifiantSynapses) };
     }).filter(x => x && Number.isFinite(x.debutMin) && Number.isFinite(x.finMin) && x.finMin > x.debutMin);
 
     if(!valides.length){
@@ -1800,6 +2110,7 @@ const SYNAPSES_BUILD = {
     coffre.creer($('nomEtab').value.trim(), dispositif);
     setStatus($('statutOuverture'), 'Nouveau coffre créé en mémoire. Pensez à l\'enregistrer (§3) avant de fermer l\'onglet.', true);
     refreshLockState();
+    activerOnglet('cardSuivi');
     await ouvrirSuivi();
   });
 
@@ -1831,6 +2142,7 @@ const SYNAPSES_BUILD = {
       inputNomFichierExport.value = nomFichierAvecExtensionSynapses(fichier.name);
       setStatus($('statutOuverture'), 'Coffre ouvert avec succès (' + coffre.listerEleves().length + ' élève(s)).', true);
       refreshLockState();
+      activerOnglet('cardSuivi');
       await ouvrirSuivi();
     }catch(e){
       setStatus($('statutOuverture'), e.message, false);
@@ -1861,6 +2173,8 @@ const SYNAPSES_BUILD = {
     ['mdpExport','nomFichierExport'].forEach(id=>$(id).value='');
     fermerSuivi();
     setStatus($('statutExport'), 'Données confidentielles détruites de la mémoire du navigateur.', true);
+    // refreshLockState() ramène à l'onglet 1 : le message y est donc répété.
+    setStatus($('statutOuverture'), 'Données confidentielles détruites de la mémoire du navigateur.', true);
     refreshLockState();
   });
 
