@@ -175,6 +175,9 @@ th{color:var(--ink-soft);font-weight:600;font-size:12px;text-transform:uppercase
 .edt-axe-temps{background:#FAFAF7;border-right:1px solid var(--line);}
 .edt-heure-repere{position:absolute;left:0;right:0;height:1px;border-top:1px solid var(--line);}
 .edt-heure-label{position:absolute;right:8px;top:-8px;background:#FAFAF7;padding-left:3px;color:var(--ink-soft);font-family:'IBM Plex Mono',monospace;font-size:11px;line-height:16px;white-space:nowrap;}
+/* Premier et dernier repères : centrés sur la ligne ils déborderaient de la grille (sous l'en-tête des jours / hors du cadre). On les place juste sous, puis juste au-dessus de leur ligne. */
+.edt-heure-label.edt-heure-premier{top:2px;}
+.edt-heure-label.edt-heure-dernier{top:-18px;}
 .edt-jour-col{border-left:1px solid var(--line);background:repeating-linear-gradient(to bottom,#fff 0,#fff calc(var(--edt-px-30) - 1px),#E8E5DC calc(var(--edt-px-30) - 1px),#E8E5DC var(--edt-px-30));}
 .edt-jour-col .edt-ligne-demi{position:absolute;left:0;right:0;border-top:1px dashed #EEECE5;height:1px;}
 .edt-bloc{position:absolute;left:4px;right:4px;padding:4px 6px;border:1px solid #C9D2E7;border-radius:6px;background:#EEF2FB;overflow:hidden;z-index:2;box-shadow:0 1px 2px rgba(20,29,51,.06);}
@@ -216,9 +219,6 @@ th{color:var(--ink-soft);font-weight:600;font-size:12px;text-transform:uppercase
 #edtEnteteImpression h2{margin:1px 0 0;font-size:19px;color:var(--navy);}
 #edtEnteteImpression .edt-imp-meta{text-align:right;font-size:11.5px;color:var(--ink-soft);}
 #edtEnteteImpression .edt-imp-meta div+div{margin-top:2px;}
-#edtImpressionLegende{display:none;}
-#edtImpressionLegende .edt-imp-puce{display:inline-flex;align-items:center;gap:5px;}
-#edtImpressionLegende .edt-imp-carre{width:11px;height:11px;border-radius:3px;display:inline-block;}
 #edtImpressionPied{display:none;}
 @media print {
   /* A4 vertical, une seule page. Zone imprimable = 186 mm x 277 mm
@@ -239,7 +239,6 @@ th{color:var(--ink-soft);font-weight:600;font-size:12px;text-transform:uppercase
   #edtZoneImpression{break-inside:avoid;page-break-inside:avoid;}
   #edtZoneImpression{position:absolute;left:0;top:0;width:100%;padding:0;margin:0;}
   .print-only{display:block;}
-  #edtImpressionLegende{display:flex;gap:16px;flex-wrap:wrap;margin-top:10px;font-size:11px;color:var(--ink-soft);align-items:center;}
   #edtImpressionPied{display:flex;margin-top:14px;padding-top:8px;border-top:1px solid var(--line);font-size:10px;color:var(--ink-soft);justify-content:space-between;}
   /* La grille écran (échelle adaptée à la lecture au clavier/souris) n'est
      jamais imprimée : seule la grille dédiée à l'impression, reconstruite
@@ -324,6 +323,13 @@ th{color:var(--ink-soft);font-weight:600;font-size:12px;text-transform:uppercase
 .edt-emoji-apercu{font-size:24px;line-height:1;font-family:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif;}
 .edt-edition-erreur{color:var(--danger);font-size:13px;margin:8px 0 0;}
 .edt-edition-boite .pec-form-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;}
+
+/* ===== Enregistrement depuis l'onglet 3 ===== */
+.edt-enregistrer{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:0 0 16px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:#FAFAF7;}
+.edt-enregistrer input{width:230px;max-width:100%;font-size:13px;padding:7px 9px;}
+.edt-enregistrer .status{flex-basis:100%;margin:0;}
+.edt-modif-etat{font-size:13px;color:var(--ink-soft);margin-right:auto;}
+.edt-modif-etat.attente{color:#8A5A16;font-weight:600;}
 
 /* ===== grille-analyse.js (onglet "Analyse & IA") ===== */
 .ga-section { margin-bottom: 28px; }
@@ -510,12 +516,17 @@ th{color:var(--ink-soft);font-weight:600;font-size:12px;text-transform:uppercase
       </select>
       <button type="button" id="edtBtnImprimer" class="btn" disabled>🖨️ Imprimer l'emploi du temps</button>
     </div>
+    <div class="edt-enregistrer" id="edtBarreEnregistrement">
+      <span class="edt-modif-etat" id="edtEtatModif" aria-live="polite">Aucune modification en attente</span>
+      <input type="password" id="edtMdpEnregistrer" placeholder="Mot de passe du fichier" autocomplete="new-password" aria-label="Mot de passe du fichier">
+      <button type="button" id="edtBtnEnregistrer" class="btn btn-primary">💾 Enregistrer les modifications</button>
+      <div class="status" id="statutEdtEnregistrer"></div>
+    </div>
     <div id="edtPecWrap"></div>
     <div id="edtZoneImpression">
       <div id="edtEnteteImpression" class="print-only"></div>
       <div id="edtGrilleWrap"></div>
       <div id="edtGrilleWrapImpression" class="print-only"></div>
-      <div id="edtImpressionLegende" class="print-only"></div>
       <div id="edtImpressionPied" class="print-only"></div>
     </div>
     <div id="edtEditionWrap"></div>
@@ -633,6 +644,9 @@ const SYNAPSES_BUILD = {
     });
     // Coffre fermé (ou purgé) : retour à l'onglet 1, le seul utilisable.
     if (!on) activerOnglet('cardOuverture');
+    // Coffre tout juste ouvert/créé/purgé : rien n'est en attente d'enregistrement.
+    modificationsEnAttente = false;
+    majEtatModif();
     // Construction DOM (jamais innerHTML) : le nom d'établissement est une
     // donnée saisie par l'utilisateur (ou lue depuis un .synapses déchiffré),
     // donc potentiellement non fiable — on ne l'insère jamais comme HTML.
@@ -1000,6 +1014,20 @@ const SYNAPSES_BUILD = {
   /** Marque le coffre comme modifié si la fonction existe dans cette page
    *  (elle est définie plus bas, près de l'export) : évite une erreur si
    *  jamais l'ordre des scripts changeait. */
+  /* Suivi des modifications non enregistrées (emploi du temps, prises en
+     charge extérieures) : simple indicateur affiché dans l'onglet 3, remis à
+     zéro à l'ouverture, à la création, à la purge et après un enregistrement. */
+  let modificationsEnAttente = false;
+  function majEtatModif(){
+    const el = $('edtEtatModif');
+    el.textContent = modificationsEnAttente ? '● Modifications non enregistrées' : 'Aucune modification en attente';
+    el.classList.toggle('attente', modificationsEnAttente);
+  }
+  function marquerCoffreModifie(){
+    modificationsEnAttente = true;
+    majEtatModif();
+  }
+
   function marquerCoffreModifieSiDisponible(){
     if (typeof marquerCoffreModifie === 'function') marquerCoffreModifie();
   }
@@ -1649,7 +1677,7 @@ const SYNAPSES_BUILD = {
       repere.className = 'edt-heure-repere';
       repere.style.top = (((m-minDebut)/30)*px30) + 'px';
       const label = document.createElement('span');
-      label.className = 'edt-heure-label';
+      label.className = 'edt-heure-label' + (m === minDebut ? ' edt-heure-premier' : '') + (m === maxFin ? ' edt-heure-dernier' : '');
       label.textContent = minutesVersHeureEdt(m);
       repere.appendChild(label);
       axe.appendChild(repere);
@@ -2013,29 +2041,6 @@ const SYNAPSES_BUILD = {
     meta.appendChild(ligneDate);
     entete.appendChild(meta);
 
-    // Légende des couleurs utilisées dans la grille, pour rester lisible
-    // sans avoir à deviner à quoi correspond une teinte sur le papier.
-    const legende = $('edtImpressionLegende');
-    legende.innerHTML = '';
-    [
-      { couleur: '#EEF2FB', label: EMOJI_CLASSE + ' Classe' },
-      { couleur: '#EAF1FA', label: EMOJI_DISPOSITIF + ' Dispositif (ULIS)' },
-      { couleur: '#F1EFE9', label: EMOJIS_STRUCTURE.recreation + ' Récréation · ' + EMOJIS_STRUCTURE.pause + ' Pause' },
-      { couleur: '#FDF3E7', label: EMOJIS_STRUCTURE.externe + ' Prise en charge extérieure (santé)' }
-    ].forEach((item) => {
-      const puce = document.createElement('span');
-      puce.className = 'edt-imp-puce';
-      const carre = document.createElement('span');
-      carre.className = 'edt-imp-carre';
-      carre.style.background = item.couleur;
-      carre.style.border = '1px solid #B9C0D6';
-      const label = document.createElement('span');
-      label.textContent = item.label;
-      puce.appendChild(carre);
-      puce.appendChild(label);
-      legende.appendChild(puce);
-    });
-
     const pied = $('edtImpressionPied');
     pied.innerHTML = '';
     const confidentiel = document.createElement('div');
@@ -2149,9 +2154,13 @@ const SYNAPSES_BUILD = {
     }
   });
 
-  $('btnExporter').addEventListener('click', async ()=>{
+  /** Chiffre et télécharge le coffre. Partagé par l'onglet 4 (« Sauvegarder
+   *  mon fichier ») et l'onglet 3 (« Enregistrer les modifications ») : même
+   *  mot de passe, même nom de fichier, seul l'endroit où s'affiche le
+   *  message change (statutEl). */
+  async function exporterCoffre(statutEl){
     const mdp = $('mdpExport').value;
-    if (!mdp) { setStatus($('statutExport'), 'Choisissez un mot de passe pour chiffrer le coffre.', false); return; }
+    if (!mdp) { setStatus(statutEl, 'Choisissez un mot de passe pour chiffrer le coffre.', false); return; }
     const force = evaluerForceMdp(mdp);
     if (force.score <= 1) {
       const continuer = confirm('Ce mot de passe est ' + force.label.toLowerCase() + '. Un mot de passe faible protège moins bien les données confidentielles du coffre. Continuer quand même ?');
@@ -2161,16 +2170,31 @@ const SYNAPSES_BUILD = {
       const nomFichier = nomFichierAvecExtensionSynapses(inputNomFichierExport.value);
       inputNomFichierExport.value = nomFichier;
       await coffre.telecharger(mdp, nomFichier);
-      setStatus($('statutExport'), 'Coffre chiffré et téléchargé sous « ' + nomFichier + ' ». Conservez-le sur un support sûr (clé USB).', true);
+      modificationsEnAttente = false;
+      majEtatModif();
+      setStatus(statutEl, 'Coffre chiffré et téléchargé sous « ' + nomFichier + ' ». Conservez-le sur un support sûr (clé USB).', true);
     }catch(e){
-      setStatus($('statutExport'), e.message, false);
+      setStatus(statutEl, e.message, false);
     }
+  }
+
+  $('btnExporter').addEventListener('click', () => exporterCoffre($('statutExport')));
+  $('edtBtnEnregistrer').addEventListener('click', () => exporterCoffre($('statutEdtEnregistrer')));
+
+  // Le mot de passe saisi dans l'onglet 3 et celui de l'onglet 4 sont un seul
+  // et même champ, recopié dans les deux sens.
+  $('edtMdpEnregistrer').addEventListener('input', () => {
+    $('mdpExport').value = $('edtMdpEnregistrer').value;
+    $('mdpExport').dispatchEvent(new Event('input'));
+  });
+  $('mdpExport').addEventListener('input', () => {
+    $('edtMdpEnregistrer').value = $('mdpExport').value;
   });
 
   $('btnPurger').addEventListener('click', ()=>{
     if (!confirm('Détruire toutes les données confidentielles en mémoire ? Cette action est irréversible pour la session en cours.')) return;
     coffre.purger();
-    ['mdpExport','nomFichierExport'].forEach(id=>$(id).value='');
+    ['mdpExport','nomFichierExport','edtMdpEnregistrer'].forEach(id=>$(id).value='');
     fermerSuivi();
     setStatus($('statutExport'), 'Données confidentielles détruites de la mémoire du navigateur.', true);
     // refreshLockState() ramène à l'onglet 1 : le message y est donc répété.
