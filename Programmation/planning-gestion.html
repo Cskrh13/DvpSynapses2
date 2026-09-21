@@ -2888,7 +2888,6 @@ function renderPlanningAdulteComplet(role, containerId){
   const jour=dispositifJourCourant;
   if(!jour){ body.innerHTML='<div class="empty-hint">Sélectionnez un jour ci-dessus.</div>'; return; }
   const lignes=construirePlanningAdulte(role).filter(l=>Number(l.jourN)===Number(jour));
-  if(!lignes.length){ body.innerHTML='<div class="empty-hint">Aucun créneau avec élève accompagné ce jour-là.</div>'; return; }
 
   // Un évènement par (créneau × élève), pour construire une colonne par élève
   const evenements=[];
@@ -2897,19 +2896,28 @@ function renderPlanningAdulteComplet(role, containerId){
     if(!(finMin>debutMin)) return; // créneau invalide, on l'ignore par sécurité
     l.eleves.forEach(nom=> evenements.push({ nom, debutMin, finMin, debut:l.debut, fin:l.fin, lieu:l.lieu }));
   });
-  if(!evenements.length){ body.innerHTML='<div class="empty-hint">Aucun créneau avec élève accompagné ce jour-là.</div>'; return; }
 
-  // Bornes de l'axe, calées sur des demi-heures pleines
-  const minBrut=Math.min(...evenements.map(e=>e.debutMin));
-  const maxBrut=Math.max(...evenements.map(e=>e.finMin));
+  // Colonnes élèves : TOUS les élèves du coffre apparaissent sur l'axe des
+  // abscisses, même sans créneau accompagné ce jour-là (colonne vide) —
+  // seuls les évènements réels dessinent un trait. Ordre alphabétique pour
+  // rester stable d'un jour à l'autre.
+  const eleves=(coffre.listerEleves ? coffre.listerEleves() : [])
+    .map(e=>(e.identite&&e.identite.prenom)||e.identifiantSynapses)
+    .filter(Boolean)
+    .sort((a,b)=>a.localeCompare(b,"fr"));
+  evenements.forEach(e=>{ if(!eleves.includes(e.nom)) eleves.push(e.nom); }); // garde-fou
+
+  if(!eleves.length){ body.innerHTML='<div class="empty-hint">Aucun élève dans le coffre.</div>'; return; }
+
+  // Bornes de l'axe, calées sur des demi-heures pleines. À défaut
+  // d'évènement ce jour-là, on retombe sur une plage journée par défaut
+  // pour conserver malgré tout un axe des temps lisible.
+  const minBrut=evenements.length ? Math.min(...evenements.map(e=>e.debutMin)) : 8*60;
+  const maxBrut=evenements.length ? Math.max(...evenements.map(e=>e.finMin)) : 17*60;
   const axeDebut=Math.floor(minBrut/30)*30;
-  const axeFin=Math.ceil(maxBrut/30)*30;
+  const axeFin=Math.max(axeDebut+30, Math.ceil(maxBrut/30)*30);
   const nbSlots=Math.max(1, Math.round((axeFin-axeDebut)/30));
   const hauteurPx=nbSlots*PL_SLOT_PX;
-
-  // Colonnes élèves, dans l'ordre de première apparition dans la journée
-  const eleves=[];
-  evenements.forEach(e=>{ if(!eleves.includes(e.nom)) eleves.push(e.nom); });
 
   const wrap=document.createElement("div");
   wrap.className="pl-timeline-wrap";
@@ -3014,13 +3022,20 @@ function imprimerPlanningAdulte(role){
   const axeDebut=Math.floor(minBrut/30)*30, axeFin=Math.max(axeDebut+30,Math.ceil(maxBrut/30)*30);
   const etendue=axeFin-axeDebut;
 
+  // Tous les élèves du coffre, communs à chaque colonne-jour, même sans
+  // créneau accompagné ce jour-là (colonne vide).
+  const tousLesElevesNoms=(coffre.listerEleves ? coffre.listerEleves() : [])
+    .map(e=>(e.identite&&e.identite.prenom)||e.identifiantSynapses)
+    .filter(Boolean)
+    .sort((a,b)=>a.localeCompare(b,"fr"));
+
   const colonnes = jours.map(j=>{
     const evs=evenementsParJour.get(j.n)||[];
-    if(!evs.length){
-      return `<div class="jour-col"><h2>${escapeHTMLTexte(j.nom)}</h2><div class="tl-vide">Aucun créneau avec élève accompagné.</div></div>`;
-    }
-    const eleves=[];
+    const eleves=tousLesElevesNoms.slice();
     evs.forEach(e=>{ if(!eleves.includes(e.nom)) eleves.push(e.nom); });
+    if(!eleves.length){
+      return `<div class="jour-col"><h2>${escapeHTMLTexte(j.nom)}</h2><div class="tl-vide">Aucun élève dans le coffre.</div></div>`;
+    }
 
     const ticks=[];
     for(let m=axeDebut; m<=axeFin; m+=60){
