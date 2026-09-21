@@ -162,7 +162,10 @@ table.vac td{padding:6px 8px;border-top:1px solid var(--line);}
 /* ---- Planning adulte (enseignant/AESH) : grille en lignes verticales, pas de 30 min ---- */
 .pl-timeline-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--radius);background:#fff;padding:14px 14px 18px;}
 .pl-timeline{display:flex;align-items:stretch;}
-.pl-axis{flex:0 0 56px;position:relative;padding-top:34px;}
+/* margin-top (et non padding-top) : les repères sont en position:absolute, donc
+   mesurés depuis le bord du padding ; le padding ne les décalait pas, et l'axe
+   se retrouvait 34px plus haut que les colonnes (qui, elles, ont un vrai padding). */
+.pl-axis{flex:0 0 56px;position:relative;margin-top:34px;}
 .pl-axis-tick{position:absolute;left:0;right:6px;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--ink-soft);text-align:right;transform:translateY(-6px);}
 .pl-axis-tick.heure-pleine{font-weight:700;color:var(--ink);}
 .pl-cols{display:flex;gap:1px;position:relative;padding-top:34px;}
@@ -171,7 +174,7 @@ table.vac td{padding:6px 8px;border-top:1px solid var(--line);}
   position:absolute;top:-32px;left:50%;transform:translateX(-50%) rotate(-38deg);transform-origin:bottom left;
   font-size:11px;font-weight:700;color:var(--navy);white-space:nowrap;letter-spacing:.01em;
 }
-.pl-col-track{position:relative;width:100%;background:repeating-linear-gradient(180deg,var(--panel-raised) 0,var(--panel-raised) 1px,transparent 1px,transparent 30px);}
+.pl-col-track{position:relative;width:100%;background:repeating-linear-gradient(180deg,var(--panel-raised) 0,var(--panel-raised) 1px,transparent 1px,transparent var(--pl-slot,26px));}
 .pl-col-track::before{content:"";position:absolute;left:-1px;top:0;bottom:0;width:1px;background:var(--line);}
 .pl-col-track::after{content:"";position:absolute;right:-1px;top:0;bottom:0;width:1px;background:var(--line);}
 .pl-event{position:absolute;left:0;right:0;display:flex;align-items:center;justify-content:center;gap:3px;overflow:visible;}
@@ -215,6 +218,14 @@ table.affg input[type="checkbox"]{width:16px;height:16px;cursor:pointer;flex:0 0
 table.affg .affg-eleve-line.exclu{background:#FBEEE9;opacity:.7;}
 table.affg .affg-eleve-line.affg-eleve-pec{background:#FDF3E7;opacity:1;cursor:default;justify-content:flex-start;}
 table.affg .affg-badge-pec{font-size:12px;line-height:1;}
+/* Grille du dispositif : nom + prénom en toutes lettres (deux élèves peuvent
+   avoir les mêmes initiales) ; la case reste à droite, le nom s'abrège avec
+   « … » si la colonne est trop étroite (libellé complet en infobulle). */
+table.affg.affg-noms td.affg-creneau-cell{min-width:190px;}
+table.affg.affg-noms .affg-eleve-line{justify-content:space-between;}
+table.affg .affg-eleve-nom{flex:1 1 auto;min-width:0;font-size:12px;font-weight:600;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.affg-effectif{font-size:12px;color:var(--ink-soft);margin:0 0 8px;}
+.affg-effectif.warn{color:var(--danger,#b3261e);}
 table.affg .affg-vide{color:var(--ink-soft);font-size:11px;text-align:center;opacity:.7;}
 table.affg .affg-eleve-line.avec-aesh{background:#EAF2FD;}
 table.affg .affg-aesh-toggle{font-size:10px;font-weight:700;letter-spacing:.02em;padding:1px 5px;border-radius:9px;border:1px solid var(--line);background:#fff;color:var(--ink-soft);cursor:pointer;line-height:1.4;}
@@ -2201,9 +2212,12 @@ function renderGenDispositifGrille(){
 
   const elevesDuCoffre = coffre.listerEleves ? coffre.listerEleves() : [];
   const roster = [];
+  const dejaVus = new Set(); // garde-fou : un identifiant ne donne jamais deux lignes
   elevesDuCoffre.forEach(e=>{
+    if(!e.identifiantSynapses || dejaVus.has(e.identifiantSynapses)) return;
     const cl = classeReferenceParmiGend(e, classesLiees);
     if(!cl) return;
+    dejaVus.add(e.identifiantSynapses);
     gendClasseRefParEleve[e.identifiantSynapses] = cl;
     const identite = e.identite || {};
     const prenom = String(identite.prenom || "").trim();
@@ -2211,10 +2225,21 @@ function renderGenDispositifGrille(){
     const libelle = [nomFamille, prenom].filter(Boolean).join(" ") || e.identifiantSynapses;
     roster.push({
       identifiantSynapses: e.identifiantSynapses,
-      nom: libelle,   // même convention que le roster des classes (affg) :
-                       // "nom" est le libellé complet utilisé par initialesEleve().
+      nom: libelle,   // libellé complet « Nom Prénom »
       libelle
     });
+  });
+  // Ordre alphabétique (nom puis prénom) : ordre stable et lisible, au lieu de
+  // l'ordre de saisie dans le coffre.
+  roster.sort((a,b)=>a.libelle.localeCompare(b.libelle,"fr",{sensitivity:"base"}));
+  // Homonymes stricts (même nom ET même prénom) : on ajoute l'identifiant
+  // Synapses pour ne jamais afficher deux lignes indiscernables.
+  const nbParLibelle = new Map();
+  roster.forEach(r=>nbParLibelle.set(r.libelle,(nbParLibelle.get(r.libelle)||0)+1));
+  roster.forEach(r=>{
+    if(nbParLibelle.get(r.libelle)>1 && r.libelle!==r.identifiantSynapses){
+      r.libelle = r.libelle+" ("+r.identifiantSynapses+")"; r.nom = r.libelle;
+    }
   });
   if(!roster.length){
     hint.style.display="";
@@ -2285,8 +2310,8 @@ function renderGenDispositifGrille(){
             lignePec.className="affg-eleve-line affg-eleve-pec";
             lignePec.title=`${ref.libelle} — ${pec.intervenant||"prise en charge extérieure"} (santé), à l'extérieur sur ce créneau`;
             const initialePec=document.createElement("span");
-            initialePec.className="affg-eleve-initial";
-            initialePec.textContent=initialesEleve(ref);
+            initialePec.className="affg-eleve-nom";
+            initialePec.textContent=ref.libelle;
             const badgePec=document.createElement("span");
             badgePec.className="affg-badge-pec";
             badgePec.textContent="🏥";
@@ -2326,8 +2351,8 @@ function renderGenDispositifGrille(){
           line.title=ref.libelle;
 
           const initiale=document.createElement("span");
-          initiale.className="affg-eleve-initial";
-          initiale.textContent=initialesEleve(ref);
+          initiale.className="affg-eleve-nom";
+          initiale.textContent=ref.libelle;
 
           const cb=document.createElement("input");
           cb.type="checkbox"; cb.checked=coche;
@@ -2346,6 +2371,20 @@ function renderGenDispositifGrille(){
     });
     table.appendChild(tr);
   });
+
+  table.classList.add("affg-noms");
+  // Effectif affiché + signalement des élèves déjà affectés au dispositif
+  // (planning du coffre) mais absents de cette grille faute de classe de
+  // référence correspondant à une classe liée.
+  const idsRoster = new Set(roster.map(r=>r.identifiantSynapses));
+  const absents = elevesDuCoffre.filter(e=>e.identifiantSynapses && !idsRoster.has(e.identifiantSynapses) &&
+    Array.isArray(e.planning) && e.planning.some(p=>p.classeId===dispId && p.typeLieu==="dispositif"));
+  const effectif=document.createElement("div");
+  effectif.className="affg-effectif"+(absents.length?" warn":"");
+  effectif.textContent = roster.length+" élève(s) du dispositif" +
+    (absents.length ? " — attention : "+absents.length+" élève(s) affecté(s) au dispositif n'apparaissent pas (classe de référence non liée à ce dispositif) : "+
+      absents.map(e=>[(e.identite&&e.identite.nom)||"",(e.identite&&e.identite.prenom)||""].filter(Boolean).join(" ")||e.identifiantSynapses).join(", ") : "");
+  wrap.appendChild(effectif);
 
   const scroll=document.createElement("div");scroll.className="affg-scroll";
   scroll.appendChild(table);wrap.appendChild(scroll);
@@ -2905,6 +2944,7 @@ function renderPlanningAdulteComplet(role, containerId){
     const track=document.createElement("div");
     track.className="pl-col-track";
     track.style.height=hauteurPx+"px";
+    track.style.setProperty("--pl-slot", PL_SLOT_PX+"px");
 
     evenements.filter(e=>e.nom===nom).forEach(e=>{
       const top=((e.debutMin-axeDebut)/30)*PL_SLOT_PX;
@@ -2995,7 +3035,7 @@ function imprimerPlanningAdulte(role){
           <div class="tl-trait"></div>
         </div>`;
       }).join("");
-      return `<div class="tl-col"><div class="tl-label"><span>${escapeHTMLTexte(nom)}</span></div><div class="tl-track">${evHtml}</div></div>`;
+      return `<div class="tl-col"><div class="tl-label"><span>${escapeHTMLTexte(nom)}</span></div><div class="tl-track" style="--pas:${(30/etendue*100).toFixed(3)}%;">${evHtml}</div></div>`;
     }).join("");
 
     return `<div class="jour-col">
@@ -3019,13 +3059,13 @@ function imprimerPlanningAdulte(role){
   .jour-col h2{font-size:9.5px;margin:0 0 2px;border-bottom:1.5px solid #111;padding-bottom:1px;white-space:nowrap;flex:0 0 auto;}
   .tl-vide{color:#999;font-size:7.5px;font-style:italic;text-align:center;padding-top:10mm;}
   .tl-wrap{position:relative;flex:1 1 auto;display:flex;min-height:0;}
-  .tl-axis{position:relative;flex:0 0 14px;}
+  .tl-axis{position:relative;flex:0 0 14px;margin-top:11px;}
   .tl-tick{position:absolute;left:0;right:2px;font-size:5px;color:#666;transform:translateY(-4px);text-align:right;border-top:1px dotted #bbb;}
   .tl-cols{display:flex;flex:1 1 auto;gap:0.5px;position:relative;padding-top:11px;}
   .tl-col{position:relative;flex:1 1 0;min-width:0;border-left:1px solid #eee;}
   .tl-label{height:11px;margin-top:-11px;font-size:4.6px;line-height:1;white-space:nowrap;overflow:hidden;text-align:center;}
   .tl-label span{display:inline-block;}
-  .tl-track{position:relative;height:100%;background:repeating-linear-gradient(180deg,#f4f4f4 0,#f4f4f4 1px,transparent 1px,transparent 8.33%);}
+  .tl-track{position:relative;height:100%;background:repeating-linear-gradient(180deg,#f4f4f4 0,#f4f4f4 1px,transparent 1px,transparent var(--pas,8.33%));}
   .tl-event{position:absolute;left:0.5px;right:0.5px;display:flex;align-items:center;justify-content:center;overflow:hidden;}
   .tl-trait{width:2px;align-self:stretch;background:#2f6fed;border-radius:1px;flex:0 0 auto;}
   @media print{ .grille-jours{page-break-inside:avoid;} .jour-col{page-break-inside:avoid;} }
