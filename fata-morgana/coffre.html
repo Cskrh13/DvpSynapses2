@@ -183,17 +183,20 @@ th{color:var(--ink-soft);font-weight:600;font-size:12px;text-transform:uppercase
 .edt-bloc-pause{background:#F1EFE9;border-color:#D7D2C5;}
 .edt-bloc-externe{background:#FDF3E7;border-color:#E8CFA8;}
 .edt-bloc-dispositif{background:#EAF1FA;border-color:#BFD0E8;}
-.edt-bloc .edt-classe{font-weight:600;color:var(--navy);font-size:11.5px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.edt-bloc .edt-classe{font-weight:600;color:var(--navy);font-size:11.5px;line-height:1.2;overflow-wrap:anywhere;}
+.edt-bloc .edt-emoji{font-family:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif;font-weight:400;margin-right:3px;}
 .edt-bloc-recreation .edt-classe,.edt-bloc-pause .edt-classe{color:var(--ink-soft);font-weight:600;}
 .edt-bloc-externe .edt-classe{color:#8A5A16;}
-.edt-bloc .edt-nom{color:var(--ink);font-size:11.2px;line-height:1.25;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.edt-bloc .edt-titre{color:var(--ink-soft);font-size:10.5px;line-height:1.2;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.edt-bloc .edt-adulte{color:var(--ink);font-size:10.5px;line-height:1.2;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.edt-bloc .edt-nom{color:var(--ink);font-size:11.2px;line-height:1.25;margin-top:2px;overflow-wrap:anywhere;}
+.edt-bloc .edt-titre{color:var(--ink-soft);font-size:10.5px;line-height:1.2;margin-top:2px;overflow-wrap:anywhere;}
+.edt-bloc .edt-adulte{color:var(--ink);font-size:10.5px;line-height:1.2;margin-top:2px;overflow-wrap:anywhere;}
 .edt-bloc .edt-horaire{color:var(--accent-sky);font-family:'IBM Plex Mono',monospace;font-size:9.5px;line-height:1.15;margin-top:2px;white-space:nowrap;}
 .edt-bloc-recreation .edt-horaire,.edt-bloc-pause .edt-horaire{color:var(--ink-soft);}
 .edt-bloc.edt-duree-courte .edt-adulte,.edt-bloc.edt-duree-courte .edt-titre{display:none;}
 .edt-bloc.edt-duree-tres-courte .edt-horaire{font-size:8.5px;}
 .edt-bloc:hover,.edt-bloc:focus-within{z-index:6;box-shadow:0 4px 14px rgba(20,29,51,.22);}
+/* À l'écran, un bloc trop court pour tout son texte se déploie au survol / au focus (jamais de texte perdu). */
+.edt-bloc:hover,.edt-bloc:focus-within{height:auto !important;min-height:var(--edt-h);overflow:visible;}
 .edt-btn-editer{position:absolute;top:2px;right:2px;border:none;background:rgba(255,255,255,.7);color:var(--ink-soft);cursor:pointer;font-size:11px;line-height:1;padding:2px 4px;opacity:.6;border-radius:4px;z-index:3;}
 /* Créneau ULIS déduit d'un trou d'emploi du temps (aucune affectation
    réellement enregistrée à cet horaire) : même teinte que les créneaux
@@ -218,11 +221,22 @@ th{color:var(--ink-soft);font-weight:600;font-size:12px;text-transform:uppercase
 #edtImpressionLegende .edt-imp-carre{width:11px;height:11px;border-radius:3px;display:inline-block;}
 #edtImpressionPied{display:none;}
 @media print {
-  @page { size: landscape; margin: 10mm 12mm; }
+  /* A4 vertical, une seule page. Zone imprimable = 186 mm x 277 mm
+     (≈ 703 x 1047 px à 96 dpi) : l'échelle de la grille d'impression est
+     calculée pour cette hauteur (voir HAUTEUR_GRILLE_IMPRESSION_PX plus bas). */
+  @page { size: A4 portrait; margin: 10mm 12mm; }
   html, body{-webkit-print-color-adjust:exact;print-color-adjust:exact;color-adjust:exact;}
+  html, body{height:auto;margin:0;}
   body{background:#fff;}
   body *{visibility:hidden;}
   #edtZoneImpression, #edtZoneImpression *{visibility:visible;}
+  /* « visibility:hidden » masque sans libérer la place : le reste de la page
+     (cartes, formulaires…) continuait donc d'occuper de la hauteur et
+     produisait des pages blanches supplémentaires à l'impression. On retire
+     de la mise en page tout ce qui n'est ni la zone d'impression, ni l'un de
+     ses ancêtres, ni l'un de ses descendants. */
+  body :not(#edtZoneImpression):not(#edtZoneImpression *):not(:has(#edtZoneImpression)){display:none !important;}
+  #edtZoneImpression{break-inside:avoid;page-break-inside:avoid;}
   #edtZoneImpression{position:absolute;left:0;top:0;width:100%;padding:0;margin:0;}
   .print-only{display:block;}
   #edtImpressionLegende{display:flex;gap:16px;flex-wrap:wrap;margin-top:10px;font-size:11px;color:var(--ink-soft);align-items:center;}
@@ -233,15 +247,45 @@ th{color:var(--ink-soft);font-weight:600;font-size:12px;text-transform:uppercase
      + le gestionnaire de #edtBtnImprimer), doit apparaître sur le papier. */
   #edtGrilleWrap{display:none !important;}
   .edt-btn-editer{display:none !important;}
-  .edt-planning{min-width:0;width:100%;box-shadow:none;}
-  .edt-planning-head,.edt-planning-body{grid-template-columns:50px repeat(5,minmax(0,1fr));}
-  .edt-axe-temps,.edt-jour-col{height:var(--edt-hauteur);}
-  .edt-bloc{left:3px;right:3px;padding:2px 4px;box-shadow:none;}
-  .edt-bloc .edt-classe{font-size:10.5px;}
-  .edt-bloc .edt-nom{font-size:10px;}
-  .edt-bloc .edt-titre,.edt-bloc .edt-adulte{font-size:9px;}
-  .edt-bloc .edt-horaire{font-size:8.5px;}
 }
+
+/* Grille d'impression (#edtGrilleWrapImpression). Ces règles sont HORS de
+   @media print pour que la même mise en page serve à la fois au papier et à la
+   MESURE faite avant l'impression (voir construireGrilleImpression) : le
+   conteneur est masqué à l'écran (.print-only) et n'est affiché que pour
+   l'impression ou, brièvement et hors écran, pour vérifier qu'aucun texte
+   n'est coupé dans un bloc. */
+#edtGrilleWrapImpression.edt-mesure{display:block !important;position:absolute;left:-99999px;top:0;visibility:hidden;}
+#edtGrilleWrapImpression .edt-planning{min-width:0;width:100%;box-shadow:none;}
+#edtGrilleWrapImpression .edt-planning-head,#edtGrilleWrapImpression .edt-planning-body{grid-template-columns:50px repeat(5,minmax(0,1fr));}
+#edtGrilleWrapImpression .edt-axe-temps,#edtGrilleWrapImpression .edt-jour-col{height:var(--edt-hauteur);}
+#edtGrilleWrapImpression .edt-bloc{left:3px;right:3px;padding:2px 4px;box-shadow:none;}
+#edtGrilleWrapImpression .edt-btn-editer{display:none !important;}
+/* Blocs courts (récréation de 15 min, créneau d'une demi-heure sur une longue
+   journée…) : lieu, activité et horaire se suivent sur une même ligne (retour à
+   la ligne si besoin) au lieu d'être empilés, pour que tout tienne sans coupure. */
+#edtGrilleWrapImpression .edt-bloc.edt-duree-courte{display:flex;flex-wrap:wrap;align-items:baseline;column-gap:5px;row-gap:0;}
+#edtGrilleWrapImpression .edt-bloc.edt-duree-courte>div{margin-top:0;}
+#edtGrilleWrapImpression .edt-bloc .edt-emoji{line-height:1;}
+#edtGrilleWrapImpression .edt-bloc.edt-duree-minuscule .edt-nom{display:none;}
+#edtGrilleWrapImpression .edt-bloc.edt-sans-remarque .edt-titre{display:none;}
+#edtGrilleWrapImpression .edt-bloc.edt-sans-adulte .edt-adulte{display:none;}
+#edtGrilleWrapImpression .edt-bloc .edt-classe{font-size:10.5px;}
+#edtGrilleWrapImpression .edt-bloc .edt-nom{font-size:10px;}
+#edtGrilleWrapImpression .edt-bloc .edt-titre,#edtGrilleWrapImpression .edt-bloc .edt-adulte{font-size:9px;}
+#edtGrilleWrapImpression .edt-bloc .edt-horaire{font-size:8.5px;}
+/* Si un bloc est trop dense pour son texte, on réduit d'abord la police (deux
+   crans) plutôt que de couper ou d'abréger quoi que ce soit. */
+#edtGrilleWrapImpression.edt-dense .edt-bloc{padding:1px 3px;}
+#edtGrilleWrapImpression.edt-dense .edt-bloc .edt-classe{font-size:9.5px;}
+#edtGrilleWrapImpression.edt-dense .edt-bloc .edt-nom{font-size:9px;}
+#edtGrilleWrapImpression.edt-dense .edt-bloc .edt-titre,#edtGrilleWrapImpression.edt-dense .edt-bloc .edt-adulte{font-size:8px;}
+#edtGrilleWrapImpression.edt-dense .edt-bloc .edt-horaire{font-size:8px;}
+#edtGrilleWrapImpression.edt-tres-dense .edt-bloc{padding:1px 2px;}
+#edtGrilleWrapImpression.edt-tres-dense .edt-bloc .edt-classe{font-size:8.5px;}
+#edtGrilleWrapImpression.edt-tres-dense .edt-bloc .edt-nom{font-size:8px;}
+#edtGrilleWrapImpression.edt-tres-dense .edt-bloc .edt-titre,#edtGrilleWrapImpression.edt-tres-dense .edt-bloc .edt-adulte{font-size:7.5px;}
+#edtGrilleWrapImpression.edt-tres-dense .edt-bloc .edt-horaire{font-size:7.5px;}
 
 /* ---- Gestion des prises en charge extérieures (santé) ---- */
 .pec-wrap{margin:0 0 20px;}
@@ -1218,6 +1262,54 @@ const SYNAPSES_BUILD = {
   let edtDernierNomDispositif = null;
   let edtDernierIdentifiant = null;
 
+  /** Smiley correspondant à la NATURE d'un créneau, affiché devant le nom de la
+   *  classe ou du dispositif. Ordre de priorité :
+   *   1. nature « structurelle » : récréation, pause, prise en charge extérieure
+   *      (santé), autre / rituel ;
+   *   2. matière travaillée, reconnue par mots-clés dans le nom de l'activité puis,
+   *      à défaut, dans la clé de domaine (accents et casse ignorés) ;
+   *   3. à défaut, le type de lieu : dispositif (ULIS…) ou classe.
+   *  Pour ajouter / corriger une matière : modifier EMOJIS_MATIERES ci-dessous
+   *  (les mots-clés sont testés dans l'ordre, le premier qui correspond gagne). */
+  const EMOJIS_STRUCTURE = { recreation: '⚽', pause: '🍽️', externe: '🏥', autre: '🔔' };
+  const EMOJI_DISPOSITIF = '🧩';
+  const EMOJI_CLASSE = '🏫';
+  const EMOJIS_MATIERES = [
+    { emoji: '🗣️', mots: ['langage', 'oral', 'anglais', 'langue vivante', 'langues', 'lve'] },
+    { emoji: '📖', mots: ['francais', 'lecture', 'lire', 'ecriture', 'ecrire', 'dictee', 'orthograph', 'grammaire', 'conjugaison', 'vocabulaire', 'phonolog', 'graphisme', 'litterature', 'comprehension'] },
+    { emoji: '🔢', mots: ['mathematique', 'maths', 'math', 'nombre', 'numeration', 'calcul', 'geometrie', 'mesure', 'grandeur', 'denombr', 'probleme', 'logique'] },
+    { emoji: '🏃', mots: ['eps', 'sport', 'motricite', 'natation', 'gymnastique', 'jeux collectifs', 'athletisme', 'danse'] },
+    { emoji: '🎨', mots: ['arts plastiques', 'arts visuels', 'arts', 'dessin', 'peinture', 'plastique'] },
+    { emoji: '🎵', mots: ['musique', 'chant', 'education musicale'] },
+    { emoji: '🔬', mots: ['science', 'vivant', 'technolog', 'questionner le monde', 'monde', 'experience'] },
+    { emoji: '🌍', mots: ['histoire', 'geographie'] },
+    { emoji: '🤝', mots: ['emc', 'morale', 'civique', 'vivre ensemble', 'social', 'autonomie'] }
+  ];
+
+  function sansAccents(txt){
+    return String(txt || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  }
+
+  function emojiNatureCreneau(f, seg){
+    const c = (seg && seg.c) || {};
+    if (f.typeLieu === 'recreation' || c.type === 'recreation') return EMOJIS_STRUCTURE.recreation;
+    if (f.typeLieu === 'pause' || c.type === 'pause') return EMOJIS_STRUCTURE.pause;
+    if (f.typeLieu === 'externe') return EMOJIS_STRUCTURE.externe;
+    if (c.type === 'autre') return EMOJIS_STRUCTURE.autre;
+    if (seg && seg.synthese) return EMOJI_DISPOSITIF;
+
+    // Mots entiers ou débuts de mot : « eps » ne doit pas correspondre à « repas »,
+    // « arts » pas à « quartiers » (d'où le contrôle de début de mot).
+    // Le nom d'activité saisi par l'enseignant prime sur la clé technique de domaine.
+    const normaliser = (t) => ' ' + sansAccents(t).replace(/[_:]+/g, ' ') + ' ';
+    for (const source of [normaliser(f.activiteNom), normaliser(f.domaineCle)]) {
+      for (const m of EMOJIS_MATIERES) {
+        if (m.mots.some((mot) => source.indexOf(' ' + mot) !== -1)) return m.emoji;
+      }
+    }
+    return f.typeLieu === 'dispositif' ? EMOJI_DISPOSITIF : EMOJI_CLASSE;
+  }
+
   /** Construit le DOM de la grille (en-tête + colonnes de jours + blocs)
    *  dans `wrapCible`, à l'échelle `px30` (pixels par tranche de 30 min).
    *  Utilisée à la fois pour l'affichage écran (échelle adaptative, cf.
@@ -1287,8 +1379,12 @@ const SYNAPSES_BUILD = {
         bloc.className = 'edt-bloc edt-bloc-' + f.typeLieu + (seg.synthese ? ' edt-bloc-deduit' : '');
         if(hauteurBlocPx < 46) bloc.classList.add('edt-duree-courte');
         if(hauteurBlocPx < 26) bloc.classList.add('edt-duree-tres-courte');
+        // Sous 40 px, même le texte inline ne tient pas : à l'impression on ne garde
+        // alors que le lieu (avec son smiley) et l'horaire (voir la feuille de style).
+        if(hauteurBlocPx < 40) bloc.classList.add('edt-duree-minuscule');
         bloc.style.top = (((seg.debutMin-minDebut)/30)*px30) + 'px';
         bloc.style.height = hauteurBlocPx + 'px';
+        bloc.style.setProperty('--edt-h', hauteurBlocPx + 'px');
         bloc.style.left = '4px';
         bloc.style.width = 'calc(100% - 8px)';
         bloc.style.right = 'auto';
@@ -1299,7 +1395,12 @@ const SYNAPSES_BUILD = {
 
         const lieuEl = document.createElement('div');
         lieuEl.className = 'edt-classe';
-        lieuEl.textContent = f.lieuNom;
+        const emojiEl = document.createElement('span');
+        emojiEl.className = 'edt-emoji';
+        emojiEl.setAttribute('aria-hidden', 'true');
+        emojiEl.textContent = emojiNatureCreneau(f, seg);
+        lieuEl.appendChild(emojiEl);
+        lieuEl.appendChild(document.createTextNode(f.lieuNom));
         bloc.appendChild(lieuEl);
 
         const activiteAffichee = f.activiteNom || domaineLisible(f.domaineCle);
@@ -1358,6 +1459,63 @@ const SYNAPSES_BUILD = {
     tableWrap.className = 'edt-table-wrap';
     tableWrap.appendChild(planningEl);
     wrapCible.appendChild(tableWrap);
+  }
+
+  // Zone imprimable A4 portrait avec marges 10 mm / 12 mm : 186 mm de large
+  // (≈ 703 px à 96 dpi) et 277 mm de haut (≈ 1047 px). En-tête, ligne des jours,
+  // légende et pied de page occupent ≈ 180 px : il reste ≈ 860 px pour le corps de
+  // la grille, on en vise 840 pour garder une marge de sécurité.
+  const LARGEUR_ZONE_IMPRESSION_PX = 703;
+  const HAUTEUR_GRILLE_IMPRESSION_PX = 840;
+  const NIVEAUX_DENSITE_IMPRESSION = ['', 'edt-dense', 'edt-tres-dense'];
+
+  /** Construit la grille dédiée au papier dans `wrap`.
+   *  1. L'échelle verticale (px par demi-heure) est calculée pour que la grille
+   *     tienne dans la hauteur disponible, quelle que soit l'amplitude horaire.
+   *  2. La grille est d'abord rendue hors écran, à la largeur exacte de la zone
+   *     imprimable, et on VÉRIFIE qu'aucun bloc ne contient plus de texte qu'il
+   *     n'a de place (scrollHeight > clientHeight). Si c'est le cas, on passe au
+   *     cran de police inférieur — jamais de « … » ni de texte coupé tant qu'un
+   *     cran plus petit permet de tout faire tenir. */
+  function construireGrilleImpression(wrap){
+    wrap.innerHTML = '';
+    wrap.classList.remove('edt-dense', 'edt-tres-dense');
+    if (!(edtDernierValides && edtDernierValides.length)) return;
+
+    const totalTranches = Math.max(1, (edtDernierMaxFin - edtDernierMinDebut) / 30);
+    const px30 = Math.max(14, Math.min(60, Math.floor(HAUTEUR_GRILLE_IMPRESSION_PX / totalTranches)));
+
+    wrap.classList.add('edt-mesure');
+    wrap.style.width = LARGEUR_ZONE_IMPRESSION_PX + 'px';
+    try {
+      for (const niveau of NIVEAUX_DENSITE_IMPRESSION) {
+        wrap.classList.remove('edt-dense', 'edt-tres-dense');
+        if (niveau) wrap.classList.add(niveau);
+        wrap.innerHTML = '';
+        construireGrilleEdt(
+          edtDernierValides, edtDernierMinDebut, edtDernierMaxFin,
+          px30, edtDernierNomDispositif, edtDernierIdentifiant, wrap
+        );
+        const coupes = Array.from(wrap.querySelectorAll('.edt-bloc'))
+          .filter((b) => b.scrollHeight > b.clientHeight + 1);
+        if (!coupes.length) break;
+      }
+
+      // Dernier recours, bloc par bloc (et non pour toute la grille) : un bloc
+      // trop court pour l'ensemble de ses lignes, même à la plus petite police,
+      // abandonne d'abord sa remarque, puis la ligne de l'adulte — on retire une
+      // ligne entière plutôt que de la couper au milieu. Le lieu, le smiley et
+      // l'activité sont toujours conservés.
+      for (const classe of ['edt-sans-remarque', 'edt-sans-adulte']) {
+        const encoreCoupes = Array.from(wrap.querySelectorAll('.edt-bloc'))
+          .filter((b) => b.scrollHeight > b.clientHeight + 1);
+        if (!encoreCoupes.length) break;
+        encoreCoupes.forEach((b) => b.classList.add(classe));
+      }
+    } finally {
+      wrap.classList.remove('edt-mesure');
+      wrap.style.width = '';
+    }
   }
 
   function afficherEmploiDuTemps(identifiantSynapses){
@@ -1550,10 +1708,10 @@ const SYNAPSES_BUILD = {
     const legende = $('edtImpressionLegende');
     legende.innerHTML = '';
     [
-      { couleur: '#EEF2FB', label: 'Classe' },
-      { couleur: '#EAF1FA', label: 'Dispositif (ULIS)' },
-      { couleur: '#F1EFE9', label: 'Récréation' },
-      { couleur: '#FDF3E7', label: 'Prise en charge extérieure (santé)' }
+      { couleur: '#EEF2FB', label: EMOJI_CLASSE + ' Classe' },
+      { couleur: '#EAF1FA', label: EMOJI_DISPOSITIF + ' Dispositif (ULIS)' },
+      { couleur: '#F1EFE9', label: EMOJIS_STRUCTURE.recreation + ' Récréation · ' + EMOJIS_STRUCTURE.pause + ' Pause' },
+      { couleur: '#FDF3E7', label: EMOJIS_STRUCTURE.externe + ' Prise en charge extérieure (santé)' }
     ].forEach((item) => {
       const puce = document.createElement('span');
       puce.className = 'edt-imp-puce';
@@ -1577,25 +1735,9 @@ const SYNAPSES_BUILD = {
     pied.appendChild(confidentiel);
     pied.appendChild(source);
 
-    // Reconstruit la grille à une échelle dédiée à l'impression : l'échelle
-    // écran (adaptative, jusqu'à 112px/30min pour rester lisible au clic)
-    // dépasse presque toujours la hauteur d'une page A4 paysage. On vise ici
-    // une hauteur totale de grille qui, ajoutée à l'en-tête/légende/pied,
-    // tient sur une seule page, quel que soit le nombre de tranches de la
-    // journée de l'élève (journée courte ou très amplitude horaire).
-    const wrapImpression = $('edtGrilleWrapImpression');
-    wrapImpression.innerHTML = '';
-    if (edtDernierValides && edtDernierValides.length) {
-      const totalTranches = Math.max(1, (edtDernierMaxFin - edtDernierMinDebut) / 30);
-      const HAUTEUR_GRILLE_IMPRESSION_PX = 600; // budget visé pour la grille seule sur la page
-      let px30Impression = Math.floor(HAUTEUR_GRILLE_IMPRESSION_PX / totalTranches);
-      px30Impression = Math.max(14, Math.min(48, px30Impression));
-      construireGrilleEdt(
-        edtDernierValides, edtDernierMinDebut, edtDernierMaxFin,
-        px30Impression, edtDernierNomDispositif, edtDernierIdentifiant,
-        wrapImpression
-      );
-    }
+    // Reconstruit la grille à une échelle dédiée à l'impression, avec vérification
+    // qu'aucun bloc ne coupe son texte (voir construireGrilleImpression).
+    construireGrilleImpression($('edtGrilleWrapImpression'));
 
     window.print();
   });
