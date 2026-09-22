@@ -1210,32 +1210,68 @@ function renderClasseElevesSelect(){
   sel.innerHTML = config.classes.map(cl=>`<option value="${cl.id}">${cl.nom}</option>`).join("") || '<option value="">Aucune classe</option>';
 }
 
-// Cherche, pour une classe donnée, les élèves du coffre dont la classe de
-// référence (e.classe) correspond au nom ou au niveau de cette classe.
-// Ne renvoie AUCUN élève en secours si aucune correspondance n'est trouvée :
-// il ne faut jamais transformer une absence de classe renseignée en
-// affectation à une classe.
-function chargerElevesPourClasse(cl){
-  const elevesDuCoffre = coffre.listerEleves();
+// Détermine la classe de référence d'un élève à partir de TOUTES les
+// informations disponibles dans le coffre. C'est important après les
+// migrations : l'identifiant interne d'une classe peut avoir changé alors
+// que les anciennes entrées de planning conservent encore classeNom ou un
+// ancien classeId. Le module Dispositif applique déjà une logique voisine.
+function eleveCorrespondAClasse(e, cl){
   const normaliserClasse = (v) => String(v ?? "")
     .trim()
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
     .replace(/\s+/g, " ")
     .toLowerCase();
-  const nomClasse = normaliserClasse(cl.nom);
-  const niveauClasse = normaliserClasse(cl.niveau);
-  const eleves = elevesDuCoffre.filter(e=>{
-    // synapses-coffre.listerEleves() expose la classe de référence sous e.classe.
-    // On conserve aussi e.identite.classe pour la compatibilité avec d'anciens
-    // coffres dans lesquels cette information pouvait être recopiée dans identité.
-    const classeEleve = normaliserClasse(e.classe || (e.identite && e.identite.classe));
-    return classeEleve && (classeEleve === nomClasse || (niveauClasse && classeEleve === niveauClasse));
+
+  const valeursClasse = [
+    e && e.classe,
+    e && e.identite && e.identite.classe,
+    e && e.niveau,
+    e && e.identite && e.identite.niveau
+  ].map(normaliserClasse).filter(Boolean);
+  const nomsPossibles = [cl && cl.nom, cl && cl.niveau]
+    .map(normaliserClasse).filter(Boolean);
+
+  // 1. Classe de référence actuellement renseignée dans le coffre.
+  if(valeursClasse.some(v => nomsPossibles.includes(v))) return true;
+
+  // 2. Planning individuel : on conserve aussi les élèves dont les données
+  // de classe ont été migrées mais dont les entrées de planning portent
+  // encore l'ancien identifiant ou le nom de la classe.
+  const plan = Array.isArray(e && e.planning) ? e.planning : [];
+  return plan.some(p => {
+    if(!p) return false;
+    if(String(p.classeId ?? "") === String(cl.id ?? "")) return true;
+    const idsAnciens = [cl && cl.niveau, cl && cl.nom]
+      .map(v => String(v ?? "").trim().toLowerCase()).filter(Boolean);
+    if(idsAnciens.includes(String(p.classeId ?? "").trim().toLowerCase())) return true;
+    const nomsPlanning = [p.classeNom, p.classe, p.niveau]
+      .map(normaliserClasse).filter(Boolean);
+    return nomsPlanning.some(v => nomsPossibles.includes(v));
   });
-  return eleves.map(e=>({
-    identifiantSynapses: e.identifiantSynapses,
-    nom: (e.identite && (e.identite.prenom || e.identite.nom)) || e.identifiantSynapses
-  }));
+}
+
+// Cherche, pour une classe donnée, les élèves du coffre correspondant à sa
+// classe de référence. La recherche ne dépend donc plus d'un cache local ni
+// d'un seul champ : c'est exactement la même source de vérité que l'onglet
+// Dispositif, avec en plus une compatibilité avec les anciens plannings.
+function chargerElevesPourClasse(cl){
+  if(!coffre || !coffre.ouvert || !cl) return [];
+  const elevesDuCoffre = coffre.listerEleves ? coffre.listerEleves() : [];
+  const vus = new Set();
+  return elevesDuCoffre.filter(e=>{
+    if(!e || !e.identifiantSynapses || vus.has(e.identifiantSynapses)) return false;
+    if(!eleveCorrespondAClasse(e, cl)) return false;
+    vus.add(e.identifiantSynapses);
+    return true;
+  }).map(e=>{
+    const identite = e.identite || {};
+    const nomComplet = [identite.nom, identite.prenom].filter(v=>String(v ?? "").trim()).join(" ");
+    return {
+      identifiantSynapses: e.identifiantSynapses,
+      nom: nomComplet || identite.prenom || identite.nom || e.identifiantSynapses
+    };
+  });
 }
 
 /* Charge en mémoire, pour chaque classe créée, les élèves du coffre dont
@@ -1779,9 +1815,12 @@ function coffreEleveById(id){
 function enregistrerElevesClasse(classeId, etat, aeshEtat){
   if(!coffre || !coffre.ouvert) throw new Error("Ouvrez le coffre avant d'enregistrer.");
   const cl = configMgr.classeById(config, classeId);
-  const roster = elevesParClasse[classeId] || [];
   if(!cl) throw new Error("Classe introuvable.");
-  if(!roster.length) throw new Error("Aucun élève chargé dans cette classe.");
+  // Le coffre est la source de vérité : ne jamais dépendre d'un cache qui
+  // peut dater d'avant une restauration ou une modification de classe.
+  const roster = chargerElevesPourClasse(cl);
+  elevesParClasse[classeId] = roster;
+  if(!roster.length) throw new Error("Aucun élève du coffre ne correspond à cette classe.");
 
   // IMPORTANT :
   // `grilles[classeId]` est le planning TYPE de la classe.
