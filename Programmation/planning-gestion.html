@@ -1961,7 +1961,12 @@ function cleCointervention(classeId, creneauId){ return classeId+"::"+creneauId;
    dans le coffre — uniquement dans config, comme dispositifGroupes). */
 function construireToggleCointervention(cl, c, dispsLies){
   const cle=cleCointervention(cl.id, c.id);
-  const etat=config.coInterventionUlis[cle];
+  // Défensif : config peut avoir été réassignée (import config/planning)
+  // sans repasser par l'initialisation de coInterventionUlis en tête de
+  // fichier — sans ce garde-fou, ceci plantait renderAffgGrille() en plein
+  // milieu du rendu, table jamais attachée au DOM, grille vide pour toute
+  // classe liée à un dispositif.
+  const etat=(config.coInterventionUlis||{})[cle];
   const actif=!!(etat && etat.actif);
   const dispId=(etat && etat.dispositifId) || dispsLies[0].id;
   const disp=dispsLies.find(d=>d.id===dispId) || dispsLies[0];
@@ -1983,6 +1988,7 @@ function construireToggleCointervention(cl, c, dispsLies){
 }
 
 function sauvegarderCointervention(classeId, creneauId, etat){
+  config.coInterventionUlis = config.coInterventionUlis || {};
   const cle=cleCointervention(classeId, creneauId);
   if(etat) config.coInterventionUlis[cle]=etat;
   else delete config.coInterventionUlis[cle];
@@ -2733,6 +2739,7 @@ $("import-config-file").addEventListener("change", async ()=>{
     configMgr.importerJSON(config, payload);
     configMgr.sauver(config);
     config = configMgr.charger();
+    config.coInterventionUlis = config.coInterventionUlis || {};
     grilles = grilleMgr.charger();
     $("import-config-status").textContent = "Configuration importée (" + f.name + ").";
     renderTout();
@@ -3511,6 +3518,7 @@ $("btn-planning-crypto-confirmer").addEventListener("click", async ()=>{
       const paquet = await paquetMgr.dechiffrer(enveloppe, mdp);
       const applique = paquetMgr.appliquer(paquet);
       config = configMgr.charger();
+      config.coInterventionUlis = config.coInterventionUlis || {};
       grilles = grilleMgr.charger();
       $("import-json-status").textContent = "Importé (" + f.name + ") : " + applique.join(", ") + ".";
       fermerModalCryptoPlanning();
