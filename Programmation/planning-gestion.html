@@ -1964,10 +1964,19 @@ function renderAffgGrille(){
   if(!classeId){hint.style.display="";hint.textContent="Créez et sélectionnez une classe ou un dispositif.";return;}
   if(!coffre||!coffre.ouvert){hint.style.display="";hint.textContent="Ouvrez le coffre pour charger les élèves et enregistrer leur planning individuel.";return;}
 
-  const roster=elevesParClasse[classeId]||[];
-  if(!roster.length){hint.style.display="";hint.textContent="Aucun élève chargé dans cette classe.";return;}
-  hint.style.display="none";
   const cl=configMgr.classeById(config, classeId);
+  if(!cl){hint.style.display="";hint.textContent="Classe introuvable dans la configuration.";return;}
+
+  // Ne pas dépendre uniquement du cache éphémère `elevesParClasse`.
+  // Après une restauration/importation ou la création/modification d'une
+  // classe alors que le coffre est déjà ouvert, ce cache peut être absent ou
+  // obsolète alors que `coffre.listerEleves()` contient bien les élèves.
+  // L'onglet Dispositif lit directement le coffre ; l'onglet Affectation doit
+  // faire de même pour rester cohérent avec lui.
+  const roster=chargerElevesPourClasse(cl);
+  elevesParClasse[classeId]=roster;
+  if(!roster.length){hint.style.display="";hint.textContent="Aucun élève du coffre ne correspond à cette classe.";return;}
+  hint.style.display="none";
 
   // Lecture seule : les créneaux de la classe servent uniquement de référence.
   const creneaux=(grilles[classeId]||[]).slice().sort(
