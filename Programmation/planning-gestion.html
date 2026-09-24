@@ -166,14 +166,14 @@ table.vac td{padding:6px 8px;border-top:1px solid var(--line);}
 /* margin-top (et non padding-top) : les repères sont en position:absolute, donc
    mesurés depuis le bord du padding ; le padding ne les décalait pas, et l'axe
    se retrouvait 34px plus haut que les colonnes (qui, elles, ont un vrai padding). */
-.pl-axis{flex:0 0 56px;position:relative;margin-top:34px;}
+.pl-axis{flex:0 0 56px;position:relative;margin-top:62px;}
 .pl-axis-tick{position:absolute;left:0;right:6px;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--ink-soft);text-align:right;transform:translateY(-6px);}
 .pl-axis-tick.heure-pleine{font-weight:700;color:var(--ink);}
-.pl-cols{display:flex;gap:1px;position:relative;padding-top:34px;}
+.pl-cols{display:flex;gap:1px;position:relative;padding-top:62px;}
 .pl-col{flex:0 0 22px;position:relative;}
 .pl-col-label{
-  position:absolute;top:-32px;left:50%;transform:translateX(-50%) rotate(-38deg);transform-origin:bottom left;
-  font-size:11px;font-weight:700;color:var(--navy);white-space:nowrap;letter-spacing:.01em;
+  position:absolute;top:-60px;left:50%;transform:translateX(-50%) rotate(-45deg);transform-origin:bottom left;
+  font-size:10.5px;font-weight:700;color:var(--navy);white-space:nowrap;letter-spacing:.01em;
 }
 .pl-col-track{position:relative;width:100%;background:repeating-linear-gradient(180deg,var(--panel-raised) 0,var(--panel-raised) 1px,transparent 1px,transparent var(--pl-slot,26px));}
 .pl-col-track::before{content:"";position:absolute;left:-1px;top:0;bottom:0;width:1px;background:var(--line);}
@@ -3010,6 +3010,16 @@ function renderDispositif(){
    dispositif — jamais la présence d'un élève dans une classe quelconque.
 
    Les récréations et la pause méridienne sont toujours exclues. */
+// Nom + prénom en toutes lettres (utilisé pour les colonnes des plannings
+// enseignant/AESH) : le seul prénom faisait se chevaucher plusieurs élèves
+// partageant la même initiale sur des colonnes indiscernables, et servait
+// aussi de clé de correspondance créneau↔colonne, donc pouvait carrément
+// fusionner deux élèves homonymes de prénom dans la même colonne.
+function nomCompletEleve(e){
+  const identite=(e&&e.identite)||{};
+  const nomComplet=[identite.nom, identite.prenom].filter(v=>String(v??"").trim()).join(" ");
+  return nomComplet || (e&&e.identifiantSynapses) || "?";
+}
 function construirePlanningAdulte(role){
   if(!coffre || !coffre.ouvert) return [];
   const jours = joursActifsDispositif();
@@ -3022,7 +3032,7 @@ function construirePlanningAdulte(role){
         const ids = groupes[role]||[];
         const noms = ids.map(idE=>{
           const e=coffreEleveById(idE);
-          return e ? ((e.identite&&e.identite.prenom)||e.identifiantSynapses) : null;
+          return e ? nomCompletEleve(e) : null;
         }).filter(Boolean);
         if(!noms.length) return;
         lignes.push({
@@ -3049,7 +3059,7 @@ function construirePlanningAdulte(role){
             const plan=Array.isArray(e.planning)?e.planning:[];
             const entree=plan.find(p=>p.classeId===cl.id && p.typeLieu==="classe" && p.creneauId===c.id);
             if(!entree || entree.aesh!==true) return; // uniquement si l'AESH est explicitement affectée
-            const n=(e.identite&&e.identite.prenom)||e.identifiantSynapses;
+            const n=nomCompletEleve(e);
             if(n) noms.push(n);
           });
           if(!noms.length) return;
@@ -3128,7 +3138,7 @@ function renderPlanningAdulteComplet(role, containerId){
   // seuls les évènements réels dessinent un trait. Ordre alphabétique pour
   // rester stable d'un jour à l'autre.
   const eleves=(coffre.listerEleves ? coffre.listerEleves() : [])
-    .map(e=>(e.identite&&e.identite.prenom)||e.identifiantSynapses)
+    .map(nomCompletEleve)
     .filter(Boolean)
     .sort((a,b)=>a.localeCompare(b,"fr"));
   evenements.forEach(e=>{ if(!eleves.includes(e.nom)) eleves.push(e.nom); }); // garde-fou
@@ -3251,7 +3261,7 @@ function imprimerPlanningAdulte(role){
   // Tous les élèves du coffre, communs à chaque colonne-jour, même sans
   // créneau accompagné ce jour-là (colonne vide).
   const tousLesElevesNoms=(coffre.listerEleves ? coffre.listerEleves() : [])
-    .map(e=>(e.identite&&e.identite.prenom)||e.identifiantSynapses)
+    .map(nomCompletEleve)
     .filter(Boolean)
     .sort((a,b)=>a.localeCompare(b,"fr"));
 
@@ -3300,12 +3310,15 @@ function imprimerPlanningAdulte(role){
   .jour-col h2{font-size:9.5px;margin:0 0 2px;border-bottom:1.5px solid #111;padding-bottom:1px;white-space:nowrap;flex:0 0 auto;}
   .tl-vide{color:#999;font-size:7.5px;font-style:italic;text-align:center;padding-top:10mm;}
   .tl-wrap{position:relative;flex:1 1 auto;display:flex;min-height:0;}
-  .tl-axis{position:relative;flex:0 0 14px;margin-top:11px;}
+  .tl-axis{position:relative;flex:0 0 14px;margin-top:26px;}
   .tl-tick{position:absolute;left:0;right:2px;font-size:5px;color:#666;transform:translateY(-4px);text-align:right;border-top:1px dotted #bbb;}
-  .tl-cols{display:flex;flex:1 1 auto;gap:0.5px;position:relative;padding-top:11px;}
+  .tl-cols{display:flex;flex:1 1 auto;gap:0.5px;position:relative;padding-top:26px;}
   .tl-col{position:relative;flex:1 1 0;min-width:0;border-left:1px solid #eee;}
-  .tl-label{height:11px;margin-top:-11px;font-size:4.6px;line-height:1;white-space:nowrap;overflow:hidden;text-align:center;}
-  .tl-label span{display:inline-block;}
+  /* Nom + prénom en toutes lettres : rotation nécessaire pour rester lisible
+     dans la largeur très étroite de chaque colonne (une par élève, plusieurs
+     dizaines sur la page). */
+  .tl-label{height:26px;margin-top:-26px;position:relative;}
+  .tl-label span{position:absolute;bottom:1px;left:50%;transform:translateX(-50%) rotate(-45deg);transform-origin:bottom left;display:inline-block;font-size:4.6px;line-height:1;white-space:nowrap;}
   .tl-track{position:relative;height:100%;background:repeating-linear-gradient(180deg,#f4f4f4 0,#f4f4f4 1px,transparent 1px,transparent var(--pas,8.33%));}
   .tl-event{position:absolute;left:0.5px;right:0.5px;display:flex;align-items:center;justify-content:center;overflow:hidden;}
   .tl-trait{width:2px;align-self:stretch;background:#2f6fed;border-radius:1px;flex:0 0 auto;}
